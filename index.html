@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap">
 <link rel="preload" as="image" href="assets/img/logo-sticker.webp">
 <!-- CSS・JSを更新したら ?v= の数字も変える（古いファイルがブラウザに残って表示が崩れるのを防ぐ） -->
-<link rel="stylesheet" href="assets/css/style.css?v=20261030-3">
+<link rel="stylesheet" href="assets/css/style.css?v=20261030-5">
 <script>
   (function (d) {
     var c = d.documentElement.classList;
@@ -70,7 +70,12 @@
     <a href="#community" data-sfx>コミュニティ</a>
     <div class="hdr-more">
       <button class="hdr-more-btn" id="more-btn" type="button" aria-expanded="false" aria-controls="more-menu" data-sfx>もっと見る<i aria-hidden="true"></i></button>
-      <div class="more-menu" id="more-menu" hidden><p class="more-head">各SNS</p><div class="more-list" data-sns-list></div></div>
+      <div class="more-menu" id="more-menu" hidden>
+        <p class="more-head">ページ</p>
+        <div class="more-list"><a href="downloads.html" style="--brand:var(--mc-leaf-lo)" data-sfx><i class="px" data-px="chest"></i><span>ダウンロード</span><small>作品の配布</small></a></div>
+        <p class="more-head">各SNS</p>
+        <div class="more-list" data-sns-list></div>
+      </div>
     </div>
   </nav>
   <div class="hdr-tools">
@@ -94,6 +99,7 @@
       <li style="--i:3"><a href="#game" data-sfx><span class="ml-num">04</span><span class="ml-jp">自作ゲーム</span><span class="ml-en">GAME</span></a></li>
       <li style="--i:4"><a href="#minecraft" data-sfx><span class="ml-num">05</span><span class="ml-jp">Minecraft</span><span class="ml-en">MINECRAFT</span></a></li>
       <li style="--i:5"><a href="#community" data-sfx><span class="ml-num">06</span><span class="ml-jp">コミュニティ</span><span class="ml-en">COMMUNITY</span></a></li>
+      <li style="--i:6"><a href="downloads.html" data-sfx><span class="ml-num">07</span><span class="ml-jp">ダウンロード</span><span class="ml-en">DOWNLOADS</span></a></li>
     </ol>
     <div class="menu-foot">
       <a class="pill-cta" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
@@ -115,6 +121,7 @@
       <a class="gbar-cell" href="#game" data-tip="自作ゲーム" data-sfx><i class="px" data-px="game"></i><span class="sr-only">自作ゲーム</span></a>
       <a class="gbar-cell" href="#minecraft" data-tip="Minecraft" data-sfx><i class="px" data-px="cube"></i><span class="sr-only">Minecraft</span></a>
       <a class="gbar-cell" href="#community" data-tip="コミュニティ" data-sfx><i class="px" data-px="chat"></i><span class="sr-only">コミュニティ</span></a>
+      <a class="gbar-cell" href="downloads.html" data-tip="ダウンロード" data-sfx><i class="px" data-px="chest"></i><span class="sr-only">ダウンロード</span></a>
     </nav>
     <button class="gbar-cell gbar-arrow" type="button" data-step="1" data-tip="ひとつ下へ" aria-label="ひとつ下のセクションへ" data-sfx><i class="px" data-px="down"></i></button>
     <span class="gbar-sep" aria-hidden="true"></span>
@@ -356,11 +363,11 @@
         <header class="px-head" data-reveal>
           <h3 class="px-title"><span class="wipe"><span>配布しているもの</span></span></h3>
           <p class="px-en">CREATIONS</p>
-          <p class="px-lead">Minecraftのデータパック・MOD・プラグインを、Discordの配布チャンネルで公開しています。</p>
+          <p class="px-lead">Minecraftのデータパック・MOD・プラグインを配布しています。</p>
         </header>
         <p class="works-note" data-reveal>
           <i class="px" data-px="star"></i>
-          <span>カードを押すとDiscordの配布チャンネルが開きます。先に <a href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener">Discordに参加</a> してください。</span>
+          <span>カードを押すと、紹介動画・説明・バージョンごとのダウンロードがあるページに移ります。</span>
         </p>
         <div class="works" id="works-list"></div>
       </div>
@@ -418,6 +425,7 @@
         <a href="#game" data-sfx>自作ゲーム</a>
         <a href="#minecraft" data-sfx>Minecraft</a>
         <a href="#community" data-sfx>コミュニティ</a>
+        <a href="downloads.html" data-sfx>ダウンロード</a>
       </nav>
     </div>
     <p class="ft-head"><span>FOLLOW RAFU</span><b>各SNSはこちら</b></p>
@@ -447,7 +455,8 @@
   <style>.loader{display:none!important}</style>
 </noscript>
 
-<script src="assets/js/content.js?v=20261030-3"></script>
-<script src="assets/js/main.js?v=20261030-3"></script>
+<script src="assets/js/content.js?v=20261030-5"></script>
+<script src="assets/js/common.js?v=20261030-5"></script>
+<script src="assets/js/main.js?v=20261030-5"></script>
 </body>
 </html>

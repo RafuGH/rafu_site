@@ -16,6 +16,7 @@ window.RAFU_CONTENT = {
    * ニュース（上から新しい順。トップの下に並びます）
    * tag … "お知らせ" / "配信" / "Discord" / "更新" など自由に。色は main.js の NEWS_TAG で決まります
    * url … 押したときに開くページ（空なら押せない行になる。"discord" / "youtube" と書くと下のリンクを使う）
+   * 日付が2週間以内のものには自動で「NEW」が付きます
    */
   news: [
     { date: "2026-10-30", tag: "お知らせ", title: "公式サイトをリニューアルしました", url: "" },
@@ -54,33 +55,80 @@ window.RAFU_CONTENT = {
   },
 
   /*
-   * 自作ゲーム（「自作ゲーム」の欄に大きく並びます。上から順に左右交互）
-   * image   … ゲームの画面やキービジュアル（空なら仮の絵）。例: "assets/img/games/mygame.jpg"
-   * trailer … 紹介動画のYouTube ID（入れると「紹介動画を見る」ボタンが出る）
-   * points  … 特徴を3つくらい（空なら出ない）。例: [{ title: "走る", text: "…" }]
+   * 配布物（ダウンロードページ downloads.html に並びます）
+   * games … トップの「自作ゲーム」の欄にも大きく出ます
+   * works … トップの「Minecraft」の欄のカードにも出ます
+   *
+   * id        … ページのURLに使う名前（半角英数字とハイフン。例: downloads.html#datapack ）
+   * text      … 短い紹介（カードとアイコンの説明に出る）
+   * about     … ダウンロードページの紹介文（改行は \n）
+   * pv        … 紹介PVのYouTube（IDでもURLでもOK。空ならアイコンの絵を出す）
+   * iconImage … ダウンロードページのアイコン画像（正方形。空ならドット絵のアイコン）
+   * versions  … ダウンロードできるファイル。上から順に並び、先頭が最初に選ばれる
+   *             label … ボタンに出る名前（Minecraftなら対応バージョン。例: "1.21" ）
+   *             file  … ファイルの場所（例: "downloads/datapack/rafu-pack-1.21.zip" 。大きいファイルはURLでもOK）
+   *             size / date … 表示用（例: "2.4MB" / "2026-10-30" ）。空でもOK
+   *             file が空のバージョンは「準備中」になる
+   * howto     … 導入のしかた（1行ずつ。空なら出ない）
+   * discord   … Discordの配布チャンネル（ダウンロードページの予備のリンク）
    */
   games: [
     {
+      id: "game",
       title: "自作ゲーム",
       maker: "RedHub",
-      catch: "自分で作ったゲームを、Discordで配布中。",
-      text: "RedHubで作ったゲーム。Discordの配布チャンネルで公開しています。",
-      image: "",
-      trailer: "",
-      points: [],
-      url: "https://discord.com/channels/911549273294925865/1168026049288863844",
+      catch: "自分で作ったゲームを、ここから配布中。",
+      text: "RedHubで作ったゲーム。",
+      about: "RedHubで作っているゲームです。",
+      image: "",                // トップの「自作ゲーム」の欄に出す画面写真
+      iconImage: "",
+      trailer: "",              // 紹介PV（トップとダウンロードページの両方に出る）
+      points: [],               // 特徴を3つくらい。例: [{ title: "走る", text: "…" }]
+      versionLabel: "バージョン",
+      versions: [
+        { label: "最新版", file: "", size: "", date: "" },
+      ],
+      howto: [],
+      discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
     },
   ],
 
-  /*
-   * Minecraftの配布物（Minecraftの欄のカード）
-   * icon  … "datapack" / "mod" / "plugin" / "game"
-   * image … カードの絵を画像にしたいときだけパスを書く（空ならアイコン）
-   */
   works: [
-    { cat: "データパック", title: "Minecraft データパック", text: "Minecraft用のデータパック。Discordの配布チャンネルで公開中。", icon: "datapack", color: "#1f9d4c", image: "", url: "https://discord.com/channels/911549273294925865/1168026049288863844" },
-    { cat: "MOD",          title: "Minecraft MOD",          text: "Minecraft用のMOD。Discordの配布チャンネルで公開中。",       icon: "mod",      color: "#2f5fd0", image: "", url: "https://discord.com/channels/911549273294925865/1168026049288863844" },
-    { cat: "プラグイン",   title: "サーバープラグイン",     text: "サーバー用のプラグイン。Discordの配布チャンネルで公開中。",   icon: "plugin",   color: "#7a44c9", image: "", url: "https://discord.com/channels/911549273294925865/1168026049288863844" },
+    {
+      id: "datapack", cat: "データパック", title: "Minecraft データパック", icon: "datapack", color: "#1f9d4c",
+      text: "Minecraft用のデータパック。",
+      about: "Minecraft用のデータパックです。",
+      image: "", iconImage: "", pv: "",
+      versions: [
+        { label: "1.21", file: "", size: "", date: "" },
+        { label: "1.20.4", file: "", size: "", date: "" },
+      ],
+      howto: ["ダウンロードした zip を、ワールドフォルダの datapacks に入れる", "ゲーム内で /reload を実行する"],
+      discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
+    },
+    {
+      id: "mod", cat: "MOD", title: "Minecraft MOD", icon: "mod", color: "#2f5fd0",
+      text: "Minecraft用のMOD。",
+      about: "Minecraft用のMODです。",
+      image: "", iconImage: "", pv: "",
+      versions: [
+        { label: "1.21", file: "", size: "", date: "" },
+        { label: "1.20.1", file: "", size: "", date: "" },
+      ],
+      howto: ["対応するMODローダーを入れる", "ダウンロードした jar を mods フォルダに入れて起動する"],
+      discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
+    },
+    {
+      id: "plugin", cat: "プラグイン", title: "サーバープラグイン", icon: "plugin", color: "#7a44c9",
+      text: "サーバー用のプラグイン。",
+      about: "Minecraftサーバー用のプラグインです。",
+      image: "", iconImage: "", pv: "",
+      versions: [
+        { label: "1.21", file: "", size: "", date: "" },
+      ],
+      howto: ["ダウンロードした jar をサーバーの plugins フォルダに入れる", "サーバーを再起動する"],
+      discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
+    },
   ],
 
   /* SNS（フッターとトップのアイコンに出ます） */

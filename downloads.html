@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ja" data-zone="mc">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ダウンロード | RAFU</title>
+<meta name="description" content="Rafuが作った自作ゲームと、Minecraftのデータパック・MOD・プラグインのダウンロードページ。紹介動画と説明を見て、バージョンを選んでダウンロードできます。">
+<link rel="canonical" href="https://rafugh.github.io/rafu_site/downloads.html">
+<meta name="theme-color" content="#0c0c10">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RAFU">
+<meta property="og:title" content="ダウンロード | RAFU">
+<meta property="og:description" content="自作ゲームとMinecraftのデータパック・MOD・プラグインをここから配布しています。">
+<meta property="og:url" content="https://rafugh.github.io/rafu_site/downloads.html">
+<meta property="og:image" content="https://rafugh.github.io/rafu_site/assets/img/og.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@Rafu121">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/img/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap">
+<!-- CSS・JSを更新したら ?v= の数字も変える（index.html と同じ数字にそろえる） -->
+<link rel="stylesheet" href="assets/css/style.css?v=20261030-5">
+<script>
+  (function (d) {
+    var c = d.documentElement.classList;
+    c.add('js');
+    c.add('no-loader');
+    try {
+      if (localStorage.getItem('rafu-gbar') === 'closed') c.add('gbar-closed');
+    } catch (e) { /* private mode */ }
+    /* downloads.js が最後まで動かなかったときは、中身をそのまま見せる */
+    d.addEventListener('DOMContentLoaded', function () {
+      if (!window.RAFU_READY) c.remove('js');
+    });
+  })(document);
+</script>
+</head>
+<body class="page-dl">
+
+<a class="skip" href="#list">本文へスキップ</a>
+
+<header class="hdr" id="hdr">
+  <a class="hdr-logo" href="index.html" aria-label="RAFU 公式サイト トップへ" data-sfx>
+    <img src="assets/img/logo-sticker-512.webp" alt="" width="512" height="512">
+  </a>
+  <nav class="hdr-nav" aria-label="メイン">
+    <a href="index.html#home" data-sfx>ホーム</a>
+    <a href="index.html#news" data-sfx>ニュース</a>
+    <a href="index.html#movie" data-sfx>動画</a>
+    <a href="index.html#game" data-sfx>自作ゲーム</a>
+    <a href="index.html#minecraft" data-sfx>Minecraft</a>
+    <a href="index.html#community" data-sfx>コミュニティ</a>
+    <div class="hdr-more">
+      <button class="hdr-more-btn is-active" id="more-btn" type="button" aria-expanded="false" aria-controls="more-menu" data-sfx>もっと見る<i aria-hidden="true"></i></button>
+      <div class="more-menu" id="more-menu" hidden>
+        <p class="more-head">ページ</p>
+        <div class="more-list"><a href="downloads.html" style="--brand:var(--mc-leaf-lo)" aria-current="page" data-sfx><i class="px" data-px="chest"></i><span>ダウンロード</span><small>作品の配布</small></a></div>
+        <p class="more-head">各SNS</p>
+        <div class="more-list" data-sns-list></div>
+      </div>
+    </div>
+  </nav>
+  <div class="hdr-tools">
+    <a class="pill-cta" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
+    <button class="round-btn" type="button" aria-pressed="false" data-sfx-toggle data-sfx><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
+    <button class="round-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="メニューを開く" data-sfx>
+      <span class="mb-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+  </div>
+  <div class="hdr-progress" aria-hidden="true"><i></i></div>
+</header>
+
+<nav class="menu" id="menu" aria-label="メニュー" inert>
+  <div class="menu-bg menu-bg1"></div>
+  <div class="menu-bg menu-bg2"></div>
+  <div class="menu-inner">
+    <ol class="menu-links">
+      <li style="--i:0"><a href="index.html#home" data-sfx><span class="ml-num">01</span><span class="ml-jp">ホーム</span><span class="ml-en">HOME</span></a></li>
+      <li style="--i:1"><a href="index.html#news" data-sfx><span class="ml-num">02</span><span class="ml-jp">ニュース</span><span class="ml-en">NEWS</span></a></li>
+      <li style="--i:2"><a href="index.html#movie" data-sfx><span class="ml-num">03</span><span class="ml-jp">動画</span><span class="ml-en">MOVIE</span></a></li>
+      <li style="--i:3"><a href="index.html#game" data-sfx><span class="ml-num">04</span><span class="ml-jp">自作ゲーム</span><span class="ml-en">GAME</span></a></li>
+      <li style="--i:4"><a href="index.html#minecraft" data-sfx><span class="ml-num">05</span><span class="ml-jp">Minecraft</span><span class="ml-en">MINECRAFT</span></a></li>
+      <li style="--i:5"><a href="index.html#community" data-sfx><span class="ml-num">06</span><span class="ml-jp">コミュニティ</span><span class="ml-en">COMMUNITY</span></a></li>
+      <li style="--i:6"><a href="downloads.html" aria-current="page" data-sfx><span class="ml-num">07</span><span class="ml-jp">ダウンロード</span><span class="ml-en">DOWNLOADS</span></a></li>
+    </ol>
+    <div class="menu-foot">
+      <a class="pill-cta" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
+      <div class="menu-sns" data-sns-icons></div>
+    </div>
+    <img class="menu-mascot" src="assets/img/logo-sticker-512.webp" alt="" width="220" height="220" loading="lazy">
+  </div>
+</nav>
+
+<!-- 右端のツールバー（ページ内移動と効果音。全ページ共通の木のパネル） -->
+<aside class="gbar" id="gbar" aria-label="ページ内ナビ">
+  <button class="gbar-tab" id="gbar-tab" type="button" aria-expanded="true" aria-controls="gbar-panel" aria-label="ナビをしまう" data-sfx><i class="px" data-px="right"></i></button>
+  <div class="gbar-panel" id="gbar-panel">
+    <button class="gbar-cell gbar-arrow" type="button" data-step="-1" data-tip="ひとつ上へ" aria-label="ひとつ上のセクションへ" data-sfx><i class="px" data-px="up"></i></button>
+    <nav class="gbar-nav" aria-label="セクション">
+      <a class="gbar-cell" href="index.html#home" data-tip="ホーム" data-sfx><i class="px" data-px="home"></i><span class="sr-only">ホーム</span></a>
+      <a class="gbar-cell" href="index.html#news" data-tip="ニュース" data-sfx><i class="px" data-px="news"></i><span class="sr-only">ニュース</span></a>
+      <a class="gbar-cell" href="index.html#movie" data-tip="動画" data-sfx><i class="px" data-px="tv"></i><span class="sr-only">動画</span></a>
+      <a class="gbar-cell" href="index.html#game" data-tip="自作ゲーム" data-sfx><i class="px" data-px="game"></i><span class="sr-only">自作ゲーム</span></a>
+      <a class="gbar-cell" href="index.html#minecraft" data-tip="Minecraft" data-sfx><i class="px" data-px="cube"></i><span class="sr-only">Minecraft</span></a>
+      <a class="gbar-cell" href="index.html#community" data-tip="コミュニティ" data-sfx><i class="px" data-px="chat"></i><span class="sr-only">コミュニティ</span></a>
+      <a class="gbar-cell is-active" href="downloads.html" aria-current="page" data-tip="ダウンロード" data-sfx><i class="px" data-px="chest"></i><span class="sr-only">ダウンロード</span></a>
+    </nav>
+    <button class="gbar-cell gbar-arrow" type="button" data-step="1" data-tip="ひとつ下へ" aria-label="ひとつ下のセクションへ" data-sfx><i class="px" data-px="down"></i></button>
+    <span class="gbar-sep" aria-hidden="true"></span>
+    <button class="gbar-cell" type="button" aria-pressed="false" data-sfx-toggle data-tip="効果音 OFF" data-sfx><i class="px" data-px="mute"></i></button>
+  </div>
+</aside>
+
+<main>
+  <!-- 見出し（夕焼けのドット絵） -->
+  <section class="mc dl-top" id="top" data-section data-zone="mc" data-en="DOWNLOADS">
+    <div class="mc-hero dl-hero">
+      <div class="mc-scene" aria-hidden="true">
+        <div class="mc-sky"></div>
+        <div class="mc-stars"></div>
+        <div class="mc-sun"></div>
+        <div class="mc-layer mc-clouds"><i></i></div>
+        <div class="mc-layer mc-far"><i></i></div>
+        <div class="mc-layer mc-mid"><i></i></div>
+        <div class="mc-layer mc-near"><i></i></div>
+      </div>
+      <header class="mc-head wrap" data-reveal>
+        <nav class="crumbs" aria-label="現在地"><a href="index.html" data-sfx>ホーム</a><span aria-hidden="true">›</span><span aria-current="page">ダウンロード</span></nav>
+        <span class="mc-icon"><i class="px" data-px="chest"></i></span>
+        <h1 class="mc-title">ダウンロード</h1>
+        <p class="mc-en">DOWNLOADS</p>
+        <p class="mc-lead">アイコンを選ぶと、紹介動画・説明・ダウンロードボタンが出ます。</p>
+      </header>
+    </div>
+  </section>
+
+  <!-- 作品の一覧と詳しい内容 -->
+  <section class="mc dl-main" id="list" data-section data-zone="mc" data-en="CREATIONS">
+    <div class="srv-sky" aria-hidden="true"><i></i><i></i></div>
+    <div class="wrap dl-grid">
+      <div class="panel panel-wood inv" data-reveal>
+        <p class="inv-title"><i class="px" data-px="chest"></i><span>作品一覧</span></p>
+        <div class="inv-tabs" id="inv-tabs" aria-label="種類で絞り込む"></div>
+        <div class="inv-grid" id="inv-grid"></div>
+        <p class="inv-note"><i class="px" data-px="star"></i><span>アイコンを選ぶと、紹介とダウンロードが出ます</span></p>
+      </div>
+
+      <article class="panel dl-detail" id="dl-detail" aria-label="選んだ作品" data-reveal style="--d:.08s">
+        <noscript>
+          <p class="dl-noscript">一覧を出すには JavaScript をオンにしてください。Discordの配布チャンネルからもダウンロードできます。<br><a href="https://discord.com/channels/911549273294925865/1168026049288863844">Discordの配布チャンネルを開く</a></p>
+        </noscript>
+      </article>
+    </div>
+    <div class="ground" aria-hidden="true"></div>
+  </section>
+</main>
+
+<footer class="ft" data-zone="stream">
+  <div class="wrap">
+    <div class="ft-row">
+      <a class="ft-logo" href="index.html" aria-label="RAFU 公式サイト トップへ" data-sfx>
+        <img src="assets/img/logo-sticker-512.webp" alt="" width="72" height="72" loading="lazy">
+        <span class="ft-word"><b>RAFU</b><small>OFFICIAL SITE</small></span>
+      </a>
+      <nav class="ft-nav" aria-label="フッター">
+        <a href="index.html#news" data-sfx>ニュース</a>
+        <a href="index.html#movie" data-sfx>動画</a>
+        <a href="index.html#game" data-sfx>自作ゲーム</a>
+        <a href="index.html#minecraft" data-sfx>Minecraft</a>
+        <a href="index.html#community" data-sfx>コミュニティ</a>
+        <a href="downloads.html" aria-current="page" data-sfx>ダウンロード</a>
+      </nav>
+    </div>
+    <p class="ft-head"><span>FOLLOW RAFU</span><b>各SNSはこちら</b></p>
+    <div class="sns-grid" id="sns-grid"></div>
+    <div class="ft-bottom">
+      <p>© Rafu / RedHub</p>
+      <a class="ft-pagetop" href="#top" data-sfx>PAGE TOP<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<dialog class="player" id="player" aria-label="動画プレイヤー">
+  <div class="player-box">
+    <div class="player-bar">
+      <span class="player-ch" id="player-ch">PV</span>
+      <a class="player-link" id="player-link" href="#" target="_blank" rel="noopener">YouTubeで開く ↗</a>
+      <button class="player-close" type="button" id="player-close" aria-label="閉じる" data-sfx><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="player-frame" id="player-frame"></div>
+  </div>
+</dialog>
+
+<div class="mc-tip" id="mc-tip" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/js/content.js?v=20261030-5"></script>
+<script src="assets/js/common.js?v=20261030-5"></script>
+<script src="assets/js/downloads.js?v=20261030-5"></script>
+</body>
+</html>
