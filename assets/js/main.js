@@ -934,4 +934,7 @@
     loader.addEventListener('click', finish);
     requestAnimationFrame(frameFn);
   }
+
+  /* index.html の保険（ここまで来なかったらローディングを消す）に、最後まで動いたことを知らせる */
+  window.RAFU_READY = true;
 })();
