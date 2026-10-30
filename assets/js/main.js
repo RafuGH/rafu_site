@@ -702,14 +702,10 @@
     revealEls.forEach((el) => el.classList.add('is-in'));
   }
 
-  /* ---------- いまの欄（ヘッダー・ツールバー・見た目の切り替え） ---------- */
+  /* ---------- いまの欄（ヘッダーとツールバーの選択中・欄ごとの見た目） ---------- */
   const sections = $$('[data-section]').filter((s) => !s.hidden);
   const navLinks = $$('.hdr-nav > a, .gbar-nav a');
-  const gbar = $('#gbar');
-  const gbarNum = $('#gbar-num');
-  const gbarName = $('#gbar-name');
   let activeId = 'home';
-  let swapTimer = 0;
   const setActive = (sec) => {
     activeId = sec.id;
     navLinks.forEach((a) => {
@@ -717,20 +713,7 @@
       a.classList.toggle('is-active', on);
       if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
     });
-    if (gbarNum) gbarNum.textContent = pad2(sections.indexOf(sec) + 1);
-    if (gbarName) gbarName.textContent = sec.dataset.en || '';
-    const zone = sec.dataset.zone || 'stream';
-    if (root.dataset.zone !== zone) {
-      root.dataset.zone = zone;
-      hideTip();
-      if (gbar && !reduce) {
-        gbar.classList.remove('is-swap');
-        void gbar.offsetWidth;
-        gbar.classList.add('is-swap');
-        clearTimeout(swapTimer);
-        swapTimer = setTimeout(() => gbar.classList.remove('is-swap'), 520);
-      }
-    }
+    root.dataset.zone = sec.dataset.zone || 'stream';
   };
   if ('IntersectionObserver' in window) {
     const spy = new IntersectionObserver((entries) => {
