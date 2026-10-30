@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap">
 <!-- CSS・JSを更新したら ?v= の数字も変える（index.html と同じ数字にそろえる） -->
-<link rel="stylesheet" href="assets/css/style.css?v=20261030-5">
+<link rel="stylesheet" href="assets/css/style.css?v=20261030-6">
 <script>
   (function (d) {
     var c = d.documentElement.classList;
@@ -144,7 +144,10 @@
     <div class="wrap dl-grid">
       <div class="panel panel-wood inv" data-reveal>
         <p class="inv-title"><i class="px" data-px="chest"></i><span>作品一覧</span></p>
-        <div class="inv-tabs" id="inv-tabs" aria-label="種類で絞り込む"></div>
+        <label class="inv-search"><i class="px" data-px="search"></i><span class="sr-only">作品をさがす</span><input type="search" id="inv-q" placeholder="作品をさがす" autocomplete="off" enterkeyhint="search"></label>
+        <div class="inv-tabs" id="inv-tabs" role="group" aria-label="種類で絞り込む"></div>
+        <div class="inv-filters" id="inv-filters" role="group" aria-label="条件で絞り込む"></div>
+        <p class="inv-count" id="inv-count" aria-live="polite"></p>
         <div class="inv-grid" id="inv-grid"></div>
         <p class="inv-note"><i class="px" data-px="star"></i><span>アイコンを選ぶと、紹介とダウンロードが出ます</span></p>
       </div>
@@ -198,8 +201,8 @@
 <div class="mc-tip" id="mc-tip" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="assets/js/content.js?v=20261030-5"></script>
-<script src="assets/js/common.js?v=20261030-5"></script>
-<script src="assets/js/downloads.js?v=20261030-5"></script>
+<script src="assets/js/content.js?v=20261030-6"></script>
+<script src="assets/js/common.js?v=20261030-6"></script>
+<script src="assets/js/downloads.js?v=20261030-6"></script>
 </body>
 </html>

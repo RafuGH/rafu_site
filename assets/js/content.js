@@ -64,11 +64,14 @@ window.RAFU_CONTENT = {
    * about     … ダウンロードページの紹介文（改行は \n）
    * pv        … 紹介PVのYouTube（IDでもURLでもOK。空ならアイコンの絵を出す）
    * iconImage … ダウンロードページのアイコン画像（正方形。空ならドット絵のアイコン）
-   * versions  … ダウンロードできるファイル。上から順に並び、先頭が最初に選ばれる
-   *             label … ボタンに出る名前（Minecraftなら対応バージョン。例: "1.21" ）
-   *             file  … ファイルの場所（例: "downloads/datapack/rafu-pack-1.21.zip" 。大きいファイルはURLでもOK）
-   *             size / date … 表示用（例: "2.4MB" / "2026-10-30" ）。空でもOK
-   *             file が空のバージョンは「準備中」になる
+   * versions  … ダウンロードできるファイル（1行に1ファイル）。ページではプルダウンで選ぶ
+   *             label    … バージョン（Minecraftなら対応バージョン。例: "1.21" ）
+   *             loader   … MODローダーなど（Minecraftの作品だけ。例: "Fabric" / "Forge" / "NeoForge" / "Paper" ）。なくてもOK
+   *             platform … 対応機種（ゲームだけ。"windows" / "mac" / "ios" / "android" ）。なくてもOK
+   *             file     … ファイルの場所（例: "downloads/datapack/rafu-pack-1.21.zip" ）。
+   *                        大きいファイルや iOS・Android はURLでもOK（App Store / Google Play のURLならストアのボタンになる）
+   *             size / date … 表示用（例: "2.4MB" / "2026-10-30" ）。空でもOK。date は「新しい順」の並びにも使う
+   *             file が空のものは「準備中」になる。対応していない機種・バージョンは行ごと消す
    * howto     … 導入のしかた（1行ずつ。空なら出ない）
    * discord   … Discordの配布チャンネル（ダウンロードページの予備のリンク）
    */
@@ -86,7 +89,10 @@ window.RAFU_CONTENT = {
       points: [],               // 特徴を3つくらい。例: [{ title: "走る", text: "…" }]
       versionLabel: "バージョン",
       versions: [
-        { label: "最新版", file: "", size: "", date: "" },
+        { platform: "windows", label: "最新版", file: "", size: "", date: "" },
+        { platform: "mac",     label: "最新版", file: "", size: "", date: "" },
+        { platform: "ios",     label: "最新版", file: "", size: "", date: "" },
+        { platform: "android", label: "最新版", file: "", size: "", date: "" },
       ],
       howto: [],
       discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
@@ -112,8 +118,9 @@ window.RAFU_CONTENT = {
       about: "Minecraft用のMODです。",
       image: "", iconImage: "", pv: "",
       versions: [
-        { label: "1.21", file: "", size: "", date: "" },
-        { label: "1.20.1", file: "", size: "", date: "" },
+        { label: "1.21", loader: "Fabric", file: "", size: "", date: "" },
+        { label: "1.21", loader: "NeoForge", file: "", size: "", date: "" },
+        { label: "1.20.1", loader: "Forge", file: "", size: "", date: "" },
       ],
       howto: ["対応するMODローダーを入れる", "ダウンロードした jar を mods フォルダに入れて起動する"],
       discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
@@ -124,7 +131,7 @@ window.RAFU_CONTENT = {
       about: "Minecraftサーバー用のプラグインです。",
       image: "", iconImage: "", pv: "",
       versions: [
-        { label: "1.21", file: "", size: "", date: "" },
+        { label: "1.21", loader: "Paper", file: "", size: "", date: "" },
       ],
       howto: ["ダウンロードした jar をサーバーの plugins フォルダに入れる", "サーバーを再起動する"],
       discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
