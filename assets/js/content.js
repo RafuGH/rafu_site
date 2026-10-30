@@ -6,12 +6,24 @@
 window.RAFU_CONTENT = {
   /* トップの大きな画面 */
   hero: {
-    video: "",                              // 背景動画（空なら赤い集中線の演出）。例: "assets/video/hero.mp4"
+    image: "",                              // 1枚絵のキービジュアル（入れると赤い集中線の背景と入れ替わる）。例: "assets/img/kv/key-visual.jpg"
+    video: "",                              // 背景動画（画像より優先）。例: "assets/video/hero.mp4"
     poster: "",                             // 動画の読み込み前に出す画像。例: "assets/video/hero.jpg"
     mascot: "assets/img/logo-sticker.webp", // 真ん中のキャラ画像（立ち絵などに差し替え可）
   },
 
-  /* 投稿スケジュール（配信と切り抜きの欄に出ます） */
+  /*
+   * ニュース（上から新しい順。トップの下に並びます）
+   * tag … "お知らせ" / "配信" / "Discord" / "更新" など自由に。色は main.js の NEWS_TAG で決まります
+   * url … 押したときに開くページ（空なら押せない行になる。"discord" / "youtube" と書くと下のリンクを使う）
+   */
+  news: [
+    { date: "2026-10-30", tag: "お知らせ", title: "公式サイトをリニューアルしました", url: "" },
+    { date: "2026-10-30", tag: "Discord",  title: "Discordサーバーが 日本語・English・Русский の3言語に対応しました", url: "discord" },
+    { date: "2026-09-20", tag: "配信",     title: "配信「東京から消える漢」のアーカイブを公開中", url: "https://www.youtube.com/watch?v=01DwgkXvCWc" },
+  ],
+
+  /* 投稿スケジュール（ニュースの横に出ます） */
   schedule: [
     { label: "Shorts",   value: "月・金・日 15:00" },
     { label: "切り抜き", value: "隔週 土 18:00" },
@@ -42,12 +54,30 @@ window.RAFU_CONTENT = {
   },
 
   /*
-   * 作ったもの（カード）
-   * icon  … "game" / "datapack" / "mod" / "plugin"
+   * 自作ゲーム（「自作ゲーム」の欄に大きく並びます。上から順に左右交互）
+   * image   … ゲームの画面やキービジュアル（空なら仮の絵）。例: "assets/img/games/mygame.jpg"
+   * trailer … 紹介動画のYouTube ID（入れると「紹介動画を見る」ボタンが出る）
+   * points  … 特徴を3つくらい（空なら出ない）。例: [{ title: "走る", text: "…" }]
+   */
+  games: [
+    {
+      title: "自作ゲーム",
+      maker: "RedHub",
+      catch: "自分で作ったゲームを、Discordで配布中。",
+      text: "RedHubで作ったゲーム。Discordの配布チャンネルで公開しています。",
+      image: "",
+      trailer: "",
+      points: [],
+      url: "https://discord.com/channels/911549273294925865/1168026049288863844",
+    },
+  ],
+
+  /*
+   * Minecraftの配布物（Minecraftの欄のカード）
+   * icon  … "datapack" / "mod" / "plugin" / "game"
    * image … カードの絵を画像にしたいときだけパスを書く（空ならアイコン）
    */
   works: [
-    { cat: "ゲーム",       title: "自作ゲーム",             text: "RedHubで作ったゲーム。Discordの配布チャンネルで公開中。", icon: "game",     color: "#e5121b", image: "", url: "https://discord.com/channels/911549273294925865/1168026049288863844" },
     { cat: "データパック", title: "Minecraft データパック", text: "Minecraft用のデータパック。Discordの配布チャンネルで公開中。", icon: "datapack", color: "#1f9d4c", image: "", url: "https://discord.com/channels/911549273294925865/1168026049288863844" },
     { cat: "MOD",          title: "Minecraft MOD",          text: "Minecraft用のMOD。Discordの配布チャンネルで公開中。",       icon: "mod",      color: "#2f5fd0", image: "", url: "https://discord.com/channels/911549273294925865/1168026049288863844" },
     { cat: "プラグイン",   title: "サーバープラグイン",     text: "サーバー用のプラグイン。Discordの配布チャンネルで公開中。",   icon: "plugin",   color: "#7a44c9", image: "", url: "https://discord.com/channels/911549273294925865/1168026049288863844" },

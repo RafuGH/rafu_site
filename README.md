@@ -6,15 +6,26 @@ Rafu の公式サイト（GitHub Pages）。
 - 更新は `main` に入ると数分で反映されます
 - ビルド不要。`index.html` をブラウザで直接開いても確認できます
 
+## ページの構成
+
+| 欄 | 見た目 |
+| --- | --- |
+| ホーム / ニュース / 動画 / 自作ゲーム / コミュニティ / フッター | 配信・ゲームの欄。赤い集中線、斜めの帯、テープ、ステッカー、黒×黄のUI |
+| Minecraft（サーバーと配布物） | 夕焼けのドット絵と木のパネルのゲームUI |
+
+右端のツールバーも、Minecraftの欄に入ると木のパネルに着替えます（`index.html` の各 `section` の `data-zone="stream"` / `"mc"` で切り替え）。
+
 ## ファイル構成
 
 ```
 index.html              ページの骨組み（見出し・説明文など、ほとんど変わらない部分）
-assets/js/content.js    ★ 載せる中身はここだけ直せばOK（動画リスト・作品・SNS・サーバー情報・背景動画）
-assets/js/main.js       演出（ローディング、グリッチ、TV切り替え、パララックス、効果音など）
+assets/js/content.js    ★ 載せる中身はここだけ直せばOK（ニュース・動画・自作ゲーム・配布物・SNS・サーバー情報・トップの絵）
+assets/js/main.js       演出（ローディング、ピックアップ、モニターの切り替え、ツールバー、効果音、ドット絵アイコンなど）
 assets/css/style.css    デザイン
 assets/img/             ロゴ・ファビコン・SNS共有画像（og.png）
 assets/img/logo/        受け取ったロゴの元データ（1024px）
+assets/img/kv/          Minecraftの欄の夕焼けのドット絵（仮素材。雲・山3枚・太陽）
+assets/img/px/          草ブロック・土・星・区切りのギザギザ
 assets/video/           背景動画を置く場所
 ```
 
@@ -22,16 +33,22 @@ assets/video/           背景動画を置く場所
 
 | やりたいこと | 直す場所 |
 | --- | --- |
-| 新しい配信・切り抜き・Shortsを載せる | `content.js` の `videos` の先頭に1行足す（`id` はYouTubeの動画ID） |
+| ニュースを載せる | `content.js` の `news` の先頭に1行足す（`date`・`tag`・`title`・`url`） |
+| 新しい配信・切り抜き・Shortsを載せる | `content.js` の `videos` の先頭に1行足す（`id` はYouTubeの動画ID）。先頭の動画がピックアップとトップの「最新の動画を見る」にも出ます |
+| 自作ゲームを載せる・増やす | `content.js` の `games` に足す（`image` に画面写真、`trailer` に紹介動画のYouTube ID、`points` に特徴）。先頭のゲームがピックアップに出ます |
+| Minecraftの配布物を増やす | `content.js` の `works` に足す（`icon` は `datapack` / `mod` / `plugin`） |
+| トップの背景を1枚絵にする | 画像を `assets/img/kv/` に置き、`content.js` の `hero.image` にパスを書く（赤い集中線の背景と入れ替わる） |
 | トップに背景動画を流す | 動画を `assets/video/` に置き、`content.js` の `hero.video` にパスを書く |
 | 真ん中のキャラ画像を変える | 画像を `assets/img/` に置き、`hero.mascot` にパスを書く |
-| 作品カードに画像を付ける | 画像を `assets/img/` に置き、`works` の `image` にパスを書く |
+| Minecraftの夕焼けを描き直す | `assets/img/kv/` の同じ名前の画像を差し替える（横につながる絵。山は 640×300 が基準） |
 | サーバーのバージョンが変わった | `server.version` を書き換える |
 | 投稿スケジュールが変わった | `schedule` を書き換える |
 
 ## 演出メモ
 
 - ローディングは同じタブで1回だけ。2回目以降と「視差効果を減らす」設定の人には出ません
-- 効果音は初期状態OFF。右上の SOUND ボタンでON（合成音なので音声ファイルは不要）
+- 効果音は初期状態OFF。ヘッダーの丸いボタン（音量バー）か、右端のツールバーのスピーカーでON（合成音なので音声ファイルは不要）
+- 右端のツールバーは「>」でしまえます。しまった状態はブラウザに記憶されます
+- ヘッダーの「もっと見る」に各SNSが並びます（中身は `content.js` の `sns`）
 - Minecraftサーバーのオンライン表示は api.mcsrvstat.us を使用（数分遅れることがあります）
-- トマトを押すと笑います
+- トマトを押すと笑います（アハハ）

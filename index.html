@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-zone="stream">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RAFU | Rafu 公式サイト</title>
 <meta name="description" content="ゲーム配信・ゲーム実況・自作ゲームのRafu公式サイト。参加型Minecraftサーバー、データパック・MOD・プラグインの配布、Discordコミュニティの案内。">
 <link rel="canonical" href="https://rafugh.github.io/rafu_site/">
-<meta name="theme-color" content="#0b0b0e">
+<meta name="theme-color" content="#0c0c10">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RAFU">
 <meta property="og:title" content="RAFU | Rafu 公式サイト">
@@ -21,7 +21,7 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Dela+Gothic+One&family=JetBrains+Mono:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap">
 <link rel="preload" as="image" href="assets/img/logo-sticker.webp">
 <link rel="stylesheet" href="assets/css/style.css">
 <script>
@@ -30,6 +30,7 @@
     c.add('js');
     try {
       if (sessionStorage.getItem('rafu-seen') || matchMedia('(prefers-reduced-motion: reduce)').matches) c.add('no-loader');
+      if (localStorage.getItem('rafu-gbar') === 'closed') c.add('gbar-closed');
     } catch (e) { c.add('no-loader'); }
   })(document);
 </script>
@@ -42,38 +43,36 @@
   <div class="ld-half ld-bot"></div>
   <div class="ld-flash"></div>
   <div class="ld-core">
-    <div class="ld-mark"><span class="ld-ring"></span><span class="ld-logo"></span></div>
-    <div class="ld-meta">
-      <span class="ld-ch">CH-01 / RAFU.TV</span>
-      <span class="ld-num"><b>000</b>%</span>
-    </div>
+    <div class="ld-mark"><span class="ld-burst"></span><span class="ld-logo"></span></div>
+    <p class="ld-msg">LOADING</p>
     <div class="ld-bar"><i></i></div>
-    <div class="ld-msg">TUNING SIGNAL…</div>
+    <p class="ld-num"><b>0</b>%</p>
   </div>
 </div>
 
-<div class="fx-grain" aria-hidden="true"></div>
-<a class="skip" href="#channel">本文へスキップ</a>
+<a class="skip" href="#news">本文へスキップ</a>
 
 <header class="hdr" id="hdr">
-  <a class="hdr-logo" href="#home" aria-label="RAFU トップへ" data-sfx>
-    <img src="assets/img/logo-flat-256.webp" alt="" width="40" height="40">
-    <span class="hdr-word">RAFU<small>OFFICIAL</small></span>
+  <a class="hdr-logo" href="#home" aria-label="RAFU 公式サイト トップへ" data-sfx>
+    <img src="assets/img/logo-sticker-512.webp" alt="" width="512" height="512">
   </a>
   <nav class="hdr-nav" aria-label="メイン">
-    <a href="#channel" data-sfx>配信</a>
-    <a href="#server" data-sfx>Minecraft</a>
-    <a href="#works" data-sfx>作品</a>
+    <a href="#home" data-sfx>ホーム</a>
+    <a href="#news" data-sfx>ニュース</a>
+    <a href="#movie" data-sfx>動画</a>
+    <a href="#game" data-sfx>自作ゲーム</a>
+    <a href="#minecraft" data-sfx>Minecraft</a>
     <a href="#community" data-sfx>コミュニティ</a>
+    <div class="hdr-more">
+      <button class="hdr-more-btn" id="more-btn" type="button" aria-expanded="false" aria-controls="more-menu" data-sfx>もっと見る<i aria-hidden="true"></i></button>
+      <div class="more-menu" id="more-menu" hidden><p class="more-head">各SNS</p><div class="more-list" data-sns-list></div></div>
+    </div>
   </nav>
   <div class="hdr-tools">
-    <button class="sfx-btn" id="sfx-btn" type="button" aria-pressed="false" data-sfx>
-      <span class="sfx-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span class="sfx-label">SOUND <b>OFF</b></span>
-    </button>
-    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-sfx>
-      <span class="mb-lines" aria-hidden="true"><i></i><i></i></span>
-      <span class="mb-label">MENU</span>
+    <a class="pill-cta" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
+    <button class="round-btn" type="button" aria-pressed="false" data-sfx-toggle data-sfx><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
+    <button class="round-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="メニューを開く" data-sfx>
+      <span class="mb-lines" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
   </div>
   <div class="hdr-progress" aria-hidden="true"><i></i></div>
@@ -84,47 +83,55 @@
   <div class="menu-bg menu-bg2"></div>
   <div class="menu-inner">
     <ol class="menu-links">
-      <li style="--i:0"><a href="#home" data-sfx><span class="ml-num">01</span><span class="ml-en">HOME</span><span class="ml-jp">トップ</span></a></li>
-      <li style="--i:1"><a href="#channel" data-sfx><span class="ml-num">02</span><span class="ml-en">CHANNEL</span><span class="ml-jp">配信と切り抜き</span></a></li>
-      <li style="--i:2"><a href="#server" data-sfx><span class="ml-num">03</span><span class="ml-en">SERVER</span><span class="ml-jp">Minecraftサーバー</span></a></li>
-      <li style="--i:3"><a href="#works" data-sfx><span class="ml-num">04</span><span class="ml-en">WORKS</span><span class="ml-jp">作ったもの</span></a></li>
-      <li style="--i:4"><a href="#community" data-sfx><span class="ml-num">05</span><span class="ml-en">COMMUNITY</span><span class="ml-jp">コミュニティ</span></a></li>
+      <li style="--i:0"><a href="#home" data-sfx><span class="ml-num">01</span><span class="ml-jp">ホーム</span><span class="ml-en">HOME</span></a></li>
+      <li style="--i:1"><a href="#news" data-sfx><span class="ml-num">02</span><span class="ml-jp">ニュース</span><span class="ml-en">NEWS</span></a></li>
+      <li style="--i:2"><a href="#movie" data-sfx><span class="ml-num">03</span><span class="ml-jp">動画</span><span class="ml-en">MOVIE</span></a></li>
+      <li style="--i:3"><a href="#game" data-sfx><span class="ml-num">04</span><span class="ml-jp">自作ゲーム</span><span class="ml-en">GAME</span></a></li>
+      <li style="--i:4"><a href="#minecraft" data-sfx><span class="ml-num">05</span><span class="ml-jp">Minecraft</span><span class="ml-en">MINECRAFT</span></a></li>
+      <li style="--i:5"><a href="#community" data-sfx><span class="ml-num">06</span><span class="ml-jp">コミュニティ</span><span class="ml-en">COMMUNITY</span></a></li>
     </ol>
     <div class="menu-foot">
+      <a class="pill-cta" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
       <div class="menu-sns" data-sns-icons></div>
-      <img class="menu-mascot" src="assets/img/logo-sticker-512.webp" alt="" width="220" height="220" loading="lazy">
     </div>
+    <img class="menu-mascot" src="assets/img/logo-sticker-512.webp" alt="" width="220" height="220" loading="lazy">
   </div>
 </nav>
 
-<nav class="sidenav" aria-label="セクション">
-  <a href="#home" data-target="home" data-sfx><span class="sn-label">HOME</span><span class="sn-num">01</span><span class="sn-bar"></span></a>
-  <a href="#channel" data-target="channel" data-sfx><span class="sn-label">CHANNEL</span><span class="sn-num">02</span><span class="sn-bar"></span></a>
-  <a href="#server" data-target="server" data-sfx><span class="sn-label">SERVER</span><span class="sn-num">03</span><span class="sn-bar"></span></a>
-  <a href="#works" data-target="works" data-sfx><span class="sn-label">WORKS</span><span class="sn-num">04</span><span class="sn-bar"></span></a>
-  <a href="#community" data-target="community" data-sfx><span class="sn-label">COMMUNITY</span><span class="sn-num">05</span><span class="sn-bar"></span></a>
-</nav>
-<div class="sidedeco" aria-hidden="true">RAFU OFFICIAL SITE ― GAME STREAM / GAME DEV ― SINCE 2021</div>
+<!-- 右端のツールバー（ページ内移動と効果音。Minecraftの欄では木のパネルに変わる） -->
+<aside class="gbar" id="gbar" aria-label="ページ内ナビ">
+  <button class="gbar-tab" id="gbar-tab" type="button" aria-expanded="true" aria-controls="gbar-panel" aria-label="ナビをしまう" data-sfx><i class="px" data-px="right"></i></button>
+  <div class="gbar-panel" id="gbar-panel">
+    <button class="gbar-cell gbar-arrow" type="button" data-step="-1" data-tip="ひとつ上へ" aria-label="ひとつ上のセクションへ" data-sfx><i class="px" data-px="up"></i></button>
+    <div class="gbar-pager" aria-hidden="true"><b id="gbar-num">01</b><span id="gbar-name">HOME</span></div>
+    <nav class="gbar-nav" aria-label="セクション">
+      <a class="gbar-cell" href="#home" data-tip="ホーム" data-sfx><i class="px" data-px="home"></i><span class="sr-only">ホーム</span></a>
+      <a class="gbar-cell" href="#news" data-tip="ニュース" data-sfx><i class="px" data-px="news"></i><span class="sr-only">ニュース</span></a>
+      <a class="gbar-cell" href="#movie" data-tip="動画" data-sfx><i class="px" data-px="tv"></i><span class="sr-only">動画</span></a>
+      <a class="gbar-cell" href="#game" data-tip="自作ゲーム" data-sfx><i class="px" data-px="game"></i><span class="sr-only">自作ゲーム</span></a>
+      <a class="gbar-cell" href="#minecraft" data-tip="Minecraft" data-sfx><i class="px" data-px="cube"></i><span class="sr-only">Minecraft</span></a>
+      <a class="gbar-cell" href="#community" data-tip="コミュニティ" data-sfx><i class="px" data-px="chat"></i><span class="sr-only">コミュニティ</span></a>
+    </nav>
+    <button class="gbar-cell gbar-arrow" type="button" data-step="1" data-tip="ひとつ下へ" aria-label="ひとつ下のセクションへ" data-sfx><i class="px" data-px="down"></i></button>
+    <span class="gbar-sep" aria-hidden="true"></span>
+    <button class="gbar-cell" type="button" aria-pressed="false" data-sfx-toggle data-tip="効果音 OFF" data-sfx><i class="px" data-px="mute"></i></button>
+  </div>
+</aside>
 
 <main>
-  <!-- 01 HOME -->
-  <section class="kv" id="home" data-section>
+  <!-- HOME -->
+  <section class="kv" id="home" data-section data-zone="stream" data-en="HOME">
     <div class="kv-bg" aria-hidden="true">
-      <div class="kv-burst" data-depth="10"><i></i></div>
-      <div class="kv-glow"></div>
+      <div class="kv-burst" data-depth="8"><i></i></div>
       <div class="kv-dots"></div>
-      <div class="kv-type">
-        <div class="kv-type-row"><span>RAFU ✦ RAFU ✦ RAFU ✦ RAFU ✦ RAFU ✦ RAFU ✦&nbsp;</span><span>RAFU ✦ RAFU ✦ RAFU ✦ RAFU ✦ RAFU ✦ RAFU ✦&nbsp;</span></div>
-        <div class="kv-type-row rev"><span>全力でやる漢 ✦ 全力でやる漢 ✦ 全力でやる漢 ✦&nbsp;</span><span>全力でやる漢 ✦ 全力でやる漢 ✦ 全力でやる漢 ✦&nbsp;</span></div>
-      </div>
-      <div class="kv-scan"></div>
+      <div class="kv-streaks"><i style="--y:18%;--d:0s;--w:38%"></i><i style="--y:34%;--d:1.1s;--w:22%"></i><i style="--y:52%;--d:.5s;--w:30%"></i><i style="--y:66%;--d:1.7s;--w:44%"></i><i style="--y:80%;--d:.8s;--w:26%"></i><i style="--y:26%;--d:2.3s;--w:18%"></i></div>
+      <div class="kv-band"></div>
     </div>
 
     <div class="kv-inner wrap">
       <div class="kv-copy">
-        <p class="kv-tag"><span>RAFU OFFICIAL SITE</span><span class="kv-tag-sub">GAME STREAM / GAME DEV</span></p>
-        <h1 class="kv-title">
-          <span class="glitch" data-text="RAFU">RAFU</span>
+        <h1 class="kv-logo">
+          <span class="logo-word glitch" data-text="RAFU" aria-hidden="true">RAFU</span>
           <span class="sr-only">Rafu 公式サイト</span>
         </h1>
         <p class="kv-catch">
@@ -133,203 +140,245 @@
         </p>
         <p class="kv-lead">ゲーム配信とゲーム実況、それから自分でゲームを作っています。Minecraftの参加型企画や、データパック・MOD・プラグインの配布もやっています。</p>
         <div class="kv-cta">
-          <a class="btn btn-red" href="https://www.youtube.com/@Rafu_" data-link="youtube" target="_blank" rel="noopener" data-sfx>
-            <span>YouTubeを見る</span><svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          <a class="btn btn-ink" href="https://www.youtube.com/@Rafu_" data-link="youtube" target="_blank" rel="noopener" data-sfx>
+            <span class="brand" data-icon="youtube"></span><span>YouTubeを見る</span>
           </a>
-          <a class="btn btn-paper" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>
-            <span>Discordに参加する</span><svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          <a class="btn btn-yellow" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>
+            <span class="brand" data-icon="discord"></span><span>Discordに参加</span>
           </a>
         </div>
-        <div class="kv-sns" data-sns-icons></div>
       </div>
 
       <div class="kv-stage">
-        <div class="kv-ring" data-depth="28">
-          <svg viewBox="0 0 200 200" aria-hidden="true">
-            <defs><path id="ring-path" d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>
-            <circle cx="100" cy="100" r="96" class="ring-bg"/>
-            <text><textPath href="#ring-path" textLength="500">RAFU OFFICIAL ✦ GAME STREAM ✦ GAME DEV ✦ SINCE 2021 ✦</textPath></text>
-          </svg>
-          <span class="kv-ring-core"></span>
-        </div>
-        <div class="kv-stamp" data-depth="34" aria-hidden="true"><span>漢</span></div>
         <div class="kv-mascot" data-depth="18">
           <button class="mascot" id="mascot" type="button" aria-label="トマトを笑わせる">
-            <span class="mascot-shadow" aria-hidden="true"></span>
             <img class="mascot-img" id="mascot-img" src="assets/img/logo-sticker.webp" alt="" width="1024" height="1024" fetchpriority="high">
           </button>
         </div>
         <div class="kv-pops" id="kv-pops" aria-hidden="true">
-          <span class="pop p1">ワハハ</span>
-          <span class="pop p2">HA!</span>
+          <span class="pop p1">アハハ</span>
+          <span class="pop p2">ハハッ!</span>
         </div>
       </div>
     </div>
 
-    <div class="kv-hud" aria-hidden="true">
-      <span class="vf vf-tl"></span><span class="vf vf-tr"></span><span class="vf vf-bl"></span><span class="vf vf-br"></span>
-      <div class="hud-l"><span class="rec">REC</span><span class="tc" id="tc">00:00:00:00</span></div>
-      <a class="hud-c" href="#channel" tabindex="-1"><span>SCROLL</span><i></i></a>
-      <div class="hud-r"><span>CH-01</span><b>RAFU.TV</b><span class="sig"><i></i><i></i><i></i><i></i></span></div>
-    </div>
+    <button class="kv-play" id="kv-play" type="button" data-sfx>
+      <span class="kv-play-ring" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+      <span class="kv-play-label"><small>LATEST</small>最新の動画を見る</span>
+    </button>
+    <a class="kv-sticker" href="https://www.youtube.com/@Rafu_" data-link="youtube" target="_blank" rel="noopener" data-sfx>
+      <span class="ks-main">チャンネル登録</span><span class="ks-sub">YouTube @Rafu_</span>
+    </a>
+    <div class="kv-sns" data-sns-icons></div>
   </section>
 
   <div class="tapes" aria-hidden="true">
     <div class="tape tape-y">
       <div class="tape-track" data-marquee>
-        <div class="tape-seq"><span>参加型Minecraft</span><span>rafuserver.duckdns.org</span><span>漢達の協力プレイ</span><span>自作ゲーム開発中</span><span>日本語 / English / Русский</span></div>
+        <div class="tape-seq"><span>ゲーム配信</span><span>ゲーム実況</span><span>自作ゲーム</span><span>参加型Minecraft</span><span>日本語 / English / Русский</span></div>
       </div>
     </div>
     <div class="tape tape-k">
       <div class="tape-track rev" data-marquee>
-        <div class="tape-seq"><span>RAFU.TV</span><span>GAME STREAM</span><span>GAME DEV</span><span>MINECRAFT SERVER</span><span>JOIN THE DISCORD</span></div>
+        <div class="tape-seq"><span>RAFU OFFICIAL SITE</span><span>GAME STREAM</span><span>GAME DEV</span><span>MINECRAFT SERVER</span><span>JOIN THE DISCORD</span></div>
       </div>
     </div>
   </div>
 
-  <!-- 02 CHANNEL -->
-  <section class="sec sec-channel" id="channel" data-section data-progress>
+  <!-- NEWS（ピックアップとお知らせ） -->
+  <section class="sec sec-news" id="news" data-section data-zone="stream" data-en="NEWS">
     <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="sec-meta"><span class="num">02</span><span class="bar"></span><span>CHANNEL</span></p>
-        <h2 class="sec-title"><span class="wipe"><span>配信と切り抜き</span></span></h2>
-        <p class="sec-lead">配信は気まぐれ。始まるときはDiscordでお知らせします。見逃した配信は、切り抜きとShortsでどうぞ。</p>
-        <span class="sec-en" aria-hidden="true">CHANNEL</span>
+      <div class="pickup" id="pickup" data-reveal></div>
+
+      <header class="sh" data-reveal>
+        <p class="sh-en" aria-hidden="true">NEWS</p>
+        <h2 class="sh-jp"><span>ニュース</span></h2>
+      </header>
+      <div class="news-grid">
+        <ul class="news-list" id="news-list" data-reveal></ul>
+        <aside class="sched" data-reveal style="--d:.1s">
+          <p class="sched-head"><span>SCHEDULE</span><b>投稿スケジュール</b></p>
+          <dl class="sched-list" id="sched-list"></dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOVIE -->
+  <section class="sec sec-movie" id="movie" data-section data-zone="stream" data-en="MOVIE" data-progress>
+    <div class="wrap">
+      <header class="sh" data-reveal>
+        <p class="sh-en" aria-hidden="true">MOVIE</p>
+        <h2 class="sh-jp"><span>配信と動画</span></h2>
+        <p class="sh-lead">配信は気まぐれ。始まるときはDiscordでお知らせします。見逃した配信は、切り抜きとShortsでどうぞ。</p>
       </header>
 
-      <div class="ch-grid">
-        <div class="tv" id="tv" data-reveal>
-          <div class="tv-bar"><span class="tv-live"><i></i>RAFU.TV</span><span id="tv-ch">CH.01</span></div>
+      <div class="tv-wrap" data-reveal>
+        <button class="tv-arrow prev" id="tv-prev" type="button" aria-label="前の動画" data-sfx><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="tv" id="tv">
+          <div class="tv-bar"><span class="tv-live"><i></i>RAFU TV</span><span id="tv-ch">CH.01</span></div>
           <button class="tv-screen" id="tv-screen" type="button" aria-label="動画を再生" data-sfx>
             <img id="tv-img" alt="" width="1280" height="720">
             <canvas class="tv-noise" id="tv-noise" width="96" height="54"></canvas>
             <span class="tv-osd" id="tv-osd">CH.01</span>
             <span class="tv-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span>
-            <span class="tv-corner" aria-hidden="true">▶ PLAY</span>
           </button>
           <div class="tv-info">
             <p class="tv-meta"><span class="kind" id="tv-kind">配信</span><time id="tv-date"></time></p>
             <p class="tv-title" id="tv-title"></p>
           </div>
         </div>
+        <button class="tv-arrow next" id="tv-next" type="button" aria-label="次の動画" data-sfx><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
 
-        <div class="ch-side" data-reveal style="--d:.12s">
-          <div class="ch-tabs" id="ch-tabs" role="tablist" aria-label="動画の種類"></div>
-          <ol class="ch-list" id="ch-list"></ol>
-          <a class="ch-more" href="https://www.youtube.com/@Rafu_" data-link="youtube" target="_blank" rel="noopener" data-sfx>
-            <span>ほかの動画はYouTubeチャンネルへ</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
-          </a>
-          <div class="sched">
-            <p class="sched-head"><span>SCHEDULE</span><b>投稿スケジュール</b></p>
-            <dl class="sched-list" id="sched-list"></dl>
+      <div class="ch-bar" data-reveal>
+        <div class="ch-tabs" id="ch-tabs" role="tablist" aria-label="動画の種類"></div>
+        <a class="ch-more" href="https://www.youtube.com/@Rafu_" data-link="youtube" target="_blank" rel="noopener" data-sfx><span>YouTubeでもっと見る</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <ol class="ch-list" id="ch-list" data-reveal></ol>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="sec sec-game" id="game" data-section data-zone="stream" data-en="GAME" data-progress>
+    <div class="wrap">
+      <header class="sh sh-dark" data-reveal>
+        <p class="sh-en" aria-hidden="true">GAME</p>
+        <h2 class="sh-jp"><span>自作ゲーム</span></h2>
+        <p class="sh-lead">RedHubで作っているゲームを紹介します。</p>
+      </header>
+      <div class="games" id="games-list"></div>
+    </div>
+  </section>
+
+  <!-- MINECRAFT（ここだけドット絵の世界） -->
+  <section class="mc" id="minecraft" data-section data-zone="mc" data-en="MINECRAFT">
+    <div class="mc-hero">
+      <div class="mc-scene" aria-hidden="true">
+        <div class="mc-sky"></div>
+        <div class="mc-stars"></div>
+        <div class="mc-sun"></div>
+        <div class="mc-layer mc-clouds"><i></i></div>
+        <div class="mc-layer mc-far"><i></i></div>
+        <div class="mc-layer mc-mid"><i></i></div>
+        <div class="mc-layer mc-near"><i></i></div>
+      </div>
+      <header class="mc-head wrap" data-reveal>
+        <span class="mc-icon"><i class="px" data-px="cube"></i></span>
+        <h2 class="mc-title">Minecraft</h2>
+        <p class="mc-en">SERVER &amp; CREATIONS</p>
+        <p class="mc-lead">参加型の企画やイベントはMinecraftサーバーで開催しています。データパック・MOD・プラグインも配布中。</p>
+      </header>
+    </div>
+
+    <div class="mc-server" data-progress>
+      <div class="srv-sky" aria-hidden="true"><i></i><i></i></div>
+      <div class="voxels" aria-hidden="true">
+        <div class="cube" style="--s:72px;--c:#e5121b;--x:5%;--y:10%;--t:22s"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="cube" style="--s:44px;--c:#5fc14a;--x:90%;--y:8%;--t:16s;--r:-1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="cube" style="--s:56px;--c:#ffc93c;--x:92%;--y:72%;--t:26s"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="cube" style="--s:36px;--c:#8a5a33;--x:3%;--y:78%;--t:18s;--r:-1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="wrap">
+        <header class="px-head" data-reveal>
+          <h3 class="px-title"><span class="wipe"><span>Minecraftサーバー</span></span></h3>
+          <p class="px-en">SERVER</p>
+          <p class="px-lead">参加するにはDiscordに入り、入室時の質問で「Minecraftをプレイする」を選んでください。</p>
+        </header>
+
+        <ul class="feats">
+          <li class="feat" data-reveal><span class="feat-icon"><i class="px" data-px="cube"></i></span><b>Java版も統合版も</b><span>どちらのエディションからでも入れます</span></li>
+          <li class="feat" data-reveal style="--d:.08s"><span class="feat-icon"><i class="px" data-px="sword"></i></span><b>参加型の企画</b><span>みんなで遊ぶ企画やイベントを開催</span></li>
+          <li class="feat" data-reveal style="--d:.16s"><span class="feat-icon"><i class="px" data-px="globe"></i></span><b>3つの言語</b><span>日本語・English・Русский で話せます</span></li>
+        </ul>
+
+        <div class="srv-grid">
+          <div class="panel panel-wood srv-card" data-reveal>
+            <div class="srv-top">
+              <p class="srv-status" id="srv-status" data-state="checking" aria-live="polite"><span class="dot" aria-hidden="true"></span><b class="st-label">確認中…</b><span class="st-detail"></span></p>
+              <div class="srv-ed" role="tablist" aria-label="エディション">
+                <button type="button" role="tab" aria-selected="true" data-ed="java" data-sfx>Java版</button>
+                <button type="button" role="tab" aria-selected="false" data-ed="bedrock" data-sfx>統合版</button>
+              </div>
+            </div>
+
+            <div class="srv-field">
+              <span class="srv-lbl">サーバーアドレス<small>SERVER ADDRESS</small></span>
+              <div class="srv-row">
+                <code class="srv-code" id="srv-address">rafuserver.duckdns.org</code>
+                <button class="pxbtn pxbtn-green copy-btn" type="button" data-copy="#srv-address" data-sfx><span>コピー</span></button>
+              </div>
+            </div>
+            <div class="srv-field srv-port" id="srv-port-field" hidden>
+              <span class="srv-lbl">ポート<small>PORT</small></span>
+              <div class="srv-row">
+                <code class="srv-code" id="srv-port">19132</code>
+                <button class="pxbtn pxbtn-green copy-btn" type="button" data-copy="#srv-port" data-sfx><span>コピー</span></button>
+              </div>
+            </div>
+
+            <dl class="srv-spec">
+              <div><dt>エディション</dt><dd id="srv-editions">Java版・統合版 どちらもOK</dd></div>
+              <div><dt>バージョン</dt><dd><span id="srv-version">1.18.1 以上</span><small id="srv-version-note">（今後変わることがあります）</small></dd></div>
+            </dl>
+            <span class="srv-stamp" aria-hidden="true">COPIED!</span>
+          </div>
+
+          <div class="srv-howto" data-reveal style="--d:.1s">
+            <p class="howto-title"><i class="px" data-px="star"></i><span>参加のしかた</span></p>
+            <ol class="srv-steps">
+              <li>
+                <span class="step-n">1</span>
+                <div><b>Discordに参加</b><span>入室時に言語とMinecraftの質問に答える</span></div>
+                <a class="step-go" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>参加する</a>
+              </li>
+              <li>
+                <span class="step-n">2</span>
+                <div><b>#support を確認</b><span>参加のルールと対応バージョンを読む</span></div>
+              </li>
+              <li>
+                <span class="step-n">3</span>
+                <div><b>企画に参加</b><span>#進行中の参加型 でメンバー募集をチェック</span></div>
+              </li>
+            </ol>
           </div>
         </div>
+      </div>
+      <div class="ground" aria-hidden="true"></div>
+    </div>
+
+    <div class="mc-under">
+      <div class="wrap">
+        <header class="px-head" data-reveal>
+          <h3 class="px-title"><span class="wipe"><span>配布しているもの</span></span></h3>
+          <p class="px-en">CREATIONS</p>
+          <p class="px-lead">Minecraftのデータパック・MOD・プラグインを、Discordの配布チャンネルで公開しています。</p>
+        </header>
+        <p class="works-note" data-reveal>
+          <i class="px" data-px="star"></i>
+          <span>カードを押すとDiscordの配布チャンネルが開きます。先に <a href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener">Discordに参加</a> してください。</span>
+        </p>
+        <div class="works" id="works-list"></div>
       </div>
     </div>
   </section>
 
-  <!-- 03 SERVER -->
-  <section class="sec sec-server" id="server" data-section data-progress>
-    <div class="voxels" aria-hidden="true">
-      <div class="cube" style="--s:72px;--c:#e5121b;--x:6%;--y:16%;--t:22s"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="cube" style="--s:44px;--c:#2bd45b;--x:88%;--y:12%;--t:16s;--r:-1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="cube" style="--s:56px;--c:#ffd21a;--x:92%;--y:78%;--t:26s"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="cube" style="--s:36px;--c:#8a5a33;--x:3%;--y:84%;--t:18s;--r:-1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    </div>
+  <!-- COMMUNITY -->
+  <section class="sec sec-community" id="community" data-section data-zone="stream" data-en="COMMUNITY" data-progress>
     <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="sec-meta"><span class="num">03</span><span class="bar"></span><span>SERVER</span></p>
-        <h2 class="sec-title"><span class="wipe"><span>Minecraftサーバー</span></span></h2>
-        <p class="sec-lead">参加型の企画やイベントはMinecraftサーバーで開催しています。参加するにはDiscordに入り、入室時の質問で「Minecraftをプレイする」を選んでください。</p>
-        <span class="sec-en" aria-hidden="true">SERVER</span>
-      </header>
-
-      <div class="srv-grid">
-        <div class="srv-card" data-reveal>
-          <div class="srv-top">
-            <p class="srv-status" id="srv-status" data-state="checking" aria-live="polite"><span class="dot" aria-hidden="true"></span><b class="st-label">確認中…</b><span class="st-detail"></span></p>
-            <div class="srv-ed" role="tablist" aria-label="エディション">
-              <button type="button" role="tab" aria-selected="true" data-ed="java" data-sfx>Java版</button>
-              <button type="button" role="tab" aria-selected="false" data-ed="bedrock" data-sfx>統合版</button>
-            </div>
-          </div>
-
-          <div class="srv-field">
-            <span class="srv-lbl">SERVER ADDRESS<small>サーバーアドレス</small></span>
-            <div class="srv-row">
-              <code class="srv-code" id="srv-address">rafuserver.duckdns.org</code>
-              <button class="copy-btn" type="button" data-copy="#srv-address" data-sfx><span>コピー</span></button>
-            </div>
-          </div>
-          <div class="srv-field srv-port" id="srv-port-field" hidden>
-            <span class="srv-lbl">PORT<small>ポート</small></span>
-            <div class="srv-row">
-              <code class="srv-code" id="srv-port">19132</code>
-              <button class="copy-btn" type="button" data-copy="#srv-port" data-sfx><span>コピー</span></button>
-            </div>
-          </div>
-
-          <dl class="srv-spec">
-            <div><dt>エディション</dt><dd id="srv-editions">Java版・統合版 どちらもOK</dd></div>
-            <div><dt>バージョン</dt><dd><span id="srv-version">1.18.1 以上</span><small id="srv-version-note">（今後変わることがあります）</small></dd></div>
-          </dl>
-          <span class="srv-stamp" aria-hidden="true">COPIED!</span>
-        </div>
-
-        <ol class="srv-steps">
-          <li data-reveal style="--d:.05s">
-            <span class="step-n">1</span>
-            <div><b>Discordに参加</b><span>入室時に言語とMinecraftの質問に答える</span></div>
-            <a class="step-go" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>参加する</a>
-          </li>
-          <li data-reveal style="--d:.15s">
-            <span class="step-n">2</span>
-            <div><b>#support を確認</b><span>参加のルールと対応バージョンを読む</span></div>
-          </li>
-          <li data-reveal style="--d:.25s">
-            <span class="step-n">3</span>
-            <div><b>企画に参加</b><span>#進行中の参加型 でメンバー募集をチェック</span></div>
-          </li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- 04 WORKS -->
-  <section class="sec sec-works" id="works" data-section data-progress>
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="sec-meta"><span class="num">04</span><span class="bar"></span><span>WORKS</span></p>
-        <h2 class="sec-title"><span class="wipe"><span>作ったもの</span></span></h2>
-        <p class="sec-lead">RedHubで制作したゲームや、Minecraftのデータパック・プラグイン・MODを配布しています。</p>
-        <span class="sec-en" aria-hidden="true">WORKS</span>
-      </header>
-      <p class="works-note" data-reveal>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>
-        <span>カードを押すとDiscordの配布チャンネルが開きます。先に <a href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener">Discordに参加</a> してください。</span>
-      </p>
-      <div class="works" id="works-list"></div>
-    </div>
-  </section>
-
-  <!-- 05 COMMUNITY -->
-  <section class="sec sec-community" id="community" data-section data-progress>
-    <div class="wrap">
-      <header class="sec-head" data-reveal>
-        <p class="sec-meta"><span class="num">05</span><span class="bar"></span><span>COMMUNITY</span></p>
-        <h2 class="sec-title"><span class="wipe"><span>コミュニティ</span></span></h2>
-        <span class="sec-en" aria-hidden="true">COMMUNITY</span>
+      <header class="sh" data-reveal>
+        <p class="sh-en" aria-hidden="true">COMMUNITY</p>
+        <h2 class="sh-jp"><span>コミュニティ</span></h2>
       </header>
 
       <div class="cm-panel" data-reveal>
-        <span class="cm-bigword" aria-hidden="true">DISCORD</span>
         <div class="cm-copy">
-          <p class="cm-kicker">RAFU DISCORD SERVER</p>
+          <p class="cm-kicker"><span class="brand" data-icon="discord"></span>RAFU DISCORD SERVER</p>
           <h3 class="cm-title">Discordで、<br>待ってる。</h3>
           <p>配信の通知、参加型企画の募集、作品の配布、雑談はぜんぶここ。日本語・英語・ロシア語のチャンネルがあります。</p>
           <div class="langs"><span>日本語</span><span>English</span><span>Русский</span></div>
           <a class="btn btn-ink" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>
-            <span>Discordに参加する</span><svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            <span class="brand" data-icon="discord"></span><span>Discordに参加する</span>
           </a>
         </div>
         <div class="cm-visual" aria-hidden="true">
@@ -352,15 +401,27 @@
   </section>
 </main>
 
-<footer class="ft">
+<footer class="ft" data-zone="stream">
   <div class="wrap">
+    <div class="ft-row">
+      <a class="ft-logo" href="#home" aria-label="RAFU 公式サイト トップへ" data-sfx>
+        <img src="assets/img/logo-sticker-512.webp" alt="" width="72" height="72" loading="lazy">
+        <span class="ft-word"><b>RAFU</b><small>OFFICIAL SITE</small></span>
+      </a>
+      <nav class="ft-nav" aria-label="フッター">
+        <a href="#news" data-sfx>ニュース</a>
+        <a href="#movie" data-sfx>動画</a>
+        <a href="#game" data-sfx>自作ゲーム</a>
+        <a href="#minecraft" data-sfx>Minecraft</a>
+        <a href="#community" data-sfx>コミュニティ</a>
+      </nav>
+    </div>
     <p class="ft-head"><span>FOLLOW RAFU</span><b>各SNSはこちら</b></p>
     <div class="sns-grid" id="sns-grid"></div>
-  </div>
-  <div class="ft-word" aria-hidden="true"><span>RAFU</span><img src="assets/img/logo-mask.png" alt="" width="512" height="512" loading="lazy"></div>
-  <div class="wrap ft-bottom">
-    <p>© Rafu / RedHub</p>
-    <a class="ft-top" href="#home" data-sfx>PAGE TOP<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+    <div class="ft-bottom">
+      <p>© Rafu / RedHub</p>
+      <a class="ft-pagetop" href="#home" data-sfx>PAGE TOP<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+    </div>
   </div>
 </footer>
 
@@ -375,6 +436,7 @@
   </div>
 </dialog>
 
+<div class="mc-tip" id="mc-tip" aria-hidden="true"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <noscript>
