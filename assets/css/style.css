@@ -1,6 +1,6 @@
 /*
  * RAFU official site
- * 方針: 配信・動画・自作ゲームは「勢いのある演出」（集中線、斜めの帯、テープ、ステッカー）。
+ * 方針: 配信・動画・ゲームソフトは「勢いのある演出」（集中線、斜めの帯、テープ、ステッカー）。
  * Minecraftの欄だけは夕焼けのドット絵と木のパネルのゲームUIに切り替える。
  * 中身は content.js、演出は main.js。ここは見た目だけ。
  */
@@ -569,6 +569,7 @@ html[data-zone="mc"] ::selection { background: var(--mc-leaf-lo); color: #fff; }
 /* ピックアップの絵（画像がないときの仮の絵） */
 .pa-burst { position: absolute; inset: 0; background: repeating-conic-gradient(from 0deg at 50% 60%, rgba(255,255,255,.16) 0 6deg, transparent 6deg 14deg), var(--c); }
 .pa-icon { position: absolute; left: 50%; top: 54%; width: 44%; transform: translate(-50%, -50%) rotate(-6deg); }
+.pick:hover .pick-art .pa-gameicon { transform: translate(-50%, -50%) rotate(-6deg) scale(1.07); }
 .pa-icon svg { width: 100%; height: auto; fill: none; stroke: #fff; stroke-width: 6; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(5px 5px 0 rgba(0,0,0,.35)); }
 .pa-pixel { position: absolute; inset: 0; background: linear-gradient(180deg, #24113a 0 22%, #5c1a4d 22% 40%, #b8283f 40% 55%, #f47a35 55% 68%, #ffd27a 68%); }
 .pa-pixel::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 70%; background: url(../img/kv/far.png) 0 100% / auto 100% repeat-x; image-rendering: pixelated; }
@@ -704,36 +705,53 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
   margin-block: -4vw; padding-block: calc(clamp(100px, 11vw, 160px) + 4vw) calc(clamp(90px, 10vw, 140px) + 4vw);
   z-index: 1;
 }
-.games { display: grid; gap: clamp(50px, 6vw, 90px); }
-.game { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 60px); align-items: center; }
-.game:nth-child(even) .game-art { order: 2; }
-.game-art {
-  position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--tomato); border: 5px solid #000;
-  clip-path: polygon(0 0, calc(100% - 40px) 0, 100% 40px, 100% 100%, 40px 100%, 0 calc(100% - 40px));
-  box-shadow: inset 0 0 0 4px rgba(255,255,255,.2);
-  transform: rotate(-1.5deg);
+/* ソフトのカード（押すとダウンロードページのその作品へ） */
+.softs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2.4vw, 30px); perspective: 1100px; }
+.soft {
+  --rx: 0deg; --ry: 0deg; --ty: 0px;
+  position: relative; display: flex; flex-direction: column; min-width: 0; text-decoration: none; color: var(--ink);
+  background: #fff; border: 4px solid #000; box-shadow: 8px 8px 0 var(--tomato);
+  transform: translateY(var(--ty)) rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform .5s var(--ease-out), box-shadow .3s ease; will-change: transform;
 }
-.game-art img { width: 100%; height: 100%; object-fit: cover; }
-.game-ph { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at 50% 60%, #ff5236, var(--tomato) 45%, #8f0910); }
-.game-ph::before { content: ""; position: absolute; inset: -40%; background: repeating-conic-gradient(rgba(255,236,200,.18) 0 5deg, transparent 5deg 12deg); animation: spin 60s linear infinite; }
-.game-ph svg { position: relative; width: 38%; fill: none; stroke: #fff; stroke-width: 6; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(8px 8px 0 rgba(0,0,0,.45)); transform: rotate(-8deg); }
-.game-ph span { position: absolute; left: 18px; bottom: 14px; font-family: var(--f-logo); font-size: clamp(16px, 2vw, 24px); color: #fff; letter-spacing: .06em; transform: skewX(-10deg); text-shadow: 3px 3px 0 #000; }
-.game-art .trailer {
-  position: absolute; right: 16px; bottom: 16px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 3px solid #000; border-radius: 999px; cursor: pointer;
-  background: #fff; color: #000; font-weight: 900; font-size: 14px; transition: background-color .2s ease, transform .3s var(--ease-back);
-}
-.game-art .trailer svg { width: 14px; fill: currentColor; }
-.game-art .trailer:hover { background: var(--yellow); transform: scale(1.06); }
-.game-body { display: grid; gap: 12px; justify-items: start; }
-.game-maker { margin: 0; display: inline-block; padding: 3px 12px; background: #000; color: var(--yellow); font-family: var(--f-logo); font-size: 13px; letter-spacing: .1em; transform: skewX(-10deg); }
-.game-title { margin: 0; font-family: var(--f-logo); font-weight: 400; font-size: clamp(32px, 4vw, 54px); line-height: 1.2; }
-.game-catch { margin: 0; font-weight: 900; font-size: clamp(17px, 1.7vw, 21px); line-height: 1.6; }
-.game-text { margin: 0; font-weight: 700; color: #3b3424; }
-.game-points { list-style: none; margin: 6px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; }
-.game-points li { padding: 12px 12px 14px; background: #000; color: #fff; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); }
-.game-points b { display: block; font-family: var(--f-logo); font-weight: 400; font-size: 17px; color: var(--yellow); }
-.game-points span { font-size: 12.5px; color: var(--muted); line-height: 1.6; display: block; }
-.game-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.soft:hover, .soft:focus-visible { --ty: -8px; box-shadow: 12px 16px 0 var(--tomato); }
+.js .soft[data-reveal] { transition: opacity .9s var(--ease-out) var(--d, 0s), translate .9s var(--ease-out) var(--d, 0s), transform .5s var(--ease-out), box-shadow .3s ease; }
+.js .soft[data-reveal].is-tilting { transition: opacity .9s var(--ease-out) var(--d, 0s), translate .9s var(--ease-out) var(--d, 0s), transform .12s linear, box-shadow .3s ease; }
+.soft-art { position: relative; aspect-ratio: 16 / 9; display: grid; place-items: center; overflow: hidden; background: var(--tomato); border-bottom: 4px solid #000; }
+.soft-art::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 0%), rgba(255,255,255,.35), transparent 55%); opacity: 0; transition: opacity .3s ease; }
+.soft:hover .soft-art::after { opacity: 1; }
+.soft-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease-out); }
+.soft:hover .soft-shot { transform: scale(1.06); }
+/* 画面写真がないソフトは、集中線の上にアイコンをステッカーのように貼る */
+.soft-burst { position: absolute; inset: 0; background: repeating-conic-gradient(from 0deg at 50% 55%, rgba(255,236,200,.18) 0 5deg, transparent 5deg 12deg), radial-gradient(circle at 50% 55%, #ff5236, var(--tomato) 45%, #8f0910); }
+.soft-icon { position: absolute; left: 50%; top: 50%; height: 72%; width: auto; aspect-ratio: 1; object-fit: cover; border: 4px solid #fff; border-radius: 22%; box-shadow: 6px 6px 0 rgba(0,0,0,.4); transform: translate(-50%, -50%) rotate(-5deg); transition: transform .5s var(--ease-back); }
+.soft:hover .soft-icon { transform: translate(-50%, -50%) rotate(-1deg) scale(1.08); }
+.soft-pad { position: absolute; left: 31%; top: 50%; width: 38%; translate: 0 -50%; }
+.soft-pad svg { width: 100%; height: auto; fill: none; stroke: #fff; stroke-width: 6; stroke-linejoin: round; stroke-linecap: round; filter: drop-shadow(5px 5px 0 rgba(0,0,0,.35)); transform: rotate(-6deg); }
+.soft-plat { position: absolute; z-index: 1; left: 10px; bottom: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.soft-plat span { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px 4px; background: #000; color: #fff; font-size: 12px; font-weight: 900; line-height: 1.3; transform: skewX(-10deg); }
+.soft-plat .px { width: 13px; height: 13px; color: var(--yellow); }
+.soft-body { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 14px 16px 0; flex: 1; }
+.soft-cat { padding: 1px 9px 2px; background: var(--tomato); color: #fff; font-size: 12px; font-weight: 900; letter-spacing: .06em; transform: skewX(-10deg); }
+.soft h3 { margin: 0; font-family: var(--f-logo); font-weight: 400; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.25; }
+.soft-catch { font-size: 13.5px; font-weight: 800; line-height: 1.6; color: #3b3424; }
+.soft-date { margin-bottom: 14px; font-size: 12px; font-weight: 800; color: #6b6150; letter-spacing: .04em; }
+.soft-go { align-self: stretch; margin: auto -16px 0; padding: 10px 16px 11px; display: flex; justify-content: space-between; align-items: center; gap: 10px; background: #000; color: #fff; font-size: 14px; font-weight: 900; transition: background-color .2s ease, color .2s ease; }
+.soft-go svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--yellow); stroke-width: 2.6; transition: transform .3s var(--ease-out), stroke .2s ease; }
+.soft:hover .soft-go { background: var(--yellow); color: #000; }
+.soft:hover .soft-go svg { stroke: #000; transform: translateX(4px); }
+/* 一覧へ（ダウンロードページを、ゲームソフト・機種で絞り込んだ状態で開く） */
+.soft-lists { margin-top: clamp(28px, 3.4vw, 44px); display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px 14px; }
+.soft-list { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 13px 16px 14px; background: #000; color: #fff; text-decoration: none; clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); transition: background-color .2s ease; }
+.soft-list .px { flex: none; width: 20px; height: 20px; color: var(--yellow); }
+.soft-list-name { flex: 1; min-width: 0; font-size: 15px; font-weight: 900; line-height: 1.4; }
+.soft-list small { flex: none; font-size: 12px; font-weight: 800; color: var(--muted); }
+.soft-list-go { flex: none; display: inline-flex; align-items: center; gap: 4px; padding-left: 10px; border-left: 2px solid #333; font-size: 12.5px; font-weight: 900; color: var(--yellow); }
+.soft-list-go svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; transition: transform .3s var(--ease-out); }
+.soft-list:hover, .soft-list:focus-visible { background: var(--tomato); }
+.soft-list:hover small, .soft-list:hover .soft-list-go, .soft-list:hover .px { color: #fff; }
+.soft-list:hover .soft-list-go svg { transform: translateX(4px); }
+.pa-gameicon { position: absolute; left: 50%; top: 54%; width: auto !important; height: 64% !important; aspect-ratio: 1; object-fit: cover; border: 4px solid #fff; border-radius: 22%; box-shadow: 5px 5px 0 rgba(0,0,0,.35); transform: translate(-50%, -50%) rotate(-6deg); }
 
 /* ---------- MINECRAFT（ドット絵の世界） ---------- */
 .mc { position: relative; isolation: isolate; overflow-x: clip; background: #120e2b; color: var(--text); }
@@ -1003,7 +1021,7 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .inv-title { margin: 0 0 12px; display: flex; align-items: center; gap: 10px; font-family: var(--f-px); font-size: 18px; line-height: 1.3; color: var(--cream); text-shadow: 2px 2px 0 var(--wood-line); }
 .inv-title .px { width: 22px; height: 22px; color: var(--gold); }
 .inv-tabs { display: flex; gap: 3px; padding: 3px; margin-bottom: 12px; background: var(--wood-line); }
-.inv-tab { flex: 1 1 0; min-width: 0; display: inline-flex; justify-content: center; align-items: baseline; gap: 6px; padding: 6px 8px 8px; border: 0; cursor: pointer; font-size: 13px; font-weight: 900; white-space: nowrap; color: var(--cream-2); background: var(--wood-lo); box-shadow: inset 0 -3px 0 #3a2924; transition: background-color .15s ease, color .15s ease; }
+.inv-tab { flex: 1 1 auto; min-width: 0; display: inline-flex; justify-content: center; align-items: baseline; gap: 6px; padding: 6px 8px 8px; border: 0; cursor: pointer; font-size: 13px; font-weight: 900; white-space: nowrap; color: var(--cream-2); background: var(--wood-lo); box-shadow: inset 0 -3px 0 #3a2924; transition: background-color .15s ease, color .15s ease; }
 .inv-tab small { font-family: var(--f-px); font-size: 12px; font-weight: 400; opacity: .75; }
 .inv-tab:hover { color: #fff; }
 .inv-tab[aria-pressed="true"] { background: var(--wood-cell); color: var(--wood-line); box-shadow: inset 3px 3px 0 #c3b6a9, inset -3px -3px 0 #84756a; }
@@ -1234,6 +1252,42 @@ a.dt-btn:hover .px { animation: dl-hop .6s var(--ease-out) infinite; }
 .dt-howto li { counter-increment: step; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 12px; padding: 7px 12px 7px 7px; background: var(--cream); border: 3px solid var(--wood-line); font-size: 14px; font-weight: 800; line-height: 1.6; }
 .dt-howto li::before { content: counter(step); display: grid; place-items: center; width: 34px; height: 34px; background: var(--tomato); color: #fff; border: 3px solid var(--wood-line); box-shadow: inset 0 -4px 0 #9a0a12; font-family: var(--f-px); font-size: 17px; line-height: 1; }
 .dt-howto li > span { min-width: 0; }
+/* ほかのサイトで遊ぶ・落とすもの、制作チーム、作品ページへのリンク */
+.dt-shots { margin: -6px 0 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.dt-shot { display: block; padding: 0; aspect-ratio: 16 / 9; overflow: hidden; cursor: zoom-in; background: #000; border: 3px solid var(--wood-line); }
+.dt-shot img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s var(--ease-out); }
+.dt-shot:hover img { transform: scale(1.06); }
+.dt-shot-view { max-width: min(1280px, 94vw); padding: 0; border: 4px solid var(--wood-line); background: #000; cursor: zoom-out; }
+.dt-shot-view::backdrop { background: rgba(10, 5, 8, .82); }
+.dt-shot-view img { display: block; width: 100%; height: auto; max-height: 86vh; object-fit: contain; }
+.dt-shot-x { position: absolute; top: 6px; right: 6px; width: 38px; height: 38px; border: 3px solid var(--wood-line); background: var(--cream); color: var(--cream-ink); font-size: 22px; font-weight: 900; line-height: 1; cursor: pointer; }
+.dt-file .dt-note { flex-basis: 100%; color: var(--cream-2); font-family: var(--f-body); font-size: 12.5px; font-weight: 800; }
+.dt-btn.is-play { --bg: var(--tomato); --hi: #ff5a4a; --lo: #9a0a12; }
+.dt-link .px { width: 18px; height: 18px; color: var(--cream-2); }
+.dt-team-row { margin-top: 6px; }
+.dt-team-btn { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 3px 5px 4px 9px; cursor: pointer; background: var(--wood-line); color: var(--yellow); border: 0; box-shadow: inset 0 -3px 0 #0f0909; font-family: var(--f-body); font-size: 14px; font-weight: 900; line-height: 1.4; text-align: left; transition: background-color .15s ease; }
+.dt-team-btn > .px { flex: none; width: 15px; height: 15px; }
+.dt-team-btn:hover, .dt-team-btn[aria-expanded="true"] { background: #4d2b2e; }
+.dt-team-name { min-width: 0; white-space: nowrap; }
+.dt-team-btn { flex-wrap: wrap; row-gap: 4px; }
+.dt-team-more { flex: none; display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px 2px; background: var(--cream); color: var(--cream-ink); font-size: 11.5px; }
+.dt-team-more .px { width: 11px; height: 11px; transition: transform .2s ease; }
+.dt-team-btn[aria-expanded="true"] .dt-team-more .px { transform: rotate(180deg); }
+.dt-team { margin: 0 0 18px; padding: 12px 14px 14px; background: var(--cream); border: 3px solid var(--wood-line); box-shadow: inset 0 -3px 0 var(--cream-2); animation: team-open .25s var(--ease-out); }
+@keyframes team-open { from { opacity: 0; transform: translateY(-6px); } }
+.dt-team-h { margin: 0 0 8px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 900; }
+.dt-team-h .px { width: 16px; height: 16px; color: var(--c); }
+/* 特徴（3つくらい） */
+.dt-points { list-style: none; margin: 4px 0 18px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.dt-points li { display: grid; gap: 2px; padding: 9px 12px 11px; background: var(--cream); border: 3px solid var(--wood-line); box-shadow: inset 0 -3px 0 var(--cream-2); }
+.dt-points b { font-family: var(--f-logo); font-weight: 400; font-size: 16px; color: var(--c); line-height: 1.35; }
+.dt-points span { font-size: 12.5px; font-weight: 700; color: var(--cream-muted); line-height: 1.6; }
+.dt-team ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.dt-team li { display: grid; grid-template-columns: minmax(7em, auto) minmax(0, 1fr); align-items: baseline; gap: 4px 12px; padding: 6px 10px; background: var(--cream-hi); border: 2px solid var(--wood-line); font-size: 13.5px; line-height: 1.6; }
+.dt-team li b { font-weight: 900; }
+.dt-team li span { color: var(--cream-muted); font-weight: 700; }
+.dt-team li.is-me { background: #fff1c4; box-shadow: inset 5px 0 0 var(--tomato); }
+.dt-credits { margin: 10px 0 0; display: grid; gap: 2px; font-size: 12px; font-weight: 700; color: var(--cream-muted); line-height: 1.6; }
 
 @media (max-width: 900px) {
   .dl-hero { min-height: auto; padding-block: calc(var(--hdr) + 40px) 100px; }
@@ -1404,11 +1458,11 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
   .kv-sns { margin-top: 20px; }
   .kv-inner { padding-bottom: 0; }
   .kv > .kv-play, .kv > .kv-sns { padding-inline: max(var(--gut), 16px); }
-  .news-grid, .srv-grid, .cm-panel, .game { grid-template-columns: minmax(0, 1fr); }
-  .game:nth-child(even) .game-art { order: 0; }
+  .news-grid, .srv-grid, .cm-panel { grid-template-columns: minmax(0, 1fr); }
+  .softs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tv-wrap { grid-template-columns: minmax(0, 1fr); }
   .tv-arrow { display: none; }
-  .feats, .game-points { grid-template-columns: minmax(0, 1fr); }
+  .feats { grid-template-columns: minmax(0, 1fr); }
   .cm-visual { max-width: 300px; order: -1; }
   .cm-event { grid-template-columns: minmax(0, 1fr); }
   .ev-sign { justify-self: start; }
@@ -1420,6 +1474,7 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
   .mc-near { --h: 22cqh; }
 }
 @media (max-width: 640px) {
+  .softs, .soft-lists { grid-template-columns: minmax(0, 1fr); }
   body { font-size: 14.5px; }
   .hdr { gap: 8px; padding-right: 12px; }
   .pill-cta { height: 42px; padding: 0 14px; font-size: 13px; }

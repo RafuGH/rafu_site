@@ -8,6 +8,7 @@
     toast, copyText, placeTip, showTip, hideTip,
     fmtDate, ytId, watchUrl, loadThumb, openPlayer,
     WORK_PX, lighten, reveal,
+    OS, osOf, osInfo, osList,
   } = window.RAFU;
 
   /* "1.21" や "1.20.4" を新しい順に並べる（数字のないものは後ろ） */
@@ -32,7 +33,7 @@
     return list.length ? list.sort(verCmp).map((x) => ({ ...v, label: x, range: v.label })) : [v];
   };
 
-  /* 自作ゲームとMinecraftの配布物を1つの一覧にまとめる（中身は content.js の games と works） */
+  /* ゲームソフトとMinecraftの配布物を1つの一覧にまとめる（中身は content.js の games と works） */
   const items = [
     ...(C.games || []).map((g) => ({
       ...g,
@@ -59,7 +60,7 @@
   const TABS = [
     { key: 'all', label: 'すべて' },
     { key: 'mc', label: 'Minecraft' },
-    { key: 'game', label: 'ゲーム' },
+    { key: 'game', label: 'ゲームソフト' },
   ];
   const narrow = matchMedia('(max-width: 900px)');
   const tabsEl = $('#inv-tabs');
@@ -75,6 +76,7 @@
     ? `<img src="${esc(it.iconImage)}" alt="" loading="lazy">`
     : `<i class="px" data-px="${WORK_PX[it.icon] || 'chest'}"></i>`);
   const fileName = (f) => {
+    if (f && typeof f === 'object') return f.fileName || fileName(f.file);
     const last = String(f).split(/[?#]/)[0].split('/').pop();
     try { return decodeURIComponent(last); } catch (e) { return last; }
   };
@@ -83,18 +85,6 @@
   };
 
   /* ---------- 対応機種（ゲームの versions の platform） ---------- */
-  const OS = {
-    windows: { name: 'Windows', px: 'win' },
-    mac: { name: 'Mac', px: 'mac' },
-    ios: { name: 'iOS', px: 'phone' },
-    android: { name: 'Android', px: 'droid' },
-  };
-  const OS_ALIAS = { win: 'windows', pc: 'windows', macos: 'mac', osx: 'mac', iphone: 'ios', ipad: 'ios', ipados: 'ios' };
-  const osOf = (p) => {
-    const k = String(p || '').toLowerCase().replace(/[\s_-]/g, '');
-    return OS[k] ? k : OS_ALIAS[k] || String(p || '');
-  };
-  const osInfo = (k) => OS[k] || { name: k, px: 'game' };
   /* いま見ている端末。ゲームの機種はこれを最初に選ぶ */
   const myOs = (() => {
     const ua = navigator.userAgent || '';
@@ -105,10 +95,7 @@
     return '';
   })();
 
-  const platforms = (it) => {
-    const ks = uniq(it.vers.map((v) => osOf(v.platform)));
-    return [...Object.keys(OS).filter((k) => ks.includes(k)), ...ks.filter((k) => !OS[k])];
-  };
+  const platforms = (it) => osList(it.vers);
   /* 一覧のツールチップと詳しい内容に出す「対応」（範囲で書いたものは、そのまま "1.18.2〜1.20.6" と出す） */
   const topVer = (s) => { const m = RANGE.exec(s); return m ? m[2] || '9999' : s; };
   const support = (it) => {
@@ -141,7 +128,8 @@
 
   const norm = (s) => String(s || '').normalize('NFKC').toLowerCase();
   const hay = (it) => norm([
-    it.title, it.cat, it.series, it.edition, it.text, it.about, it.maker, it.id, TYPE[it.kind], ...(it.tags || []),
+    it.title, it.cat, it.series, it.edition, it.text, it.about, it.maker, it.id, TYPE[it.kind], ...(it.tags || []), ...(it.specs || []),
+    it.team && it.team.name, ...((it.team && it.team.members) || []).flatMap((m) => [m.name, m.role]),
     ...it.vers.flatMap((v) => [v.label, v.range, v.version && `v${v.version}`, v.loader, v.platform && osInfo(osOf(v.platform)).name]),
     ...it.ups.flatMap((u) => [u.title, ...(u.notes || [])]),
   ].join(' '));
@@ -319,6 +307,9 @@
   };
 
   const STORES = [[/^https?:\/\/apps\.apple\.com\//i, 'App Storeで開く'], [/^https?:\/\/play\.google\.com\//i, 'Google Playで開く']];
+  /* ほかのサイトに置いてあるもの（ブラウザで遊べるページ・Googleドライブなど）は、新しいタブで開く */
+  const SITES = [[/^https?:\/\/(www\.)?unityroom\.com\//i, 'unityroom'], [/^https?:\/\/drive\.google\.com\//i, 'Googleドライブ'], [/^https?:\/\/github\.com\//i, 'GitHub']];
+  const isExt = (f) => /^https?:\/\//i.test(f) && !String(f).startsWith(location.origin);
   const dlHtml = (it, v) => {
     const sel = pick[it.id];
     const os = sel.platform ? osInfo(sel.platform) : null;
@@ -333,9 +324,17 @@
       return `<p class="dt-file"><i class="px" data-px="${os ? os.px : 'chest'}"></i><b>${esc(os ? `${os.name}版` : it.title)}</b><small>ストアのページが開きます</small></p>
         <a class="pxbtn dt-btn" href="${esc(v.file)}" target="_blank" rel="noopener" data-sfx><i class="px" data-px="dl"></i><span>${store[1]}</span></a>`;
     }
-    const name = fileName(v.file);
+    const note = v.note ? `<small class="dt-note">${esc(v.note)}</small>` : '';
+    if (isExt(v.file)) {
+      const site = (SITES.find(([re]) => re.test(v.file)) || [0, 'ほかのサイト'])[1];
+      const play = osOf(v.platform) === 'web';
+      const what = play ? `${it.title}（ブラウザ版）` : v.fileName || `${os ? `${os.name}版` : it.title}`;
+      return `<p class="dt-file"><i class="px" data-px="${os ? os.px : 'chest'}"></i><b>${esc(what)}</b><small>${esc(site)} のページが開きます${v.size ? ` ・ ${esc(v.size)}` : ''}</small>${note}</p>
+        <a class="pxbtn dt-btn${play ? ' is-play' : ''}" href="${esc(v.file)}" target="_blank" rel="noopener" data-sfx><i class="px" data-px="${play ? 'right' : 'dl'}"></i><span>${play ? 'ブラウザで遊ぶ' : 'ダウンロード'}</span></a>`;
+    }
+    const name = fileName(v);
     const meta = [v.size, fmtDate(v.date)].filter(Boolean).map(esc).join(' ・ ');
-    return `<p class="dt-file"><i class="px" data-px="${os ? os.px : 'chest'}"></i><b>${esc(name)}</b>${meta ? `<small>${meta}</small>` : ''}</p>
+    return `<p class="dt-file"><i class="px" data-px="${os ? os.px : 'chest'}"></i><b>${esc(name)}</b>${meta ? `<small>${meta}</small>` : ''}${note}</p>
       <a class="pxbtn dt-btn" href="${esc(v.file)}" download="${esc(name)}" data-name="${esc(name)}"><i class="px" data-px="dl"></i><span>ダウンロード</span></a>`;
   };
   const paintDl = (it) => {
@@ -380,7 +379,7 @@
     const chip = (px, t) => `<span class="dt-chip">${px ? `<i class="px" data-px="${px}"></i>` : ''}${esc(t)}</span>`;
     const chips = it.kind === 'mc'
       ? [it.edition && chip('', it.edition), support(it) && chip('cube', support(it)), ...uniq(it.vers.map((v) => v.loader)).map((l) => chip('', l))]
-      : platforms(it).map((k) => chip(osInfo(k).px, osInfo(k).name));
+      : [...platforms(it).map((k) => chip(osInfo(k).px, osInfo(k).name)), ...(it.specs || []).map((t) => chip('', t))];
     return chips.filter(Boolean).length ? `<p class="dt-meta"><span class="dt-meta-lbl">対応</span>${chips.filter(Boolean).join('')}</p>` : '';
   };
 
@@ -431,6 +430,26 @@
     const about = String(it.about || it.text || '').split(/\n+/).map((p) => p.trim()).filter(Boolean)
       .map((p) => (/^【[^【】]+】$/.test(p) ? `<p class="dt-sub">${esc(p.slice(1, -1))}</p>` : `<p>${rich(p)}</p>`)).join('');
     const howto = it.howto || [];
+    /* 画面写真（押すと大きく見られる） */
+    const shots = (it.shots || []).filter(Boolean);
+    const gallery = shots.length ? `<div class="dt-shots">${shots.map((src, i) => `<button class="dt-shot" type="button" data-shot="${esc(src)}" aria-label="${esc(`${it.title}の画面 ${i + 1}を大きく見る`)}" data-sfx><img src="${esc(src)}" alt="" loading="lazy"></button>`).join('')}</div>` : '';
+    /* 特徴（content.js の points） */
+    const points = (it.points || []).filter((p) => p && p.title);
+    const feats = points.length ? `<ul class="dt-points">${points.map((p) => `<li><b>${esc(p.title)}</b><span>${esc(p.text || '')}</span></li>`).join('')}</ul>` : '';
+    /* 制作チーム（チーム「作品のタイトル」と出して、押すと担当が開く） */
+    const members = ((it.team && it.team.members) || []).filter((m) => m && m.name);
+    const teamName = `チーム「${it.title}」`;
+    const teamBtn = members.length ? `
+          <p class="dt-meta dt-team-row"><span class="dt-meta-lbl">制作</span>
+            <button class="dt-team-btn" type="button" aria-expanded="false" aria-controls="dt-team" data-sfx><i class="px" data-px="team"></i><span class="dt-team-name">${esc(teamName)}</span><span class="dt-team-more"><span>担当を見る</span><i class="px" data-px="down"></i></span></button>
+          </p>` : '';
+    const team = members.length ? `
+      <div class="dt-team" id="dt-team" hidden>
+        <p class="dt-team-h"><i class="px" data-px="team"></i>${esc(teamName)}の担当</p>
+        <ul>${members.map((m) => `<li${m.name === 'Rafu' ? ' class="is-me"' : ''}><b>${esc(m.name)}</b><span>${esc(m.role || '')}</span></li>`).join('')}</ul>
+        ${(it.credits || []).length ? `<p class="dt-credits">${it.credits.map((c) => `<span>${esc(c)}</span>`).join('')}</p>` : ''}
+      </div>` : '';
+    const links = (it.links || []).filter((l) => l && l.url).map((l) => `<p class="dt-alt dt-link"><i class="px" data-px="globe"></i><span>${esc(l.label || l.url)}</span><a href="${esc(l.url)}" target="_blank" rel="noopener" data-sfx>開く ↗</a></p>`).join('');
 
     detail.style.setProperty('--c', it.color);
     detail.innerHTML = `
@@ -439,22 +458,26 @@
         <div>
           <p class="dt-kicker"><span class="dt-type">${TYPE[it.kind]}</span><span class="dt-cat">${esc(it.cat)}</span>${it.series ? `<span class="dt-series">${esc(it.series)}</span>` : ''}<button class="dt-share" type="button" data-share data-sfx><i class="px" data-px="copy"></i><span>リンクをコピー</span></button></p>
           <h2 class="dt-title">${esc(it.title)}</h2>
-          ${metaHtml(it)}
+          ${metaHtml(it)}${teamBtn}
         </div>
       </header>
+      ${team}
       ${upHtml(it)}
       ${media}
       ${cap}
+      ${gallery}
       ${about ? `<div class="dt-about">${about}</div>` : ''}
+      ${feats}
       <div class="dt-box">
         <p class="dt-lbl">ダウンロード<small>DOWNLOAD</small></p>
         ${dimsOf(it).length ? '<div class="dt-picks"></div>' : ''}
         <div class="dt-dl"></div>
         ${it.discord ? `<p class="dt-alt"><span class="brand">${ICON.discord}</span><span>Discordの配布チャンネルでも配っています</span><a href="${esc(it.discord)}" target="_blank" rel="noopener" data-sfx>開く ↗</a></p>` : ''}
+        ${links}
       </div>
       ${howto.length ? `
       <div class="dt-howto">
-        <p class="howto-title"><i class="px" data-px="star"></i><span>導入のしかた</span></p>
+        <p class="howto-title"><i class="px" data-px="star"></i><span>${esc(it.howtoTitle || '導入のしかた')}</span></p>
         <ol>${howto.map((h) => `<li><span>${rich(h)}</span></li>`).join('')}</ol>
       </div>` : ''}`;
 
@@ -476,8 +499,19 @@
     });
     const pvBtn = $('[data-pv]', detail);
     if (pvBtn) {
-      loadThumb($('img', pvBtn), { id: pv }, true);
+      loadThumb($('img', pvBtn), { id: pv, thumb: it.pvThumb || '' }, true);
       pvBtn.addEventListener('click', () => openPlayer({ id: pv, title: it.title, kind: 'live', n: 0 }, `${pvLabel} / ${it.title}`));
+    }
+    $$('[data-shot]', detail).forEach((b) => b.addEventListener('click', () => openShot(b.dataset.shot, it.title)));
+    /* チーム「…」を押すと、担当を開く・閉じる */
+    const teamBtnEl = $('.dt-team-btn', detail);
+    if (teamBtnEl) {
+      teamBtnEl.addEventListener('click', () => {
+        const open = teamBtnEl.getAttribute('aria-expanded') !== 'true';
+        teamBtnEl.setAttribute('aria-expanded', String(open));
+        $('.dt-team-more span', teamBtnEl).textContent = open ? 'とじる' : '担当を見る';
+        $('#dt-team', detail).hidden = !open;
+      });
     }
     /* アップデートのリボンを押すと、履歴を開く・閉じる */
     const upBar = $('.dt-up-bar', detail);
@@ -494,6 +528,23 @@
       void detail.offsetWidth;
       detail.classList.add('is-swap');
     }
+  };
+
+  /* 画面写真を大きく見る（どこを押しても・Escでも閉じる） */
+  const openShot = (src, title) => {
+    let dlg = $('#dt-shot-view');
+    if (!dlg) {
+      dlg = document.createElement('dialog');
+      dlg.id = 'dt-shot-view';
+      dlg.className = 'dt-shot-view';
+      dlg.innerHTML = '<img alt=""><button class="dt-shot-x" type="button" aria-label="閉じる">×</button>';
+      dlg.addEventListener('click', () => dlg.close());
+      document.body.append(dlg);
+    }
+    const img = $('img', dlg);
+    img.src = src;
+    img.alt = `${title}の画面`;
+    if (dlg.showModal) dlg.showModal(); else window.open(src, '_blank', 'noopener');
   };
 
   /* ---------- 選ぶ（URLの #作品id もそろえる） ---------- */
@@ -521,16 +572,35 @@
   const inv = $('.inv');
   if (window.ResizeObserver) new ResizeObserver(() => inv.style.setProperty('--inv-h', `${inv.offsetHeight}px`)).observe(inv);
 
+  /* トップの「一覧」から来たとき（downloads.html?tab=game&platform=web など）は、その条件で絞り込んだ一覧から始める */
+  const qs = new URLSearchParams(location.search);
+  const fromList = TABS.some((t) => t.key === qs.get('tab') && count(t.key));
+  if (fromList) {
+    state.tab = qs.get('tab');
+    Object.keys(FILTERS).forEach((k) => {
+      const v = qs.get(k);
+      if (v && FILTERS[k].tab === state.tab && FILTERS[k].opts.some(([o]) => o === v)) state[k] = v;
+    });
+  }
+  if (qs.get('q')) {
+    state.q = qs.get('q').trim();
+    qEl.value = state.q;
+  }
+  const linked = byId(hashId());
+  if (linked && !matches(linked)) {   // 絞り込みで隠れてしまう作品なら、条件を戻して見えるように
+    Object.assign(state, DEF);
+    qEl.value = '';
+  }
   paintTabs();
   renderFilters();
   renderGrid();
-  const linked = byId(hashId());
-  /* URLに作品がないときは、ダウンロードできるものがある作品から見せる */
-  select(linked || items.find((it) => it.vers.some((v) => v.file)) || items[0], { hash: Boolean(linked) });
-  /* トップのカードから来たときは、選んだ作品が見える位置から始める */
-  if (linked) {
+  /* URLに作品がないときは、一覧の先頭のうち ダウンロードできるものがある作品から見せる */
+  const firstReady = (list) => list.find((it) => it.vers.some((v) => v.file)) || list[0];
+  select(linked || firstReady(sorted(items.filter(matches))) || firstReady(items), { hash: Boolean(linked) });
+  /* トップのカード・一覧から来たときは、作品（スマホは一覧）が見える位置から始める */
+  if (linked || fromList) {
     $$('.dl-grid [data-reveal]').forEach((el) => el.removeAttribute('data-reveal'));   // 出てくる動きを省いて、位置がずれないようにする
-    requestAnimationFrame(() => (narrow.matches ? detail : $('#list')).scrollIntoView({ behavior: 'instant', block: 'start' }));
+    requestAnimationFrame(() => (linked && narrow.matches ? detail : $('#list')).scrollIntoView({ behavior: 'instant', block: 'start' }));
   }
 
   if (!items.length) {

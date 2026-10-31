@@ -4,10 +4,11 @@
 
   const {
     C, root, $, $$, reduce, finePointer, clamp, esc, store,
-    SFX, ARROW, PLAY, PAD, paintPx,
+    SFX, ARROW, PAD, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
     KIND, ch, fmtDate, ytId, loadThumb, openPlayer,
     WORK_PX, lighten, reveal,
+    osInfo, osList,
   } = window.RAFU;
 
   /* ---------- hero media（1枚絵や動画を入れると赤い集中線の背景と入れ替わる） ---------- */
@@ -95,7 +96,7 @@
     else kvPlay.hidden = true;
   }
 
-  /* ---------- PICKUP（最新動画・自作ゲーム・Minecraft・Discord） ---------- */
+  /* ---------- PICKUP（最新動画・ゲームソフト・Minecraft・Discord） ---------- */
   const games = (C.games || []).filter((g) => g && g.title);
   const pickupEl = $('#pickup');
   if (pickupEl) {
@@ -109,7 +110,11 @@
     if (videos[0]) cards.push(card('button', 'type="button" data-pick="video"', { tag: 'NEW VIDEO', html: '<img alt="" loading="lazy" width="480" height="360">' }, esc(videos[0].title), '#000'));
     if (games[0]) {
       const g = games[0];
-      cards.push(card('a', 'href="#game"', { tag: 'GAME', html: g.image ? `<img src="${esc(g.image)}" alt="" loading="lazy">` : `<span class="pa-burst"></span><span class="pa-icon">${PAD}</span>` }, esc(g.title), 'var(--tomato)'));
+      const art = g.image ? `<img src="${esc(g.image)}" alt="" loading="lazy">`
+        : g.iconImage ? `<span class="pa-burst"></span><img class="pa-gameicon" src="${esc(g.iconImage)}" alt="" loading="lazy">`
+          : `<span class="pa-burst"></span><span class="pa-icon">${PAD}</span>`;
+      /* ソフトのカードは、そのソフトのダウンロードページへ */
+      cards.push(card('a', `href="downloads.html#${esc(g.id)}"`, { tag: 'GAME', html: art }, esc(g.title), 'var(--tomato)'));
     }
     cards.push(card('a', 'href="#minecraft"', { tag: 'MINECRAFT', html: '<span class="pa-pixel"><img class="pa-chara" src="assets/img/rafu-mc.webp" alt="" width="589" height="900" loading="lazy"></span>' }, phr('参加型', 'Minecraft', 'サーバー'), '#f47a35'));
     cards.push(card('a', `href="${esc(C.discord || '#community')}" target="_blank" rel="noopener"`, { tag: 'DISCORD', html: '<span class="pa-discord"><img src="assets/img/discord-server.webp" alt="" width="640" height="486" loading="lazy"></span>' }, phr('Discord', 'コミュニティに参加'), 'var(--discord)'));
@@ -135,7 +140,8 @@
       const url = n.url ? (C[n.url] || n.url) : '';
       const badge = isNew(n.date) ? '<span class="news-new">NEW</span>' : '';
       const inner = `<time datetime="${esc(n.date)}">${esc(fmtDate(n.date))}</time><span class="news-tag" style="--tag:${esc(NEWS_TAG[n.tag] || '#17161b')}">${esc(n.tag || 'お知らせ')}</span><span class="news-title">${badge}${esc(n.title)}</span>${ARROW}`;
-      return `<li>${url ? `<a class="news-item" href="${esc(url)}" target="_blank" rel="noopener" data-sfx>${inner}</a>` : `<div class="news-item">${inner}</div>`}</li>`;
+      const ext = /^https?:/i.test(url) ? ' target="_blank" rel="noopener"' : '';   // サイトの中のページ（downloads.html など）は同じタブで開く
+      return `<li>${url ? `<a class="news-item" href="${esc(url)}"${ext} data-sfx>${inner}</a>` : `<div class="news-item">${inner}</div>`}</li>`;
     }).join('') : '<li class="news-empty">新しいお知らせはまだありません。</li>';
   }
 
@@ -264,36 +270,45 @@
     [$('.tv-wrap'), tabsEl, listEl].forEach((el) => { if (el) el.hidden = true; });
   }
 
-  /* ---------- GAME ---------- */
+  /* ---------- GAME（ゲームソフト。カードを押すとダウンロードページのそのソフトへ） ---------- */
   const gamesEl = $('#games-list');
   if (gamesEl) {
+    const lastDate = (g) => (g.versions || []).map((v) => v && v.date).filter(Boolean).sort().pop() || '';
     gamesEl.innerHTML = games.map((g, i) => {
-      const trailer = g.trailer ? ytId(g.trailer) : '';
-      const points = (g.points || []).filter((p) => p && p.title);
-      return `<article class="game" data-reveal>
-        <div class="game-art">
-          ${g.image ? `<img src="${esc(g.image)}" alt="${esc(g.title)}の画面" loading="lazy">` : `<div class="game-ph">${PAD}<span>NOW DEVELOPING</span></div>`}
-          ${trailer ? `<button class="trailer" type="button" data-trailer="${i}" data-sfx>${PLAY}<span>紹介動画</span></button>` : ''}
-        </div>
-        <div class="game-body">
-          ${g.maker ? `<p class="game-maker">${esc(g.maker)}</p>` : ''}
-          <h3 class="game-title">${esc(g.title)}</h3>
-          ${g.catch ? `<p class="game-catch">${esc(g.catch)}</p>` : ''}
-          ${g.text ? `<p class="game-text">${esc(g.text)}</p>` : ''}
-          ${points.length ? `<ul class="game-points">${points.map((p) => `<li><b>${esc(p.title)}</b><span>${esc(p.text)}</span></li>`).join('')}</ul>` : ''}
-          <div class="game-cta">
-            ${g.id ? `<a class="btn btn-ink" href="downloads.html#${esc(g.id)}" data-sfx><span>ダウンロードページへ</span><svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>` : ''}
-            ${trailer ? `<button class="btn btn-white" type="button" data-trailer="${i}" data-sfx><span>紹介動画を見る</span></button>` : ''}
-          </div>
-        </div>
-      </article>`;
+      const ps = osList(g.versions);
+      const date = lastDate(g);
+      const art = g.image ? `<img class="soft-shot" src="${esc(g.image)}" alt="" loading="lazy">`
+        : g.iconImage ? `<span class="soft-burst"></span><img class="soft-icon" src="${esc(g.iconImage)}" alt="" loading="lazy">`
+          : `<span class="soft-burst"></span><span class="soft-pad">${PAD}</span>`;
+      return `
+      <a class="soft" href="downloads.html#${esc(g.id)}" style="--d:${(i * 0.08).toFixed(2)}s" data-reveal data-sfx>
+        <span class="soft-art">${art}${ps.length ? `<span class="soft-plat">${ps.map((k) => `<span><i class="px" data-px="${osInfo(k).px}"></i>${esc(osInfo(k).name)}</span>`).join('')}</span>` : ''}</span>
+        <span class="soft-body">
+          ${g.cat ? `<span class="soft-cat">${esc(g.cat)}</span>` : ''}
+          <h3>${esc(g.title)}</h3>
+          ${g.catch ? `<span class="soft-catch">${esc(g.catch)}</span>` : ''}
+          ${date ? `<span class="soft-date"><time datetime="${esc(date)}">${esc(fmtDate(date))}</time> 公開</span>` : ''}
+          <span class="soft-go">ダウンロードページへ${ARROW}</span>
+        </span>
+      </a>`;
     }).join('');
-    gamesEl.addEventListener('click', (e) => {
-      const b = e.target.closest('[data-trailer]');
-      if (!b) return;
-      const g = games[Number(b.dataset.trailer)];
-      openPlayer({ id: ytId(g.trailer), title: g.title, kind: 'live', n: 0 }, `TRAILER / ${g.title}`);
-    });
+
+    /* 一覧へ（ダウンロードページを「ゲームソフト」や機種で絞り込んだ状態で開く） */
+    const listsEl = $('#games-lists');
+    if (listsEl) {
+      const all = osList(games.flatMap((g) => g.versions || []));
+      const rows = [
+        { href: 'downloads.html?tab=game', px: 'game', name: 'ゲームソフト一覧', n: games.length },
+        ...all.map((k) => ({
+          href: `downloads.html?tab=game&platform=${encodeURIComponent(k)}`,
+          px: osInfo(k).px,
+          name: k === 'web' ? 'ブラウザで遊べるソフト' : `${osInfo(k).name}のソフト`,
+          n: games.filter((g) => osList(g.versions).includes(k)).length,
+        })),
+      ];
+      listsEl.innerHTML = rows.map((r) => `<a class="soft-list" href="${esc(r.href)}" data-sfx><i class="px" data-px="${r.px}"></i><span class="soft-list-name">${esc(r.name)}</span><small>${r.n}本</small><span class="soft-list-go">一覧${ARROW}</span></a>`).join('');
+      if (!games.length) listsEl.hidden = true;
+    }
     if (!games.length) $('#game').hidden = true;
   }
 
@@ -405,8 +420,14 @@
       }
     });
 
+    tilt($$('.work', worksEl));
+  }
+  /* ゲームソフトのカードも同じように傾ける */
+  tilt($$('.soft'));
+
+  function tilt(cardsToTilt) {
     if (finePointer && !reduce) {
-      $$('.work', worksEl).forEach((card) => {
+      cardsToTilt.forEach((card) => {
         card.addEventListener('pointermove', (e) => {
           const r = card.getBoundingClientRect();
           const px = (e.clientX - r.left) / r.width;

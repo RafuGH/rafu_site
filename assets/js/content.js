@@ -43,6 +43,7 @@ window.RAFU_CONTENT = {
    * 日付が2週間以内のものには自動で「NEW」が付きます
    */
   news: [
+    { date: "2026-10-31", tag: "更新",     title: "ゲームソフト「よくばりカブト」「ゾンバク」「ゆきコロ」を載せました", url: "downloads.html?tab=game" },
     { date: "2026-10-30", tag: "お知らせ", title: "公式サイトをリニューアルしました", url: "" },
     { date: "2026-10-30", tag: "Discord",  title: "Discordサーバーが 日本語・English・Русский の3言語に対応しました", url: "discord" },
     { date: "2026-09-20", tag: "配信",     title: "配信「東京から消える漢」のアーカイブを公開中", url: "https://www.youtube.com/watch?v=01DwgkXvCWc" },
@@ -80,7 +81,7 @@ window.RAFU_CONTENT = {
 
   /*
    * 配布物（ダウンロードページ downloads.html に並びます）
-   * games … トップの「自作ゲーム」の欄にも大きく出ます
+   * games … トップの「ゲームソフト」の欄にカードで並ぶ（押すとダウンロードページのその作品へ。先頭はピックアップにも出る）
    * works … トップの「Minecraft」の欄のカードにも出ます
    *
    * id        … ページのURLに使う名前（半角英数字とハイフン。例: downloads.html#clear-xp ）
@@ -98,38 +99,139 @@ window.RAFU_CONTENT = {
    *                        "1.18〜" のように後ろを空けると、いちばん新しいバージョンまで）
    *             version  … 作品のバージョン（例: "2.0" ）。書くと「作品のバージョン」も選べる・表示される。なくてもOK
    *             loader   … MODローダーなど（Minecraftの作品だけ。例: "Fabric" / "Forge" / "NeoForge" / "Paper" ）。なくてもOK
-   *             platform … 対応機種（ゲームだけ。"windows" / "mac" / "ios" / "android" ）。なくてもOK
+   *             platform … 対応機種（ゲームだけ。"windows" / "mac" / "ios" / "android" / "web"（ブラウザで遊べる） ）。なくてもOK
    *             file     … ファイルの場所（例: "downloads/clear-xp/Clear_XP.zip" ）。
    *                        大きいファイルや iOS・Android はURLでもOK（App Store / Google Play のURLならストアのボタンになる）
+   *                        ほかのサイトのURL（unityroom・Googleドライブなど）は新しいタブで開く。platform が "web" なら「ブラウザで遊ぶ」ボタン
+   *             fileName … URLのときに見せるファイル名（例: "ゾンバク.zip" ）。なくてもOK
+   *             note     … ボタンの上に出す一言（例: "スマホでは動かないことがあります" ）。なくてもOK
    *             size / date … 表示用（例: "2.4MB" / "2026-10-30" ）。空でもOK。date は「新しい順」の並びにも使う
    *             file が空のものは「準備中」になる。対応していない機種・バージョンは行ごと消す
    * updates   … アップデートの履歴（上から新しい順）。書くと、ページに「UPDATE」の矢印のリボンが出て
    *             いちばん上の title を短く見せる（押すと notes と昔の版も見られる）。最初の版も残したいときは いちばん下に書く
    *             version … 作品のバージョン / date … 日付 / title … ひとことで / notes … くわしい内容（1行ずつ）
-   * howto     … 導入のしかた（1行ずつ。空なら出ない）
+   * howto     … 導入のしかた（1行ずつ。空なら出ない）。howtoTitle で見出しを変えられる（ゲームは "遊び方" など）
+   * ― ここからゲームソフト（games）で使うもの ―
+   * cat       … ジャンル（例: "アクション" ）/ tags … 検索に引っかかる言葉
+   * specs     … 「対応」の横に出す情報（例: ["Unity", "1人", "10〜15分"] ）
+   * catch     … トップのカードに出る一言
+   * points    … 特徴を3つくらい（ダウンロードページの紹介文の下に出る）。例: [{ title: "誘導", text: "…" }]
+   * team      … 制作チーム。{ members: [{ name: "Rafu", role: "ディレクター" }, …] }
+   *             ダウンロードページに チーム「作品のタイトル」 と出て、押すと担当が開く（Rafu の行は色が変わる）
+   * credits   … 使った素材のクレジット（1行ずつ。チームの下に小さく出る）
+   * links     … 作品ページなどへのリンク。[{ label: "unityroom の作品ページ", url: "https://…" }]
+   * image     … トップのカードの絵（16:9）。空なら iconImage を集中線の上に貼る
+   * shots     … ダウンロードページで動画の下に並べる画面写真（押すと大きく見られる）
+   * pvThumb   … 動画のサムネを自分の画像にしたいときだけ（空ならYouTubeのサムネ）
    * discord   … Discordの配布チャンネル（ダウンロードページの予備のリンク）
    */
   games: [
     {
-      id: "game",
-      title: "自作ゲーム",
-      maker: "RedHub",
-      catch: "自分で作ったゲームを、ここから配布中。",
-      text: "RedHubで作ったゲーム。",
-      about: "RedHubで作っているゲームです。",
-      image: "",                // トップの「自作ゲーム」の欄に出す画面写真
-      iconImage: "",
-      trailer: "",              // 紹介PV（トップとダウンロードページの両方に出る）
-      points: [],               // 特徴を3つくらい。例: [{ title: "走る", text: "…" }]
-      versionLabel: "バージョン",
-      versions: [
-        { platform: "windows", label: "最新版", file: "", size: "", date: "" },
-        { platform: "mac",     label: "最新版", file: "", size: "", date: "" },
-        { platform: "ios",     label: "最新版", file: "", size: "", date: "" },
-        { platform: "android", label: "最新版", file: "", size: "", date: "" },
+      id: "yokubari-kabuto",
+      title: "よくばりカブト",
+      cat: "カジュアル",
+      tags: ["夏", "カジュアル", "カブトムシ", "3D", "Unity"],
+      catch: "樹液を吸いつくせ！ 欲張りなカブトムシの夏休み。",
+      text: "虫取り網をかいくぐって、木からあふれる樹液を吸い尽くすカジュアルゲーム。",
+      about: "主人公はカブトムシ！\n木からあふれ出る樹液を吸いつくしたい欲張りなカブトは、夏休みの小学生たちから狙われる！\n虫取り網をかいくぐり、樹液を吸い尽くせ！！\n【テーマは「夏 × カジュアル」】\nすぐに遊べる手軽さはそのままに、「もう少し吸うか、逃げるか」のリスクとリターンの駆け引きが楽しめるように作りました。結果はランクで評価されます。",
+      image: "",
+      iconImage: "assets/img/games/yokubari-kabuto.webp",
+      trailer: "",
+      points: [
+        { title: "夏 × カジュアル", text: "夏休みが舞台。ブラウザですぐ遊べる" },
+        { title: "駆け引き", text: "もう少し吸うか、逃げるか。欲張りすぎに注意" },
+        { title: "ランク", text: "結果はランクで評価。上のランクはかなり手ごわい" },
       ],
-      howto: [],
-      discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
+      specs: ["Unity", "1人"],
+      versions: [
+        { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/yokubarikabuto", date: "2026-09-10", note: "スマホでは動かないことがあります。PCがおすすめ" },
+      ],
+      howtoTitle: "遊び方",
+      howto: ["WASDキーとマウス（カーソル）で操作します"],
+      team: {
+        members: [
+          { name: "Rafu",       role: "ディレクター / アートディレクター / UIデザイン" },
+          { name: "TK",         role: "モデラー / プランナー / レベルデザイン" },
+          { name: "ナタデコイ", role: "メインプログラマー" },
+        ],
+      },
+      credits: [
+        "背景モデル：Low-Poly Simple Nature Pack（Unity Asset Store）",
+        "BGM・効果音：DOVA-SYNDROME、MusMus、効果音ラボ、On-Jin ～音人～、Pixabay ほか",
+      ],
+      links: [{ label: "unityroom の作品ページ", url: "https://unityroom.com/games/yokubarikabuto" }],
+    },
+    {
+      id: "zombaku",
+      title: "ゾンバク",
+      cat: "アクション",
+      series: "GC甲子園2025",
+      tags: ["2D", "ドット絵", "カジュアル", "ゾンビ", "爆弾", "ゲームクリエイター甲子園"],
+      catch: "爆弾でゾンビを誘い込んで、まとめてドカン！",
+      text: "置いた爆弾でゾンビを誘導して、好きなタイミングで起爆。一気に倒してスコアを稼ぐアクション。",
+      about: "設置した爆弾でゾンビを誘導し、好きなタイミングで起爆して一気に倒すアクションゲームです。\n爆発で地面が壊れて逃げ道がだんだん減っていくので、爆弾をどこに置くかがカギ。\n一度にたくさんのゾンビを倒すとボーナス得点！ スコアを伸ばしてランキングの上位をねらおう。\n【ゲームクリエイター甲子園 2025 出展作品】",
+      image: "assets/img/games/zombaku-pv.webp",
+      iconImage: "assets/img/games/zombaku-icon.webp",
+      trailer: "QJdOE16TNM0",
+      pvThumb: "assets/img/games/zombaku-pv.webp",
+      shots: [
+        "assets/img/games/zombaku-title.webp",
+        "assets/img/games/zombaku-bomb.webp",
+        "assets/img/games/zombaku-result.webp",
+      ],
+      points: [
+        { title: "誘導", text: "置いた爆弾にゾンビをおびき寄せる" },
+        { title: "起爆", text: "好きなタイミングで一気にドカン" },
+        { title: "ボーナス", text: "まとめて倒すほど得点アップ" },
+      ],
+      specs: ["キーボード＋マウス", "1人", "10〜15分"],
+      versions: [
+        { platform: "windows", label: "最新版", file: "https://drive.google.com/file/d/1FsuSEMDqHjJ4aW0asCPm_NrtAVNmm5kw/view?usp=sharing", fileName: "ゾンバク.zip", date: "2025-11-14" },
+      ],
+      howtoTitle: "遊び方",
+      howto: [
+        "「ダウンロード」を押すとGoogleドライブのページが開きます",
+        "右上のダウンロードボタンで「ゾンバク.zip」を保存",
+        "zipを展開（すべて展開）して、中のゲームを起動",
+      ],
+      team: {
+        members: [
+          { name: "Rafu",   role: "プランナー（進行管理・UIデザイン）" },
+          { name: "馬車馬", role: "プログラマー（ゾンビAI・アイテム・爆弾）" },
+          { name: "はたけ", role: "プログラマー（リザルト・ランキング）" },
+          { name: "胡桃",   role: "デザイナー（キャラクターデザイン）" },
+        ],
+      },
+      links: [{ label: "ゲームクリエイター甲子園の作品ページ", url: "https://gameparade.creators-guild.com/works/3482" }],
+    },
+    {
+      id: "yukikoro",
+      title: "ゆきコロ",
+      cat: "パズル",
+      tags: ["冬", "雪", "パズル", "Unity"],
+      catch: "いつ、どこで落とす？ ゆきだまを大きくするパズル。",
+      text: "ゆきだまを大きくしていくのが目的。いつ、どこで落とすかを考えるパズルゲーム。",
+      about: "ゆきだまを大きくしていくのが目的のゲーム。\nゆきだまをいつ、どこでおとすかを考えるパズルゲームです。",
+      image: "",
+      iconImage: "assets/img/games/yukikoro.webp",
+      trailer: "",
+      points: [],
+      specs: ["Unity", "1人"],
+      versions: [
+        { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/yukikorokorokoro", date: "2025-09-20", note: "スマホでは動かないことがあります。PCがおすすめ" },
+      ],
+      howtoTitle: "遊び方",
+      howto: ["A・Dキーで横に移動", "スペースキーで雪玉を落とす"],
+      team: {
+        members: [
+          { name: "Rafu",           role: "ディレクター / UIデザイン" },
+          { name: "しろのくまたろう", role: "メインプログラマー" },
+          { name: "air",            role: "サブプログラマー" },
+          { name: "夜桜 魈華",      role: "サウンド / ステージ設計" },
+          { name: "たぐぐみ",        role: "アートディレクター" },
+        ],
+      },
+      links: [{ label: "unityroom の作品ページ", url: "https://unityroom.com/games/yukikorokorokoro" }],
     },
   ],
 
