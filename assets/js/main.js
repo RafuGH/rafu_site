@@ -493,29 +493,34 @@
     kv.addEventListener('pointerleave', () => { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(loop); });
   }
 
-  /* ---------- HOME: トマトを押すと笑う ---------- */
+  /* ---------- HOME: トマトを押すと笑う（1回押すごとに文字が1つ出て、Rafuの笑い声がランダムで1つ鳴る） ---------- */
   const mascot = $('#mascot');
   const pops = $('#kv-pops');
-  const LAUGHS = ['アハハ', 'アハハハ!', 'あはは', 'ハハッ!'];
+  const laugh = C.laugh || {};
+  const LAUGHS = laugh.texts && laugh.texts.length ? laugh.texts : ['アハハ', 'アハハハ!', 'あはは', 'ハハッ!'];
+  const VOICES = laugh.voices || [];
   if (mascot && mascotImg) {
+    /* 押したらすぐ鳴るように、カーソルを乗せた・触れた時点で笑い声を読み込んでおく */
+    const warm = () => SFX.preloadVoices(VOICES);
+    ['pointerenter', 'pointerdown', 'focus'].forEach((t) => mascot.addEventListener(t, warm, { once: true, passive: true }));
+    let lastText = -1;
     mascot.addEventListener('click', () => {
-      SFX.laugh();
+      SFX.voice(VOICES);
       mascotImg.classList.remove('is-laugh');
       void mascotImg.offsetWidth;
       mascotImg.classList.add('is-laugh');
       if (reduce) return;
-      for (let i = 0; i < 3; i++) {
-        const p = document.createElement('span');
-        p.className = 'pop burst';
-        p.textContent = LAUGHS[(Math.random() * LAUGHS.length) | 0];
-        p.style.left = `${20 + Math.random() * 60}%`;
-        p.style.top = `${10 + Math.random() * 55}%`;
-        p.style.setProperty('--rot', `${(Math.random() * 36 - 18).toFixed(1)}deg`);
-        p.style.animationDelay = `${i * 0.12}s`;
-        if (i === 1) p.style.color = '#fff';
-        pops.appendChild(p);
-        setTimeout(() => p.remove(), 1600);
-      }
+      let n = Math.floor(Math.random() * LAUGHS.length);
+      if (LAUGHS.length > 1 && n === lastText) n = (n + 1) % LAUGHS.length;
+      lastText = n;
+      const p = document.createElement('span');
+      p.className = 'pop burst';
+      p.textContent = LAUGHS[n];
+      p.style.left = `${25 + Math.random() * 50}%`;
+      p.style.top = `${12 + Math.random() * 46}%`;
+      p.style.setProperty('--rot', `${(Math.random() * 30 - 15).toFixed(1)}deg`);
+      pops.appendChild(p);
+      setTimeout(() => p.remove(), 1600);
     });
   }
 

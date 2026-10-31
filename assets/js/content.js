@@ -13,6 +13,30 @@ window.RAFU_CONTENT = {
   },
 
   /*
+   * 真ん中のトマトを押したとき（1回押すごとに、文字が1つ出て、笑い声がランダムで1つ鳴る）
+   * voices … 笑い声の音声ファイル。assets/audio/laugh/ に置いてパスを書く（MP3ならどのブラウザでも鳴る）
+   * texts  … 出る文字。けいふぉんとで表示（ひらがな・カタカナ・英数字・！？ー〜♪なら何でも使える。漢字はふつうの太字）
+   */
+  laugh: {
+    voices: [
+      "assets/audio/laugh/laugh-01.mp3", // 元の場面 https://youtu.be/AL810Tyj0wo?t=1968
+      "assets/audio/laugh/laugh-02.mp3", // 元の場面 https://youtu.be/NL5IzGNj56M?t=3044
+      "assets/audio/laugh/laugh-03.mp3", // 元の場面 https://youtu.be/w8jWAPluPuA?t=2464
+      "assets/audio/laugh/laugh-04.mp3", // 元の場面 https://youtu.be/vEoOmyXm7OU?t=11489
+      "assets/audio/laugh/laugh-05.mp3", // 元の場面 https://youtu.be/JxnOEu-tScA?t=21874
+      "assets/audio/laugh/laugh-06.mp3", // 元の場面 https://youtu.be/Z-H7NhLZzPk?t=2226
+      "assets/audio/laugh/laugh-07.mp3", // 元の場面 https://youtu.be/Z-H7NhLZzPk?t=524
+      "assets/audio/laugh/laugh-08.mp3", // 元の場面 https://youtu.be/wE3YhLLS1po?t=587
+      "assets/audio/laugh/laugh-09.mp3", // 元の場面 https://youtu.be/4f34sAY_MfQ?t=403
+      "assets/audio/laugh/laugh-10.mp3", // 元の場面 https://youtu.be/5454VNomlNY?t=14453
+      "assets/audio/laugh/laugh-11.mp3", // 元の場面 https://youtu.be/nNxPBu7MnJM?t=1714
+      "assets/audio/laugh/laugh-12.mp3", // 元の場面 https://youtu.be/dJdny4Y1S9g?t=1389
+      "assets/audio/laugh/laugh-13.mp3", // 元の場面 https://youtu.be/TlreEy-PJgw?t=830
+    ],
+    texts: ["アハハ", "アハハハ!", "あはは", "ハハッ!"],
+  },
+
+  /*
    * ニュース（上から新しい順。トップの下に並びます）
    * tag … "お知らせ" / "配信" / "Discord" / "更新" など自由に。色は main.js の NEWS_TAG で決まります
    * url … 押したときに開くページ（空なら押せない行になる。"discord" / "youtube" と書くと下のリンクを使う）

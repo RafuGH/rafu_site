@@ -128,6 +128,59 @@
       src.connect(f).connect(g).connect(c.destination);
       src.start();
     };
+
+    /* 声（トマトの笑い声）。押したときに鳴らすので初期状態でも鳴る。効果音をOFFに切り替えた人には鳴らさない */
+    const VOICE_GAIN = 0.9;
+    const voiceData = new Map(); // url → 読み込んだ中身（Promise）
+    const voiceBuf = new Map();  // url → 再生できる形にしたもの
+    let voiceNow = null;
+    let voiceSeq = 0;
+    let lastVoice = -1;
+    const fetchVoice = (url) => {
+      if (!voiceData.has(url)) {
+        voiceData.set(url, fetch(url).then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => null));
+      }
+      return voiceData.get(url);
+    };
+    const decodeVoice = async (c, url) => {
+      if (voiceBuf.has(url)) return voiceBuf.get(url);
+      const data = await fetchVoice(url);
+      if (!data) return null;
+      try {
+        const buf = await new Promise((res, rej) => c.decodeAudioData(data.slice(0), res, rej));
+        voiceBuf.set(url, buf);
+        return buf;
+      } catch (e) { return null; }
+    };
+    const stopVoice = (c) => {
+      if (!voiceNow) return;
+      const { src, g } = voiceNow;
+      voiceNow = null;
+      g.gain.setTargetAtTime(0, c.currentTime, 0.02);
+      try { src.stop(c.currentTime + 0.12); } catch (e) { /* もう止まっている */ }
+    };
+    /* list の中からランダムで1つ鳴らす（前回と同じものは続けない）。連打したら前の声は止めて新しい声にする */
+    const voice = async (list) => {
+      if (!list || !list.length || store.get('rafu-sfx') === 'off') return;
+      let i = Math.floor(Math.random() * list.length);
+      if (list.length > 1 && i === lastVoice) i = (i + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
+      lastVoice = i;
+      const seq = ++voiceSeq;
+      const c = ensure();
+      if (!c) { new Audio(list[i]).play().catch(() => {}); return; }
+      const buf = await decodeVoice(c, list[i]);
+      if (!buf || seq !== voiceSeq) return;
+      stopVoice(c);
+      const src = c.createBufferSource();
+      const g = c.createGain();
+      src.buffer = buf;
+      g.gain.value = VOICE_GAIN;
+      src.connect(g).connect(c.destination);
+      src.start();
+      voiceNow = { src, g };
+      src.onended = () => { if (voiceNow && voiceNow.src === src) voiceNow = null; };
+    };
+
     return {
       get on() { return on; },
       set(v) { on = v; store.set('rafu-sfx', v ? 'on' : 'off'); if (v) ensure(); },
@@ -135,7 +188,8 @@
       click: () => tone(520, 0.09, 'triangle', 0.06, 900),
       zap: () => { noise(0.16, 0.06); tone(190, 0.12, 'sawtooth', 0.02, 80); },
       ok: () => { tone(660, 0.08, 'square', 0.03); tone(990, 0.14, 'square', 0.03, 0, 0.08); },
-      laugh: () => { [0, 0.11, 0.22, 0.33].forEach((d, i) => tone(620 + (i % 2) * 120 - i * 20, 0.09, 'triangle', 0.07, 420, d)); },
+      voice,
+      preloadVoices: (list) => { (list || []).forEach(fetchVoice); },
     };
   })();
 
