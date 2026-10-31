@@ -23,13 +23,14 @@ Rafu の公式サイト（GitHub Pages）。
 ```
 index.html              トップページの骨組み（見出し・説明文など、ほとんど変わらない部分）
 downloads.html          ダウンロードページの骨組み
-downloads/              配布するファイルを置く場所（作品ごとにフォルダを分ける。例: downloads/datapack/）
+downloads/              配布するファイルを置く場所（作品ごとにフォルダを分ける。例: downloads/clear-xp/）
 assets/js/content.js    ★ 載せる中身はここだけ直せばOK（ニュース・動画・自作ゲーム・配布物・SNS・サーバー情報・トップの絵）
 assets/js/common.js     全ページ共通（ヘッダー、メニュー、ツールバー、効果音、ドット絵アイコン、ツールチップ、動画プレイヤー）
 assets/js/main.js       トップページの演出（ローディング、ピックアップ、モニターの切り替えなど）
 assets/js/downloads.js  ダウンロードページ（アイコン一覧、検索・絞り込み、作品の切り替え、機種・バージョン・ローダーの選択）
 assets/css/style.css    デザイン
 assets/img/             ロゴ・ファビコン・SNS共有画像（og.png）・Discordサーバーのアイコン・Minecraftのキャラ・画像がないときの絵
+assets/img/works/       配布物のアイコン（正方形 256px。ダウンロードページとトップのカードに出る）
 assets/img/logo/        受け取ったロゴの元データ（1024px）
 assets/img/orig/        受け取った素材の元データ（Discordサーバーのアイコン3種・Minecraftのキャラ・Image not found）
 assets/img/kv/          Minecraftの欄の夕焼けのドット絵（仮素材。雲・山3枚・太陽）
@@ -44,12 +45,14 @@ assets/video/           背景動画を置く場所
 | ニュースを載せる | `content.js` の `news` の先頭に1行足す（`date`・`tag`・`title`・`url`）。`date` から2週間は「NEW」が付きます |
 | 新しい配信・切り抜き・Shortsを載せる | `content.js` の `videos` の先頭に1行足す（`id` はYouTubeの動画ID）。先頭の動画がピックアップとトップの「最新の動画を見る」にも出ます |
 | 自作ゲームを載せる・増やす | `content.js` の `games` に足す（`image` に画面写真、`trailer` に紹介動画のYouTube ID、`points` に特徴）。先頭のゲームがピックアップに出ます |
-| Minecraftの配布物を増やす | `content.js` の `works` に足す（`icon` は `datapack` / `mod` / `plugin`）。トップのカードとダウンロードページの両方に出ます |
-| 配布ファイルを載せる | ファイルを `downloads/作品のid/` に置き、`content.js` のその作品の `versions` の `file` にパスを書く（例: `"downloads/datapack/rafu-pack-1.21.zip"`）。`file` が空のものは「準備中」と表示されます |
-| Minecraftの対応バージョンを増やす | その作品の `versions` に1行足す（`label` がバージョン。MODやプラグインは `loader` に `"Fabric"` / `"Forge"` / `"NeoForge"` / `"Paper"` などを書く）。ページではバージョン→ローダーの順にプルダウンで選び、一覧の絞り込みにも自動で出ます |
+| Minecraftの配布物を増やす | `content.js` の `works` に足す（`icon` は `datapack` / `mod` / `plugin`。`series` に「第四弾」などのラベル、`edition` に「Java版」）。トップのカードとダウンロードページの両方に出ます |
+| 配布ファイルを載せる | ファイルを `downloads/作品のid/` に置き、`content.js` のその作品の `versions` の `file` にパスを書く（例: `"downloads/clear-xp/Clear_XP.zip"`）。`file` が空のものは「準備中」と表示されます |
+| Minecraftの対応バージョンを書く | その作品の `versions` の `label` に書く。`"1.18.2〜1.20.6"` のように範囲で書くと、間のバージョンが全部プルダウンと一覧の絞り込みに出ます（`"1.18〜"` は最新まで）。ファイルが分かれているときは1行ずつ（MODやプラグインは `loader` に `"Fabric"` / `"Forge"` / `"NeoForge"` / `"Paper"` などを書く）。ページではバージョン→ローダー→作品のバージョンの順に選びます |
+| Minecraftの新しいバージョンが出た | `content.js` の `mcVersions` の後ろに足す（範囲を `"1.18〜"` のように後ろを空けて書いた作品は、自動でそのバージョンにも対応したことになります） |
+| 作品をアップデートした | 新しいファイルを置いて `versions` の `file`・`version`・`date` を書き換え（古い版も配るなら行を残す）、`updates` の先頭に1つ足す（`version`・`date`・`title` に短く・`notes` にくわしく）。ダウンロードページに「UPDATE」の矢印のリボンが出て、トップのカードと一覧のアイコンにも印が付きます |
 | 自作ゲームの対応機種を書く | その作品の `versions` に機種ごとに1行ずつ書く（`platform` は `"windows"` / `"mac"` / `"ios"` / `"android"`）。対応していない機種の行は消す。iOS・Androidの `file` に App Store / Google Play のURLを書くと「App Storeで開く」「Google Playで開く」のボタンになります |
-| 紹介PVを付ける | その作品の `pv`（自作ゲームは `trailer`）にYouTubeのURLかIDを書く |
-| ダウンロードページのアイコンを絵にする | 正方形の画像を `assets/img/` に置き、その作品の `iconImage` にパスを書く（空ならドット絵のアイコン） |
+| 紹介PVや使った動画を付ける | その作品の `pv`（自作ゲームは `trailer`）にYouTubeのURLかIDを書く。左上の名前は `pvLabel`（例: `"使用した動画"`）、動画の下の一言は `pvNote` |
+| 作品のアイコンを絵にする | 正方形の画像を `assets/img/works/` に置き、その作品の `iconImage` にパスを書く（ダウンロードページとトップのカードに出る。空ならドット絵のアイコン） |
 | トップの背景を1枚絵にする | 画像を `assets/img/kv/` に置き、`content.js` の `hero.image` にパスを書く（赤い集中線の背景と入れ替わる） |
 | トップに背景動画を流す | 動画を `assets/video/` に置き、`content.js` の `hero.video` にパスを書く |
 | 真ん中のキャラ画像を変える | 画像を `assets/img/` に置き、`hero.mascot` にパスを書く |
@@ -62,7 +65,7 @@ assets/video/           背景動画を置く場所
 
 ## 更新するときの注意
 
-- CSS・JS（`content.js` も）を変えたら、`index.html` と `downloads.html` の読み込み部分にある `?v=20261031-1` の数字も変える（例: `?v=20261105-1`。2つのページで同じ数字にそろえる）。変えないと、前に見た人のブラウザに古いファイルが残り、新しいページと混ざって表示が崩れることがあります
+- CSS・JS（`content.js` も）を変えたら、`index.html` と `downloads.html` の読み込み部分にある `?v=20261031-2` の数字も変える（例: `?v=20261105-1`。2つのページで同じ数字にそろえる）。変えないと、前に見た人のブラウザに古いファイルが残り、新しいページと混ざって表示が崩れることがあります
 - スクリプトが途中で止まったときは、ローディングを消して中身をそのまま表示します（各ページの先頭の小さなスクリプト）
 - 配布ファイルは1つ100MBまで（GitHubの画面からアップロードするときは25MBまで）。それより大きいものは GitHub の Releases などに置き、`file` にそのURLを書く
 - 作品の `id` は半角英数字とハイフンだけにする。`top` と `list` はページの中で使っているので避ける
@@ -82,3 +85,5 @@ assets/video/           背景動画を置く場所
 - ダウンロードページのアイコン一覧は、矢印キーで移動・Enterで選べます
 - ダウンロードページの絞り込みは、タブで変わります（すべて＝検索と並び順、Minecraft＝バージョン・種類・ローダー・並び順、ゲーム＝対応機種・並び順）。選べるものが1つしかない項目は出ません。「新しい順」は `versions` の `date` で並べます
 - 一覧で選んだバージョン・ローダー・機種は、右のダウンロードの選択にも引き継がれます。自作ゲームは、見ている端末（Windows・Mac・iPhone・Android）の機種が最初に選ばれます
+- `updates` を書いた作品は、ダウンロードページの見出しの下に赤い矢印のリボン（UPDATE・版・ひとこと）が出ます。押すと、くわしい内容と昔の版の履歴が開きます。リボンにはときどき光が走ります（「視差効果を減らす」設定の人には走りません）
+- 紹介文と導入のしかたは、`/reload` のように ` で囲んだところがコマンドの見た目になります。紹介文の【 】だけの行は小見出しになります

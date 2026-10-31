@@ -369,24 +369,36 @@
   const worksEl = $('#works-list');
   if (worksEl) {
     const works = C.works || [];
-    worksEl.innerHTML = works.map((w) => `
+    /* いちばん新しいアップデート（あればカードに「UPDATE」のリボンを付ける） */
+    const lastUp = (w) => (w.updates || []).find((u) => u && (u.title || u.version));
+    const upVer = (u) => (u.version ? `v${String(u.version).trim().replace(/^v(?=\d)/i, '')}` : '');
+    /* 対応バージョン（content.js に書いたまま。範囲なら "1.18.2〜1.20.6"） */
+    const vers = (w) => [...new Set((w.versions || []).map((v) => v && v.label).filter(Boolean))];
+    worksEl.innerHTML = works.map((w) => {
+      const up = lastUp(w);
+      const vs = vers(w);
+      return `
       <a class="work" href="downloads.html#${esc(w.id)}" style="--c:${esc(w.color || '#e5121b')}" data-reveal data-sfx>
         <span class="work-art">
           <span class="work-tag">${esc((w.icon || 'work').toUpperCase())}</span>
-          ${w.image ? `<img src="${esc(w.image)}" alt="" loading="lazy">` : `<span class="work-slot"><i class="px" data-px="${WORK_PX[w.icon] || 'chest'}"></i></span>`}
+          ${up ? `<span class="work-up"><i class="px" data-px="up"></i>UPDATE${upVer(up) ? ` ${esc(upVer(up))}` : ''}</span>` : ''}
+          ${w.image ? `<img src="${esc(w.image)}" alt="" loading="lazy">` : `<span class="work-slot${w.iconImage ? ' has-img' : ''}">${w.iconImage ? `<img src="${esc(w.iconImage)}" alt="" loading="lazy">` : `<i class="px" data-px="${WORK_PX[w.icon] || 'chest'}"></i>`}</span>`}
         </span>
         <span class="work-body">
-          <span class="work-cat">${esc(w.cat)}</span>
+          <span class="work-cat">${esc(w.cat)}${w.series ? `<em>${esc(w.series)}</em>` : ''}</span>
           <h3>${esc(w.title)}</h3>
           <p>${esc(w.text)}</p>
+          ${vs.length ? `<span class="work-ver"><i class="px" data-px="cube"></i>${esc([w.edition, vs.slice(0, 2).join(' / ')].filter(Boolean).join(' '))}${vs.length > 2 ? ` +${vs.length - 2}` : ''}</span>` : ''}
           <span class="work-go">ダウンロード<i class="px" data-px="right"></i></span>
         </span>
-      </a>`).join('');
+      </a>`;
+    }).join('');
     $$('.work', worksEl).forEach((el, i) => {
       const w = works[i];
+      const up = lastUp(w);
       el.style.setProperty('--d', `${i * 0.08}s`);
       if (finePointer) {
-        const html = `<b>${esc(w.title)}</b><span class="tip-cat">${esc(w.cat)}</span><span class="tip-lore">${esc(w.text)}</span><span class="tip-act">▶ クリックでダウンロードページへ</span>`;
+        const html = `<b>${esc(w.title)}</b><span class="tip-cat">${esc([w.cat, w.series].filter(Boolean).join(' ・ '))}</span>${up ? `<span class="tip-up">UPDATE ${esc([upVer(up), up.title].filter(Boolean).join(' '))}</span>` : ''}<span class="tip-lore">${esc(w.text)}</span><span class="tip-act">▶ クリックでダウンロードページへ</span>`;
         el.addEventListener('pointerenter', (e) => { showTip(el, html, lighten(w.color)); placeTip(e.clientX, e.clientY); });
         el.addEventListener('pointermove', (e) => placeTip(e.clientX, e.clientY));
         el.addEventListener('pointerleave', () => hideTip(el));

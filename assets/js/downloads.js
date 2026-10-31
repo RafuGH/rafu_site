@@ -6,9 +6,31 @@
     C, $, $$, reduce, finePointer, esc,
     ICON, SFX, PLAY, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
-    fmtDate, ytId, loadThumb, openPlayer,
+    fmtDate, ytId, watchUrl, loadThumb, openPlayer,
     WORK_PX, lighten, reveal,
   } = window.RAFU;
+
+  /* "1.21" や "1.20.4" を新しい順に並べる（数字のないものは後ろ） */
+  const verCmp = (a, b) => {
+    const pa = String(a).match(/\d+/g);
+    const pb = String(b).match(/\d+/g);
+    if (!pa || !pb) return pa ? -1 : pb ? 1 : 0;
+    for (let i = 0; i < Math.max(pa.length, pb.length); i += 1) {
+      const d = (Number(pb[i]) || 0) - (Number(pa[i]) || 0);
+      if (d) return d;
+    }
+    return 0;
+  };
+  const bareVer = (s) => String(s || '').trim().replace(/^v(?=\d)/i, '');   // "v2.0" と書いても "2.0" として扱う
+  /* "1.18.2〜1.20.6" のような範囲は、content.js の mcVersions から1つずつのバージョンに分ける（range に元の書き方を残す） */
+  const RANGE = /^\s*(\d+(?:\.\d+)*)\s*(?:[〜～~]\s*(\d+(?:\.\d+)*)?|以上)\s*$/;
+  const spread = (v) => {
+    const m = RANGE.exec(String(v.label || ''));
+    if (!m) return [v];
+    const [, lo, hi] = m;
+    const list = (C.mcVersions || []).filter((x) => verCmp(x, lo) <= 0 && (!hi || verCmp(x, hi) >= 0));
+    return list.length ? list.sort(verCmp).map((x) => ({ ...v, label: x, range: v.label })) : [v];
+  };
 
   /* 自作ゲームとMinecraftの配布物を1つの一覧にまとめる（中身は content.js の games と works） */
   const items = [
@@ -22,7 +44,15 @@
       pv: g.pv || g.trailer || '',
     })),
     ...(C.works || []).map((w) => ({ ...w, kind: 'mc', color: w.color || '#1f9d4c' })),
-  ].filter((it) => it.id).map((it) => ({ ...it, vers: (it.versions || []).filter(Boolean) }));
+  ].filter((it) => it.id).map((it) => {
+    const vers = (it.versions || []).filter(Boolean).map((v) => ({ ...v, version: bareVer(v.version) }));
+    return {
+      ...it,
+      vers: it.kind === 'mc' ? vers.flatMap(spread) : vers,
+      /* アップデートの履歴（上から新しい順） */
+      ups: (it.updates || []).filter((u) => u && (u.title || u.version)).map((u) => ({ ...u, version: bareVer(u.version) })),
+    };
+  });
   const byId = (id) => items.find((it) => it.id === id);
 
   const TYPE = { mc: 'MINECRAFT', game: 'GAME' };
@@ -75,26 +105,15 @@
     return '';
   })();
 
-  /* "1.21" や "1.20.4" を新しい順に並べる（数字のないものは後ろ） */
-  const verCmp = (a, b) => {
-    const pa = String(a).match(/\d+/g);
-    const pb = String(b).match(/\d+/g);
-    if (!pa || !pb) return pa ? -1 : pb ? 1 : 0;
-    for (let i = 0; i < Math.max(pa.length, pb.length); i += 1) {
-      const d = (Number(pb[i]) || 0) - (Number(pa[i]) || 0);
-      if (d) return d;
-    }
-    return 0;
-  };
-  const mcVers = (it) => uniq(it.vers.map((v) => v.label)).sort(verCmp);
   const platforms = (it) => {
     const ks = uniq(it.vers.map((v) => osOf(v.platform)));
     return [...Object.keys(OS).filter((k) => ks.includes(k)), ...ks.filter((k) => !OS[k])];
   };
-  /* 一覧のツールチップと詳しい内容に出す「対応」 */
+  /* 一覧のツールチップと詳しい内容に出す「対応」（範囲で書いたものは、そのまま "1.18.2〜1.20.6" と出す） */
+  const topVer = (s) => { const m = RANGE.exec(s); return m ? m[2] || '9999' : s; };
   const support = (it) => {
     if (it.kind === 'mc') {
-      const vs = mcVers(it);
+      const vs = uniq(it.vers.map((v) => v.range || v.label)).sort((a, b) => verCmp(topVer(a), topVer(b)));
       return vs.length ? `${vs.slice(0, 3).join(' / ')}${vs.length > 3 ? ` +${vs.length - 3}` : ''}` : '';
     }
     return platforms(it).map((k) => osInfo(k).name).join('・');
@@ -122,8 +141,9 @@
 
   const norm = (s) => String(s || '').normalize('NFKC').toLowerCase();
   const hay = (it) => norm([
-    it.title, it.cat, it.text, it.about, it.maker, it.id, TYPE[it.kind], ...(it.tags || []),
-    ...it.vers.flatMap((v) => [v.label, v.loader, v.platform && osInfo(osOf(v.platform)).name]),
+    it.title, it.cat, it.series, it.edition, it.text, it.about, it.maker, it.id, TYPE[it.kind], ...(it.tags || []),
+    ...it.vers.flatMap((v) => [v.label, v.range, v.version && `v${v.version}`, v.loader, v.platform && osInfo(osOf(v.platform)).name]),
+    ...it.ups.flatMap((u) => [u.title, ...(u.notes || [])]),
   ].join(' '));
   const matches = (it) => {
     if (state.tab !== 'all' && it.kind !== state.tab) return false;
@@ -205,8 +225,8 @@
     const empty = '<span class="slot is-empty" aria-hidden="true"><span class="slot-box"></span><span class="slot-name"></span></span>';
     grid.innerHTML = list.map((it) => `
       <button class="slot" type="button" data-id="${esc(it.id)}" aria-pressed="${current === it}" style="--c:${esc(it.color)}" data-sfx>
-        <span class="slot-box"><span class="slot-ic">${iconHtml(it)}</span></span>
-        <span class="slot-name">${esc(it.title)}</span>
+        <span class="slot-box"><span class="slot-ic">${iconHtml(it)}</span>${it.ups.length ? '<span class="slot-up" aria-hidden="true">UP</span>' : ''}</span>
+        <span class="slot-name">${esc(it.title)}</span>${it.ups.length ? '<span class="sr-only">（アップデートあり）</span>' : ''}
       </button>`).join('') + empty.repeat(total - list.length)
       + (list.length ? '' : '<p class="inv-empty"><span><i class="px" data-px="chest"></i>条件に合う作品がありません</span></p>');
     paintPx(grid);
@@ -215,7 +235,8 @@
       el.addEventListener('click', () => select(it, { scroll: true }));
       if (finePointer) {
         const sup = support(it);
-        const html = `<b>${esc(it.title)}</b><span class="tip-cat">${esc(it.cat)}</span>${sup ? `<span class="tip-sup">対応: ${esc(sup)}</span>` : ''}${it.text ? `<span class="tip-lore">${esc(it.text)}</span>` : ''}<span class="tip-act">▶ クリックで詳しく見る</span>`;
+        const up = it.ups[0];
+        const html = `<b>${esc(it.title)}</b><span class="tip-cat">${esc([it.cat, it.series].filter(Boolean).join(' ・ '))}</span>${sup ? `<span class="tip-sup">対応: ${esc(sup)}</span>` : ''}${up ? `<span class="tip-up">UPDATE ${esc([up.version && `v${up.version}`, up.title].filter(Boolean).join(' '))}</span>` : ''}${it.text ? `<span class="tip-lore">${esc(it.text)}</span>` : ''}<span class="tip-act">▶ クリックで詳しく見る</span>`;
         el.addEventListener('pointerenter', (e) => { showTip(el, html, lighten(it.color)); placeTip(e.clientX, e.clientY); });
         el.addEventListener('pointermove', (e) => placeTip(e.clientX, e.clientY));
         el.addEventListener('pointerleave', () => hideTip(el));
@@ -242,16 +263,22 @@
   /* ---------- ダウンロードの選び方（機種・バージョン・ローダーをプルダウンで） ---------- */
   const pick = {};   // 作品ごとに選んだもの（ページを開いている間だけ覚える）
   const val = (v, d) => (d === 'platform' ? osOf(v.platform) : String(v[d] || ''));
-  const valName = (d, k) => (d === 'platform' ? osInfo(k).name : k);
-  /* 作品に書いてある項目だけプルダウンにする（ゲームは 機種→バージョン、Minecraftは バージョン→ローダー） */
+  const valName = (d, k) => (d === 'platform' ? osInfo(k).name : d === 'version' ? `v${k}` : k);
+  /* 作品の新しい版（版が2つ以上あるときだけ「最新」を付ける） */
+  const latestVer = (it) => {
+    const vs = uniq([...it.vers.map((v) => v.version), ...it.ups.map((u) => u.version)]).sort(verCmp);
+    return vs.length > 1 ? vs[0] : '';
+  };
+  /* 作品に書いてある項目だけプルダウンにする（ゲームは 機種→バージョン、Minecraftは バージョン→ローダー→作品のバージョン） */
   const dimsOf = (it) => {
     const has = (d) => it.vers.some((v) => v[d]);
-    if (it.kind === 'mc') return it.vers.length ? ['label', ...(has('loader') ? ['loader'] : [])] : [];
+    if (it.kind === 'mc') return it.vers.length ? ['label', ...(has('loader') ? ['loader'] : []), ...(has('version') ? ['version'] : [])] : [];
     return [...(has('platform') ? ['platform'] : []), ...(uniq(it.vers.map((v) => v.label)).length > 1 ? ['label'] : [])];
   };
   const dimLabel = (it, d) => ({
     platform: '対応機種',
     loader: 'ローダー',
+    version: `${it.cat || '作品'}のバージョン`,
     label: it.versionLabel || (it.kind === 'mc' ? 'Minecraftのバージョン' : 'バージョン'),
   }[d]);
   const fits = (v, sel, dims) => dims.every((d) => !sel[d] || val(v, d) === sel[d]);
@@ -260,6 +287,7 @@
     const dims = dimsOf(it);
     const pool = it.vers.filter((v) => fits(v, pick[it.id], dims.slice(0, dims.indexOf(d))));
     const keys = uniq(pool.map((v) => val(v, d)));
+    if (d === 'version' || (d === 'label' && it.kind === 'mc')) keys.sort(verCmp);   // バージョンは新しい順
     const order = d === 'platform' ? [...Object.keys(OS).filter((k) => keys.includes(k)), ...keys.filter((k) => !OS[k])] : keys;
     return order.map((k) => ({ k, ready: pool.some((v) => val(v, d) === k && v.file) }));
   };
@@ -295,7 +323,7 @@
     const sel = pick[it.id];
     const os = sel.platform ? osInfo(sel.platform) : null;
     if (!v || !v.file) {
-      const tag = os ? os.name : dimsOf(it).map((d) => sel[d]).filter(Boolean).join('・');
+      const tag = os ? os.name : dimsOf(it).map((d) => sel[d] && valName(d, sel[d])).filter(Boolean).join('・');
       const what = tag ? `${tag}${/版$/.test(tag) ? '' : '版'}は` : 'ファイルは';
       return `<p class="dt-file is-none"><i class="px" data-px="${os ? os.px : 'chest'}"></i><span>${esc(what)}準備中です。公開までお待ちください</span></p>
         <button class="pxbtn dt-btn is-off" type="button" disabled><i class="px" data-px="dl"></i><span>準備中</span></button>`;
@@ -325,7 +353,7 @@
       const opts = optionsOf(it, d);
       const ic = d === 'platform' ? `<i class="px" data-px="${osInfo(sel[d]).px}"></i>` : '';
       const mine = d === 'platform' && opts.length > 1 && opts.some((o) => o.k === myOs) ? `<small>この端末: ${esc(osInfo(myOs).name)}</small>` : '';
-      const text = (o) => `${valName(d, o.k)}${o.ready ? '' : '（準備中）'}`;
+      const text = (o) => `${valName(d, o.k)}${d === 'version' && o.k === latestVer(it) ? '（最新）' : ''}${o.ready ? '' : '（準備中）'}`;
       /* 1つしかないものはプルダウンにせず、そのまま見せる */
       if (opts.length === 1) {
         return `<div class="sel-field dt-sel"><span class="sel-lbl">${esc(dimLabel(it, d))}</span>
@@ -351,23 +379,57 @@
   const metaHtml = (it) => {
     const chip = (px, t) => `<span class="dt-chip">${px ? `<i class="px" data-px="${px}"></i>` : ''}${esc(t)}</span>`;
     const chips = it.kind === 'mc'
-      ? [support(it) && chip('cube', support(it)), ...uniq(it.vers.map((v) => v.loader)).map((l) => chip('', l))]
+      ? [it.edition && chip('', it.edition), support(it) && chip('cube', support(it)), ...uniq(it.vers.map((v) => v.loader)).map((l) => chip('', l))]
       : platforms(it).map((k) => chip(osInfo(k).px, osInfo(k).name));
     return chips.filter(Boolean).length ? `<p class="dt-meta"><span class="dt-meta-lbl">対応</span>${chips.filter(Boolean).join('')}</p>` : '';
+  };
+
+  /* `/reload` のように ` で囲んだところはコマンドの見た目にする */
+  const rich = (s) => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+  const verTxt = (u) => (u.version ? `v${u.version}` : '');
+
+  /* アップデートのお知らせ（矢印のリボンに いちばん新しい内容を短く。押すと昔の版まで全部） */
+  const upHtml = (it) => {
+    const u = it.ups[0];
+    if (!u) return '';
+    return `
+      <div class="dt-up">
+        <div class="dt-up-rib">
+          <button class="dt-up-bar" type="button" aria-expanded="false" aria-controls="dt-up-log" data-sfx>
+            <span class="dt-up-tag"><i class="px" data-px="up"></i>UPDATE</span>
+            <span class="dt-up-text">${verTxt(u) ? `<b>${esc(verTxt(u))}</b>` : ''}<span>${esc(u.title || 'アップデートしました')}</span></span>
+            <span class="dt-up-more"><span>詳しく</span><i class="px" data-px="down"></i></span>
+          </button>
+        </div>
+        <div class="dt-up-log" id="dt-up-log" hidden>
+          <ol>${it.ups.map((x, i) => `
+            <li${i ? '' : ' class="is-new"'}>
+              <p class="dt-up-h">${verTxt(x) ? `<b>${esc(verTxt(x))}</b>` : ''}${i ? '' : '<span class="dt-up-new">最新</span>'}${x.date ? `<time datetime="${esc(x.date)}">${esc(fmtDate(x.date))}</time>` : ''}</p>
+              ${x.title ? `<p class="dt-up-t">${esc(x.title)}</p>` : ''}
+              ${(x.notes || []).length ? `<ul>${x.notes.map((n) => `<li>${rich(n)}</li>`).join('')}</ul>` : ''}
+            </li>`).join('')}
+          </ol>
+        </div>
+      </div>`;
   };
 
   const renderDetail = (it) => {
     prefer(it, !pick[it.id]);
 
     const pv = ytId(it.pv);
+    const pvLabel = it.pvLabel || 'PV';
     const media = pv
-      ? `<button class="dt-media" type="button" data-pv aria-label="${esc(it.title)}の紹介PVを再生" data-sfx>
-          <img alt="" width="640" height="360"><span class="dt-tag">PV</span><span class="dt-play">${PLAY}</span>
+      ? `<button class="dt-media" type="button" data-pv aria-label="${esc(`${it.title}の${pvLabel}を再生`)}" data-sfx>
+          <img alt="" width="640" height="360"><span class="dt-tag">${esc(pvLabel)}</span><span class="dt-play">${PLAY}</span>
         </button>`
       : it.image
         ? `<div class="dt-media"><img src="${esc(it.image)}" alt="${esc(it.title)}の画面" loading="lazy"></div>`
-        : `<div class="dt-media dt-art"><span class="dt-art-ic">${iconHtml(it)}</span><span class="dt-tag">PV 準備中</span></div>`;
-    const about = String(it.about || it.text || '').split(/\n+/).filter(Boolean).map((p) => `<p>${esc(p)}</p>`).join('');
+        : `<div class="dt-media dt-art"><span class="dt-art-ic">${iconHtml(it)}</span><span class="dt-tag">${it.kind === 'game' ? 'PV 準備中' : '動画なし'}</span></div>`;
+    /* 動画の下の一言（どの動画で使ったか など） */
+    const cap = it.pvNote ? `<p class="dt-cap"><i class="px" data-px="tv"></i><span>${esc(it.pvNote)}</span>${pv ? `<a href="${esc(watchUrl({ id: pv }))}" target="_blank" rel="noopener" data-sfx>YouTubeで見る ↗</a>` : ''}</p>` : '';
+    /* 紹介文は1行ずつ段落に。【 】だけの行は小見出し */
+    const about = String(it.about || it.text || '').split(/\n+/).map((p) => p.trim()).filter(Boolean)
+      .map((p) => (/^【[^【】]+】$/.test(p) ? `<p class="dt-sub">${esc(p.slice(1, -1))}</p>` : `<p>${rich(p)}</p>`)).join('');
     const howto = it.howto || [];
 
     detail.style.setProperty('--c', it.color);
@@ -375,12 +437,14 @@
       <header class="dt-head">
         <span class="dt-icon">${iconHtml(it)}</span>
         <div>
-          <p class="dt-kicker"><span class="dt-type">${TYPE[it.kind]}</span><span class="dt-cat">${esc(it.cat)}</span><button class="dt-share" type="button" data-share data-sfx><i class="px" data-px="copy"></i><span>リンクをコピー</span></button></p>
+          <p class="dt-kicker"><span class="dt-type">${TYPE[it.kind]}</span><span class="dt-cat">${esc(it.cat)}</span>${it.series ? `<span class="dt-series">${esc(it.series)}</span>` : ''}<button class="dt-share" type="button" data-share data-sfx><i class="px" data-px="copy"></i><span>リンクをコピー</span></button></p>
           <h2 class="dt-title">${esc(it.title)}</h2>
           ${metaHtml(it)}
         </div>
       </header>
+      ${upHtml(it)}
       ${media}
+      ${cap}
       ${about ? `<div class="dt-about">${about}</div>` : ''}
       <div class="dt-box">
         <p class="dt-lbl">ダウンロード<small>DOWNLOAD</small></p>
@@ -391,7 +455,7 @@
       ${howto.length ? `
       <div class="dt-howto">
         <p class="howto-title"><i class="px" data-px="star"></i><span>導入のしかた</span></p>
-        <ol>${howto.map((h) => `<li>${esc(h)}</li>`).join('')}</ol>
+        <ol>${howto.map((h) => `<li><span>${rich(h)}</span></li>`).join('')}</ol>
       </div>` : ''}`;
 
     paintPx(detail);
@@ -413,7 +477,17 @@
     const pvBtn = $('[data-pv]', detail);
     if (pvBtn) {
       loadThumb($('img', pvBtn), { id: pv }, true);
-      pvBtn.addEventListener('click', () => openPlayer({ id: pv, title: it.title, kind: 'live', n: 0 }, `PV / ${it.title}`));
+      pvBtn.addEventListener('click', () => openPlayer({ id: pv, title: it.title, kind: 'live', n: 0 }, `${pvLabel} / ${it.title}`));
+    }
+    /* アップデートのリボンを押すと、履歴を開く・閉じる */
+    const upBar = $('.dt-up-bar', detail);
+    if (upBar) {
+      upBar.addEventListener('click', () => {
+        const open = upBar.getAttribute('aria-expanded') !== 'true';
+        upBar.setAttribute('aria-expanded', String(open));
+        $('.dt-up-more span', upBar).textContent = open ? 'とじる' : '詳しく';
+        $('#dt-up-log', detail).hidden = !open;
+      });
     }
     if (!reduce) {
       detail.classList.remove('is-swap');
@@ -451,7 +525,8 @@
   renderFilters();
   renderGrid();
   const linked = byId(hashId());
-  select(linked || items[0], { hash: Boolean(linked) });
+  /* URLに作品がないときは、ダウンロードできるものがある作品から見せる */
+  select(linked || items.find((it) => it.vers.some((v) => v.file)) || items[0], { hash: Boolean(linked) });
   /* トップのカードから来たときは、選んだ作品が見える位置から始める */
   if (linked) {
     $$('.dl-grid [data-reveal]').forEach((el) => el.removeAttribute('data-reveal'));   // 出てくる動きを省いて、位置がずれないようにする

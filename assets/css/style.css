@@ -319,6 +319,7 @@ html[data-zone="mc"] ::selection { background: var(--mc-leaf-lo); color: #fff; }
 .mc-tip .tip-sup { color: var(--mc-leaf-hi); font-size: 12.5px; }
 .mc-tip .tip-lore { color: #b9a9c9; font-size: 12.5px; }
 .mc-tip .tip-act { color: var(--gold); font-size: 12.5px; margin-top: 2px; }
+.mc-tip .tip-up { color: #ff9d92; font-size: 12.5px; }
 
 /* ---------- HOME（赤い集中線とステッカー） ---------- */
 .kv {
@@ -948,8 +949,27 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .work:hover .work-slot .px { transform: scale(1.12) rotate(-6deg); }
 .work-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .work-tag { position: absolute; z-index: 1; left: 10px; top: 10px; padding: 3px 9px; background: var(--wood-line); color: #fff; font-family: var(--f-px); font-size: 12px; letter-spacing: .14em; }
+/* アイコン画像は、くぼんだ枠の中に入れる */
+.work-slot.has-img { padding: 7px; }
+.work-slot img { position: static; width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease-back); }
+.work:hover .work-slot img { transform: scale(1.06) rotate(-3deg); }
+/* アップデートした作品の矢印のリボン（右上） */
+.work-up {
+  --s: 5px;
+  position: absolute; z-index: 1; right: 0; top: 10px; display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px 6px calc(var(--s) * 2 + 7px); background: var(--tomato); color: #fff;
+  font-family: var(--f-px); font-size: 12px; letter-spacing: .1em; line-height: 1.3;
+  box-shadow: inset 0 3px 0 var(--tomato-hi), inset 0 -4px 0 #9a0a12;
+  clip-path: polygon(calc(var(--s) * 2) 0, 100% 0, 100% 100%, calc(var(--s) * 2) 100%, calc(var(--s) * 2) 75%, var(--s) 75%, var(--s) 62.5%, 0 62.5%, 0 37.5%, var(--s) 37.5%, var(--s) 25%, calc(var(--s) * 2) 25%);
+  transition: transform .3s var(--ease-out);
+}
+.work-up .px { width: 12px; height: 12px; }
+.work:hover .work-up { transform: translateX(-5px); }
 .work-body { display: grid; gap: 6px; padding: 16px 18px 18px; flex: 1; align-content: start; min-height: 180px; }
 .work-cat { font-size: 12.5px; font-weight: 900; color: var(--c); letter-spacing: .06em; }
+.work-cat em { margin-left: 8px; padding: 1px 7px 2px; background: var(--gold); color: var(--wood-line); font-style: normal; font-size: 11.5px; letter-spacing: .04em; }
+.work-ver { justify-self: start; display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; padding: 2px 8px 3px; background: var(--cream); color: var(--cream-ink); border: 2px solid var(--wood-line); box-shadow: inset 0 -2px 0 var(--cream-2); font-family: var(--f-px); font-size: 12.5px; line-height: 1.4; }
+.work-ver .px { flex: none; width: 13px; height: 13px; color: var(--wood); }
 .work h3 { margin: 0; font-size: 17px; font-weight: 900; line-height: 1.45; }
 .work p { margin: 0; font-size: 13px; color: var(--cream-muted); line-height: 1.7; }
 .work-go { margin-top: auto; padding-top: 12px; border-top: 3px dashed var(--cream-2); display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 900; }
@@ -1044,6 +1064,8 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .slot-ic .px { width: 64%; height: 64%; filter: drop-shadow(2px 2px 0 rgba(0,0,0,.3)); }
 .slot-ic img { width: 100%; height: 100%; object-fit: cover; }
 .slot[data-id]:hover .slot-ic { transform: scale(1.08) rotate(-4deg); }
+/* アップデートした作品の「UP」 */
+.slot-up { position: absolute; z-index: 1; left: -4px; top: 5px; padding: 1px 5px 2px; background: var(--tomato); color: #fff; font-family: var(--f-px); font-size: 11px; line-height: 1.25; letter-spacing: .08em; box-shadow: inset 0 -2px 0 #9a0a12, 2px 2px 0 var(--wood-line); pointer-events: none; }
 .slot[aria-pressed="true"] .slot-box { background: var(--wood-cell); box-shadow: inset 4px 4px 0 #c3b6a9, inset -4px -4px 0 #84756a, 0 0 0 3px var(--gold); }
 .slot[aria-pressed="true"] .slot-ic { animation: slot-pop .5s var(--ease-back); }
 @keyframes slot-pop { 0% { transform: scale(.8); } 60% { transform: scale(1.12); } 100% { transform: none; } }
@@ -1075,6 +1097,7 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .dt-kicker { margin: 0 0 6px; display: flex; flex-wrap: wrap; gap: 6px; line-height: 1.4; }
 .dt-type { padding: 2px 9px 3px; background: var(--wood-line); color: #fff; font-family: var(--f-px); font-size: 12px; letter-spacing: .14em; }
 .dt-cat { padding: 2px 9px 3px; background: var(--c); color: #fff; font-size: 12px; font-weight: 900; text-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.dt-series { padding: 2px 9px 3px; background: var(--gold); color: var(--wood-line); font-size: 12px; font-weight: 900; }
 .dt-share {
   margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 5px; cursor: pointer; white-space: nowrap;
   background: var(--cream); color: var(--cream-ink); border: 3px solid var(--wood-line); box-shadow: inset 0 -3px 0 var(--cream-2);
@@ -1110,6 +1133,67 @@ button.dt-media:hover .dt-play { transform: scale(1.12); }
 @keyframes px-bob { 50% { transform: translateY(-6%); } }
 .dt-about { margin-bottom: 4px; }
 .dt-about p { margin: 0 0 .7em; font-size: 15px; line-height: 1.9; text-wrap: pretty; }
+.dt-about .dt-sub { margin: 1.2em 0 .5em; display: flex; align-items: center; gap: 8px; font-weight: 900; line-height: 1.5; }
+.dt-about .dt-sub::before { content: ""; flex: none; width: 10px; height: 10px; background: var(--c); box-shadow: 2px 2px 0 var(--wood-line); }
+/* ` で囲んだコマンド */
+.dl-detail code { margin: 0 1px; padding: 1px 6px 2px; background: var(--wood-line); color: #fff; font-family: var(--f-px); font-size: .92em; line-height: 1.5; overflow-wrap: anywhere; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* 動画の下の一言（どの動画で使ったか など） */
+.dt-cap { margin: -8px 0 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13px; font-weight: 800; line-height: 1.6; color: var(--cream-muted); }
+.dt-cap .px { flex: none; width: 16px; height: 16px; color: var(--c); }
+.dt-cap span { flex: 1 1 16em; min-width: 0; }
+.dt-cap a { flex: none; margin-left: auto; color: #c4161d; font-weight: 900; text-decoration: none; white-space: nowrap; }
+.dt-cap a:hover { text-decoration: underline; }
+
+/* アップデートのお知らせ（矢印のリボン。押すと履歴が開く） */
+.dt-up { margin: 0 0 18px; }
+/* リボンの形に沿った黒いふち（clip-path で切った形には border が付かないので、影を4方向に重ねる） */
+.dt-up-rib { margin: 3px; filter: drop-shadow(3px 0 0 var(--wood-line)) drop-shadow(-3px 0 0 var(--wood-line)) drop-shadow(0 3px 0 var(--wood-line)) drop-shadow(0 -3px 0 var(--wood-line)); }
+.dt-up-rib:has(.dt-up-bar:focus-visible) { outline: 3px solid var(--yellow); outline-offset: 5px; }
+.dt-up-bar {
+  --s: 9px;
+  position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px 12px;
+  width: 100%; min-height: 54px; margin: 0; padding: 8px calc(var(--s) * 3 + 10px) 10px 9px; border: 0; cursor: pointer; text-align: left;
+  background: var(--tomato); color: #fff;
+  box-shadow: inset 0 4px 0 var(--tomato-hi), inset 0 -6px 0 #9a0a12;
+  clip-path: polygon(0 0, calc(100% - var(--s) * 3) 0, calc(100% - var(--s) * 3) 12.5%, calc(100% - var(--s) * 2) 12.5%, calc(100% - var(--s) * 2) 25%, calc(100% - var(--s)) 25%, calc(100% - var(--s)) 37.5%, 100% 37.5%, 100% 62.5%, calc(100% - var(--s)) 62.5%, calc(100% - var(--s)) 75%, calc(100% - var(--s) * 2) 75%, calc(100% - var(--s) * 2) 87.5%, calc(100% - var(--s) * 3) 87.5%, calc(100% - var(--s) * 3) 100%, 0 100%);
+  transition: transform .12s ease, filter .2s ease;
+}
+/* ときどき光が走る */
+.dt-up-bar::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 56px; pointer-events: none;
+  background: linear-gradient(90deg, transparent 0 18%, rgba(255,255,255,.3) 18% 46%, transparent 46% 62%, rgba(255,255,255,.3) 62% 74%, transparent 74%);
+  transform: translateX(-80px) skewX(-18deg); animation: up-shine 4.2s ease-in-out 1s infinite;
+}
+@keyframes up-shine { 0% { transform: translateX(-80px) skewX(-18deg); } 35%, 100% { transform: translateX(1200px) skewX(-18deg); } }
+.dt-up-bar:hover { filter: brightness(1.08); }
+.dt-up-bar:active { transform: translateY(2px); }
+.dt-up-bar:focus-visible { outline: none; }
+.dt-up-tag { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px 5px 7px; background: var(--gold); color: var(--wood-line); font-family: var(--f-px); font-size: 14px; letter-spacing: .1em; line-height: 1.2; box-shadow: inset 0 3px 0 #ffe17e, inset 0 -3px 0 #c98f00; }
+.dt-up-tag .px { width: 14px; height: 14px; animation: up-hop 1.2s linear infinite; }
+@keyframes up-hop { 0%, 49% { transform: none; } 50%, 100% { transform: translateY(-2px); } }
+.dt-up-text { min-width: 0; font-size: 15px; font-weight: 900; line-height: 1.5; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.dt-up-text b { margin-right: 10px; font-family: var(--f-px); font-weight: 400; font-size: 18px; color: var(--yellow); }
+.dt-up-more { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px 5px; background: rgba(0,0,0,.24); box-shadow: inset 2px 2px 0 rgba(0,0,0,.25); font-size: 12.5px; font-weight: 900; white-space: nowrap; transition: background-color .15s ease; }
+.dt-up-more .px { width: 12px; height: 12px; transition: transform .25s var(--ease-out); }
+.dt-up-bar:hover .dt-up-more, .dt-up-bar:focus-visible .dt-up-more { background: rgba(0,0,0,.4); }
+.dt-up-bar[aria-expanded="true"] .dt-up-more .px { transform: rotate(180deg); }
+.dt-up-log { margin-top: 12px; padding: 14px 16px 16px; background: var(--cream); border: 3px solid var(--wood-line); box-shadow: inset 0 -3px 0 var(--cream-2); }
+.dt-up-log:not([hidden]) { animation: up-open .35s var(--ease-out) both; }
+@keyframes up-open { from { opacity: 0; transform: translateY(-8px); } }
+.dt-up-log ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.dt-up-log ol > li { position: relative; padding-left: 26px; }
+.dt-up-log ol > li::before { content: ""; position: absolute; left: 3px; top: 6px; width: 12px; height: 12px; background: var(--cream-2); box-shadow: 0 0 0 3px var(--wood-line); }
+.dt-up-log ol > li.is-new::before { background: var(--tomato); }
+.dt-up-log ol > li:not(:last-child)::after { content: ""; position: absolute; left: 7px; top: 22px; bottom: -12px; width: 4px; background: var(--wood-line); opacity: .35; }
+.dt-up-h { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; line-height: 1.4; }
+.dt-up-h b { font-family: var(--f-px); font-weight: 400; font-size: 18px; }
+.dt-up-new { padding: 1px 7px 2px; background: var(--tomato); color: #fff; font-size: 11.5px; font-weight: 900; }
+.dt-up-h time { font-family: var(--f-px); font-size: 13.5px; color: var(--cream-muted); }
+.dt-up-t { margin: 4px 0 0; font-size: 14.5px; font-weight: 900; line-height: 1.6; }
+.dt-up-log ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+.dt-up-log ul li { position: relative; padding-left: 16px; font-size: 13.5px; font-weight: 700; line-height: 1.75; }
+.dt-up-log ul li::before { content: ""; position: absolute; left: 2px; top: .8em; width: 6px; height: 6px; background: var(--c); }
 
 .dt-box { margin: 16px 0 22px; padding: clamp(16px, 2vw, 20px); background: var(--wood); color: var(--text); border: 4px solid var(--wood-line); box-shadow: inset 4px 4px 0 var(--wood-hi), inset -4px -4px 0 var(--wood-lo); }
 .dt-lbl { margin: 0 0 10px; display: flex; gap: 10px; align-items: baseline; font-family: var(--f-logo); font-size: 18px; color: var(--cream-hi); }
@@ -1143,6 +1227,7 @@ a.dt-btn:hover .px { animation: dl-hop .6s var(--ease-out) infinite; }
 .dt-howto ol { list-style: none; counter-reset: step; margin: 0; padding: 0; display: grid; gap: 8px; }
 .dt-howto li { counter-increment: step; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 12px; padding: 7px 12px 7px 7px; background: var(--cream); border: 3px solid var(--wood-line); font-size: 14px; font-weight: 800; line-height: 1.6; }
 .dt-howto li::before { content: counter(step); display: grid; place-items: center; width: 34px; height: 34px; background: var(--tomato); color: #fff; border: 3px solid var(--wood-line); box-shadow: inset 0 -4px 0 #9a0a12; font-family: var(--f-px); font-size: 17px; line-height: 1; }
+.dt-howto li > span { min-width: 0; }
 
 @media (max-width: 900px) {
   .dl-hero { min-height: auto; padding-block: calc(var(--hdr) + 40px) 100px; }
@@ -1161,6 +1246,10 @@ a.dt-btn:hover .px { animation: dl-hop .6s var(--ease-out) infinite; }
   .dt-play { width: 66px; height: 66px; }
   .dt-play svg { width: 32px; height: 32px; }
   .dt-btn { min-height: 58px; font-size: 16px; }
+  /* リボンは「UPDATE」と「詳しく」を上の段に、内容を下の段に */
+  .dt-up-bar { --s: 7px; grid-template-columns: auto minmax(0, 1fr); padding-right: calc(var(--s) * 3 + 8px); }
+  .dt-up-text { grid-column: 1 / -1; grid-row: 2; font-size: 14px; }
+  .dt-up-more { justify-self: end; }
 }
 
 /* 画像が読めないとき（common.js が「Image not found」の絵に差し替える）。灰色の地を枠いっぱいに広げる */
@@ -1374,6 +1463,6 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0s !important; }
-  .tape-track, .mc-layer i, .kv-burst i, .kv-streaks { animation: none !important; }
+  .tape-track, .mc-layer i, .kv-burst i, .kv-streaks, .dt-up-bar::after, .dt-up-tag .px { animation: none !important; }
   .kv-streaks { display: none; }
 }
