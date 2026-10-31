@@ -263,14 +263,35 @@
     return m ? m[1] : String(s || '').trim();
   };
 
+  /* ---------- 画像が読めないときは「Image not found」の絵に差し替える ----------
+   * 横長の枠には 16:9、正方形に近い枠（アイコンなど）には正方形の絵を使う。
+   * data-nf="self" の画像は自分で処理する（サムネイル・トップの絵）。 */
+  const NO_IMG = { wide: 'assets/img/not-found.webp', square: 'assets/img/not-found-sq.webp' };
+  const noImage = (img) => {
+    const wide = img.clientWidth > img.clientHeight * 1.4;
+    img.dataset.nf = 'done';
+    img.classList.add('is-missing');
+    img.removeAttribute('srcset');
+    img.src = wide ? NO_IMG.wide : NO_IMG.square;
+  };
+  document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (img instanceof HTMLImageElement && !img.dataset.nf) noImage(img);
+  }, true);
+
+  /* YouTubeは、高画質のサムネイルが無いときや動画が無いときに 120×90 の灰色の絵を返す */
   const loadThumb = (img, v, hi) => {
-    img.classList.remove('is-broken');
+    img.classList.remove('is-missing');
+    img.dataset.nf = 'self';
     delete img.dataset.fb;
+    const retry = () => { img.dataset.fb = '1'; img.src = thumbUrl(v); };
     img.onload = () => {
-      if (hi && !v.thumb && img.naturalWidth <= 120 && !img.dataset.fb) { img.dataset.fb = '1'; img.src = thumbUrl(v); }
+      if (img.dataset.nf !== 'self' || v.thumb || img.naturalWidth > 120) return;
+      if (hi && !img.dataset.fb) retry(); else noImage(img);
     };
     img.onerror = () => {
-      if (hi && !v.thumb && !img.dataset.fb) { img.dataset.fb = '1'; img.src = thumbUrl(v); } else img.classList.add('is-broken');
+      if (img.dataset.nf !== 'self') return;
+      if (hi && !v.thumb && !img.dataset.fb) retry(); else noImage(img);
     };
     img.src = hi && !v.thumb ? thumbUrl(v, 'maxresdefault') : thumbUrl(v);
     img.alt = '';

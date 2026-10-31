@@ -29,8 +29,9 @@ assets/js/common.js     全ページ共通（ヘッダー、メニュー、ツ�
 assets/js/main.js       トップページの演出（ローディング、ピックアップ、モニターの切り替えなど）
 assets/js/downloads.js  ダウンロードページ（アイコン一覧、検索・絞り込み、作品の切り替え、機種・バージョン・ローダーの選択）
 assets/css/style.css    デザイン
-assets/img/             ロゴ・ファビコン・SNS共有画像（og.png）
+assets/img/             ロゴ・ファビコン・SNS共有画像（og.png）・Discordサーバーのアイコン・Minecraftのキャラ・画像がないときの絵
 assets/img/logo/        受け取ったロゴの元データ（1024px）
+assets/img/orig/        受け取った素材の元データ（Discordサーバーのアイコン3種・Minecraftのキャラ・Image not found）
 assets/img/kv/          Minecraftの欄の夕焼けのドット絵（仮素材。雲・山3枚・太陽）
 assets/img/px/          草ブロック・土・星・区切りのギザギザ
 assets/video/           背景動画を置く場所
@@ -52,13 +53,16 @@ assets/video/           背景動画を置く場所
 | トップの背景を1枚絵にする | 画像を `assets/img/kv/` に置き、`content.js` の `hero.image` にパスを書く（赤い集中線の背景と入れ替わる） |
 | トップに背景動画を流す | 動画を `assets/video/` に置き、`content.js` の `hero.video` にパスを書く |
 | 真ん中のキャラ画像を変える | 画像を `assets/img/` に置き、`hero.mascot` にパスを書く |
+| Discordの欄の絵を変える | `assets/img/discord-server.webp` を差し替える（背景が透明の横640pxくらいの画像。ピックアップのDiscordのカードにも出ます） |
+| Minecraftのキャラを変える | `assets/img/rafu-mc.webp` を差し替える（背景が透明の縦900pxくらいの画像。Minecraftの欄の左とピックアップのMinecraftのカードに出ます） |
+| 画像がないときの絵を変える | `assets/img/not-found.webp`（16:9）と `assets/img/not-found-sq.webp`（正方形。アイコンなど四角い枠用）を差し替える |
 | Minecraftの夕焼けを描き直す | `assets/img/kv/` の同じ名前の画像を差し替える（横につながる絵。山は 640×300 が基準） |
 | サーバーのバージョンが変わった | `server.version` を書き換える |
 | 投稿スケジュールが変わった | `schedule` を書き換える |
 
 ## 更新するときの注意
 
-- CSS・JS（`content.js` も）を変えたら、`index.html` と `downloads.html` の読み込み部分にある `?v=20261030-6` の数字も変える（例: `?v=20261105-1`。2つのページで同じ数字にそろえる）。変えないと、前に見た人のブラウザに古いファイルが残り、新しいページと混ざって表示が崩れることがあります
+- CSS・JS（`content.js` も）を変えたら、`index.html` と `downloads.html` の読み込み部分にある `?v=20261031-1` の数字も変える（例: `?v=20261105-1`。2つのページで同じ数字にそろえる）。変えないと、前に見た人のブラウザに古いファイルが残り、新しいページと混ざって表示が崩れることがあります
 - スクリプトが途中で止まったときは、ローディングを消して中身をそのまま表示します（各ページの先頭の小さなスクリプト）
 - 配布ファイルは1つ100MBまで（GitHubの画面からアップロードするときは25MBまで）。それより大きいものは GitHub の Releases などに置き、`file` にそのURLを書く
 - 作品の `id` は半角英数字とハイフンだけにする。`top` と `list` はページの中で使っているので避ける
@@ -71,6 +75,8 @@ assets/video/           背景動画を置く場所
 - ヘッダーの「もっと見る」に各SNSが並びます（中身は `content.js` の `sns`）
 - Minecraftサーバーのオンライン表示は api.mcsrvstat.us を使用（数分遅れることがあります）
 - トマトを押すと笑います（アハハ）
+- 画像が読めないとき（パスの書き間違い・消した動画のサムネイルなど）は、「Image not found」の絵に自動で差し替わります。トップの背景の1枚絵とまんなかのキャラだけは、いつもの赤い背景とトマトに戻ります
+- Minecraftの欄のキャラは、見えたときに丘の下から飛び出し、ときどきビクッと跳ねます
 - スクロールバーと文字を選んだときの色は、いま見ている欄（配信は赤、Minecraftは木）に合わせて変わります
 - ダウンロードページの「リンクをコピー」は、その作品が選ばれた状態で開くURL（`downloads.html#作品のid`）をコピーします。Discordで紹介するときに使えます
 - ダウンロードページのアイコン一覧は、矢印キーで移動・Enterで選べます

@@ -566,9 +566,12 @@ html[data-zone="mc"] ::selection { background: var(--mc-leaf-lo); color: #fff; }
 .pa-pixel { position: absolute; inset: 0; background: linear-gradient(180deg, #24113a 0 22%, #5c1a4d 22% 40%, #b8283f 40% 55%, #f47a35 55% 68%, #ffd27a 68%); }
 .pa-pixel::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 70%; background: url(../img/kv/far.png) 0 100% / auto 100% repeat-x; image-rendering: pixelated; }
 .pa-pixel::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 46%; background: url(../img/kv/near.png) 30% 100% / auto 100% repeat-x; image-rendering: pixelated; }
-.pa-pixel .px { position: absolute; z-index: 1; left: 50%; top: 42%; width: 30%; height: auto; aspect-ratio: 1; transform: translate(-50%, -50%); color: #fff; filter: drop-shadow(3px 3px 0 rgba(0,0,0,.4)); }
-.pa-discord { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at 30% 30%, #7c86ff, var(--discord) 60%); }
-.pa-discord svg { width: 36%; fill: #fff; filter: drop-shadow(5px 5px 0 rgba(0,0,0,.25)); transform: rotate(-6deg); }
+/* 絵は右に寄せて、左上のタグと重ならないようにする。キャラは手前の丘（::after）の後ろに立つ */
+.pick-art .pa-chara { position: absolute; left: auto; right: 7%; bottom: -3%; width: auto; height: 90%; object-fit: contain; filter: drop-shadow(4px 5px 0 rgba(0,0,0,.35)); transform-origin: 50% 100%; transition: transform .5s var(--ease-back); }
+.pick:hover .pick-art .pa-chara { transform: translateY(-4%) rotate(-4deg); }
+.pa-discord { position: absolute; inset: 0; display: grid; place-items: center end; padding-right: 8%; background: radial-gradient(circle at 30% 30%, #7c86ff, var(--discord) 60%); }
+.pick-art .pa-discord img { width: 46%; height: auto; transform: rotate(-6deg); filter: drop-shadow(5px 6px 0 rgba(0,0,0,.28)); transition: transform .5s var(--ease-back); }
+.pick:hover .pick-art .pa-discord img { transform: rotate(-2deg) scale(1.08); }
 
 .news-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(18px, 2.4vw, 34px); align-items: start; }
 .news-list { list-style: none; margin: 0; padding: 0; border-top: 3px solid var(--paper-ink); }
@@ -628,7 +631,6 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
   background: #000 radial-gradient(circle, #1a1a20 1px, transparent 1.3px) 0 0 / 10px 10px; cursor: pointer; border-radius: 18px / 22px;
 }
 .tv-screen img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.03); transition: transform .8s var(--ease-out), filter .3s ease, opacity .2s ease; }
-.tv-screen img.is-broken { opacity: 0; }
 .tv-screen:hover img { transform: scale(1.08); filter: saturate(1.15); }
 .tv-screen::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; }
 .tv-screen::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0,0,0,.6) 100%); }
@@ -679,7 +681,6 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .ch-item[aria-current="true"]::after { content: "NOW ON AIR"; position: absolute; right: 10px; top: 10px; z-index: 1; padding: 2px 8px; background: var(--tomato); color: #fff; font-family: var(--f-logo); font-size: 10px; letter-spacing: .1em; transform: skewX(-10deg); }
 .ch-thumb { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--ink-3) radial-gradient(circle, #2a2a33 1px, transparent 1.3px) 0 0 / 8px 8px; }
 .ch-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease-out); }
-.ch-thumb img.is-broken { opacity: 0; }
 .ch-item:hover .ch-thumb img { transform: scale(1.08); }
 .ch-body { display: grid; gap: 4px; min-width: 0; }
 .ch-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: var(--dim); }
@@ -764,6 +765,17 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
   text-shadow: 0 .05em 0 var(--mc-leaf), 0 .09em 0 var(--mc-leaf-lo), 0 .13em 0 var(--wood-line);
 }
 .mc-en { margin: 0; font-family: var(--f-px); font-size: clamp(14px, 1.4vw, 18px); letter-spacing: .3em; padding-left: .3em; color: var(--gold); text-shadow: 2px 2px 0 var(--wood-line); }
+/* Rafuのキャラ: タイトルの左の丘に立つ。--t はタイトルの文字の大きさ（タイトルの幅は文字の大きさの約5.8倍） */
+.mc-chara {
+  --t: clamp(56px, 9vw, 130px); --shift: 0px;
+  position: absolute; bottom: 4cqh; right: calc(50cqw + var(--shift) + var(--t) * 2.9 + 16px);
+  width: min(calc(50cqw - var(--shift) - var(--t) * 2.9 - 32px), 34cqh); height: auto;
+  filter: drop-shadow(3px 0 0 var(--wood-line)) drop-shadow(-3px 0 0 var(--wood-line)) drop-shadow(0 3px 0 var(--wood-line)) drop-shadow(0 -3px 0 var(--wood-line)) drop-shadow(12px 12px 0 rgba(24, 9, 32, .45));
+  transform-origin: 50% 100%; animation: startle 6s ease-in-out 2s infinite;
+}
+.js .mc-chara[data-reveal] { translate: 0 40%; transition: opacity .4s ease .15s, translate .9s var(--ease-back) .15s; }
+.js .mc-chara[data-reveal].is-in { translate: none; }
+@keyframes startle { 0%, 80%, 100% { transform: none; } 84% { transform: translateY(-6%) rotate(-3deg); } 88% { transform: none; } 91% { transform: translateY(-2%) rotate(1deg); } 94% { transform: none; } }
 .mc-lead { margin: 6px 0 0; max-width: 36em; padding: 10px 18px 11px; font-weight: 800; color: #fff; background: rgba(24, 9, 32, .8); border: 3px solid var(--wood-line); box-shadow: inset 0 0 0 2px rgba(255,255,255,.08); text-wrap: pretty; }
 
 /* パネル・ボタン（Minecraftの欄） */
@@ -1081,7 +1093,6 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .dt-media { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; margin: 0 0 18px; padding: 0; overflow: hidden; background: #000; border: 4px solid var(--wood-line); color: #fff; }
 button.dt-media { cursor: pointer; }
 .dt-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease-out), filter .3s ease; }
-.dt-media img.is-broken { opacity: 0; }
 button.dt-media:hover img { transform: scale(1.04); filter: brightness(.85); }
 .dt-tag { position: absolute; z-index: 1; left: 10px; top: 10px; padding: 3px 10px; background: var(--wood-line); color: #fff; font-family: var(--f-px); font-size: 12.5px; letter-spacing: .14em; }
 .dt-play {
@@ -1094,9 +1105,9 @@ button.dt-media:hover img { transform: scale(1.04); filter: brightness(.85); }
 button.dt-media:hover .dt-play { transform: scale(1.12); }
 .dt-art { display: grid; place-items: center; background: conic-gradient(from 90deg at 50% 50%, rgba(0,0,0,.1) 25%, transparent 0 50%, rgba(0,0,0,.1) 0 75%, transparent 0) 0 0 / 40px 40px, var(--c); box-shadow: inset 4px 4px 0 rgba(255,255,255,.25), inset -4px -4px 0 rgba(0,0,0,.2); }
 .dt-art-ic { display: grid; place-items: center; width: 30%; aspect-ratio: 1; background: rgba(0,0,0,.22); box-shadow: inset 4px 4px 0 rgba(0,0,0,.3), inset -4px -4px 0 rgba(255,255,255,.2); }
-.dt-art-ic .px { width: 70%; height: 70%; filter: drop-shadow(4px 4px 0 rgba(0,0,0,.3)); animation: bob 2.4s ease-in-out infinite; }
-.dt-art-ic img { width: 100%; height: 100%; object-fit: cover; }
-@keyframes bob { 50% { transform: translateY(-6%); } }
+.dt-art-ic .px { width: 70%; height: 70%; filter: drop-shadow(4px 4px 0 rgba(0,0,0,.3)); animation: px-bob 2.4s ease-in-out infinite; }
+.dt-art-ic img { position: static; width: 100%; height: 100%; object-fit: cover; }
+@keyframes px-bob { 50% { transform: translateY(-6%); } }
 .dt-about { margin-bottom: 4px; }
 .dt-about p { margin: 0 0 .7em; font-size: 15px; line-height: 1.9; text-wrap: pretty; }
 
@@ -1152,6 +1163,9 @@ a.dt-btn:hover .px { animation: dl-hop .6s var(--ease-out) infinite; }
   .dt-btn { min-height: 58px; font-size: 16px; }
 }
 
+/* 画像が読めないとき（common.js が「Image not found」の絵に差し替える）。灰色の地を枠いっぱいに広げる */
+img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
+
 /* ---------- COMMUNITY ---------- */
 .sec-community { background: var(--ink); padding-bottom: clamp(70px, 8vw, 110px); }
 .cm-panel {
@@ -1172,7 +1186,7 @@ a.dt-btn:hover .px { animation: dl-hop .6s var(--ease-out) infinite; }
 .langs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
 .langs span { padding: 4px 14px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.4); font-size: 13px; font-weight: 900; transform: skewX(-8deg); }
 .cm-visual { position: relative; aspect-ratio: 1; max-width: 420px; width: 100%; justify-self: center; }
-.cm-visual img { position: absolute; inset: 14%; width: 72%; height: 72%; object-fit: contain; animation: bob 5.5s ease-in-out infinite; filter: drop-shadow(10px 14px 0 rgba(0,0,0,.25)); }
+.cm-visual img { position: absolute; inset: 9%; width: 82%; height: 82%; object-fit: contain; animation: bob 5.5s ease-in-out infinite; filter: drop-shadow(10px 14px 0 rgba(0,0,0,.25)); }
 .bubble {
   position: absolute; z-index: 2; padding: 10px 16px; background: #fff; color: #000; border: 3px solid #000; border-radius: 18px;
   font-weight: 900; font-size: clamp(14px, 1.5vw, 18px); white-space: nowrap; box-shadow: 4px 4px 0 #000;
@@ -1266,6 +1280,7 @@ a.dt-btn:hover .px { animation: dl-hop .6s var(--ease-out) infinite; }
 /* ツールバーと中身が重なる幅では、右だけ余白を広げる */
 @media (min-width: 900px) and (max-width: 1340px) and (min-height: 640px) {
   html:not(.gbar-closed) .wrap { padding-right: max(var(--gut-r), 118px); }
+  html:not(.gbar-closed) .mc-chara { --shift: calc((118px - 5vw) / 2); }
 }
 @media (max-width: 1240px) {
   .hdr-nav { display: none; }
@@ -1332,8 +1347,10 @@ a.dt-btn:hover .px { animation: dl-hop .6s var(--ease-out) infinite; }
   .sec-community .sh-en { font-size: 9.4vw; }
   .kv { padding-bottom: 112px; }
   .pick-tag { font-size: 10.5px; padding: 2px 8px; }
-  .pa-pixel .px { top: 62%; width: 26%; }
+  .pick-art .pa-discord img { width: 38%; translate: 0 10%; }
+  .pick-art .pa-chara { height: 68%; }
   .mc-hero:not(.dl-hero) { min-height: max(500px, 72svh); }
+  .mc-chara { right: auto; left: max(var(--gut), 14px); bottom: 1cqh; width: min(25cqw, 14.4cqh); }
   .cube:nth-child(2) { display: none; }
   .ft-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
   .ft-nav a { padding: 9px 4px; text-align: center; background: var(--ink-2); border: 1px solid var(--line); border-radius: 10px; font-size: 13px; }

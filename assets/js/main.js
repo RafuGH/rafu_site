@@ -4,7 +4,7 @@
 
   const {
     C, root, $, $$, reduce, finePointer, clamp, esc, store,
-    ICON, SFX, ARROW, PLAY, PAD, paintPx,
+    SFX, ARROW, PLAY, PAD, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
     KIND, ch, fmtDate, ytId, loadThumb, openPlayer,
     WORK_PX, lighten, reveal,
@@ -14,7 +14,13 @@
   const hero = C.hero || {};
   const kv = $('.kv');
   const mascotImg = $('#mascot-img');
-  if (hero.mascot && mascotImg) mascotImg.src = hero.mascot;
+  /* 差し替えた絵が読めないときは、いつものトマトと赤い集中線に戻す */
+  if (hero.mascot && mascotImg) {
+    const base = mascotImg.getAttribute('src');
+    mascotImg.dataset.nf = 'self';
+    mascotImg.addEventListener('error', () => { if (mascotImg.getAttribute('src') !== base) mascotImg.src = base; });
+    mascotImg.src = hero.mascot;
+  }
   if (kv && (hero.video || hero.image)) {
     let media;
     if (hero.video) {
@@ -32,6 +38,8 @@
       media = document.createElement('img');
       media.className = 'kv-photo';
       media.alt = '';
+      media.dataset.nf = 'self';
+      media.addEventListener('error', () => { media.remove(); kv.classList.remove('has-media'); });
       media.src = hero.image;
     }
     $('.kv-bg', kv).prepend(media);
@@ -103,8 +111,8 @@
       const g = games[0];
       cards.push(card('a', 'href="#game"', { tag: 'GAME', html: g.image ? `<img src="${esc(g.image)}" alt="" loading="lazy">` : `<span class="pa-burst"></span><span class="pa-icon">${PAD}</span>` }, esc(g.title), 'var(--tomato)'));
     }
-    cards.push(card('a', 'href="#minecraft"', { tag: 'MINECRAFT', html: '<span class="pa-pixel"><i class="px" data-px="cube"></i></span>' }, phr('参加型', 'Minecraft', 'サーバー'), '#f47a35'));
-    cards.push(card('a', `href="${esc(C.discord || '#community')}" target="_blank" rel="noopener"`, { tag: 'DISCORD', html: `<span class="pa-discord">${ICON.discord}</span>` }, phr('Discord', 'コミュニティに参加'), 'var(--discord)'));
+    cards.push(card('a', 'href="#minecraft"', { tag: 'MINECRAFT', html: '<span class="pa-pixel"><img class="pa-chara" src="assets/img/rafu-mc.webp" alt="" width="589" height="900" loading="lazy"></span>' }, phr('参加型', 'Minecraft', 'サーバー'), '#f47a35'));
+    cards.push(card('a', `href="${esc(C.discord || '#community')}" target="_blank" rel="noopener"`, { tag: 'DISCORD', html: '<span class="pa-discord"><img src="assets/img/discord-server.webp" alt="" width="640" height="486" loading="lazy"></span>' }, phr('Discord', 'コミュニティに参加'), 'var(--discord)'));
     pickupEl.innerHTML = cards.join('');
     const vb = $('[data-pick="video"]', pickupEl);
     if (vb) {
