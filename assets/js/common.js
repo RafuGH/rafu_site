@@ -83,20 +83,47 @@
 
   /* ---------- sound (既定はOFF。ONのときだけ合成音を鳴らす) ---------- */
   const SFX = (() => {
+    /* 音の大きさ。効果音は笑い声と同じくらいに聞こえるように、全体をまとめて上げてある（音の形はそのまま）。
+       content.js の sound で上げ下げできる */
+    const SOUND = C.sound || {};
+    const vol = (v) => (typeof v === 'number' && v >= 0 ? v : 1);
+    const FX_LEVEL = 12 * vol(SOUND.effects);
+    const VOICE_GAIN = 0.65 * vol(SOUND.voice);
     let ctx = null;
+    let fxOut = null;
     let on = store.get('rafu-sfx') === 'on';
+    let pressedAt = -1e9; // 最後にページを押した（キーを押した）時刻
+    let fxAt = -1e9;      // 最後にボタン専用の効果音（zap・ok）を鳴らした時刻
     const ensure = () => {
       if (!ctx) {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return null;
         ctx = new AC();
+        fxOut = ctx.createGain();
+        fxOut.gain.value = FX_LEVEL;
+        fxOut.connect(ctx.destination);
       }
-      if (ctx.state === 'suspended') ctx.resume();
+      if (ctx.state === 'suspended') {
+        const p = ctx.resume();
+        if (p) p.catch(() => { /* 押す前は鳴らせない */ });
+      }
       return ctx;
+    };
+    /* ブラウザは、ページを押す（キーを押す）までは音を出させない。そのあいだに鳴らそうとした音は止まったまま溜まり、
+       最初に押したときに一度に鳴ってしまう（効果音が初めだけ急に大きくなる）。なので、押した直後か、音が出せる状態のときだけ鳴らす */
+    ['pointerdown', 'pointerup', 'touchend', 'keydown', 'click'].forEach((t) => document.addEventListener(t, () => {
+      pressedAt = performance.now();
+      if (on || ctx) ensure();
+    }, { capture: true, passive: true }));
+    const ready = () => {
+      const pressed = performance.now() - pressedAt < 1000;
+      if (!ctx && !pressed) return null;
+      const c = ensure();
+      return c && (c.state === 'running' || pressed) ? c : null;
     };
     const tone = (freq, dur, type = 'square', gain = 0.04, slideTo = 0, delay = 0) => {
       if (!on) return;
-      const c = ensure();
+      const c = ready();
       if (!c) return;
       const t = c.currentTime + delay;
       const o = c.createOscillator();
@@ -106,13 +133,13 @@
       if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
       g.gain.setValueAtTime(gain, t);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      o.connect(g).connect(c.destination);
+      o.connect(g).connect(fxOut);
       o.start(t);
       o.stop(t + dur + 0.03);
     };
     const noise = (dur = 0.16, gain = 0.05) => {
       if (!on) return;
-      const c = ensure();
+      const c = ready();
       if (!c) return;
       const len = Math.floor(c.sampleRate * dur);
       const buf = c.createBuffer(1, len, c.sampleRate);
@@ -126,12 +153,11 @@
       const g = c.createGain();
       g.gain.setValueAtTime(gain, c.currentTime);
       g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + dur);
-      src.connect(f).connect(g).connect(c.destination);
+      src.connect(f).connect(g).connect(fxOut);
       src.start();
     };
 
     /* 声（トマトの笑い声）。押したときに鳴らすので初期状態でも鳴る。効果音をOFFに切り替えた人には鳴らさない */
-    const VOICE_GAIN = 0.9;
     const voiceData = new Map(); // url → 読み込んだ中身（Promise）
     const voiceBuf = new Map();  // url → 再生できる形にしたもの
     let voiceNow = null;
@@ -167,8 +193,13 @@
       if (list.length > 1 && i === lastVoice) i = (i + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
       lastVoice = i;
       const seq = ++voiceSeq;
-      const c = ensure();
-      if (!c) { new Audio(list[i]).play().catch(() => {}); return; }
+      const c = ready();
+      if (!c) {
+        const a = new Audio(list[i]);
+        a.volume = Math.min(1, VOICE_GAIN);
+        a.play().catch(() => {});
+        return;
+      }
       const buf = await decodeVoice(c, list[i]);
       if (!buf || seq !== voiceSeq) return;
       stopVoice(c);
@@ -185,10 +216,11 @@
     return {
       get on() { return on; },
       set(v) { on = v; store.set('rafu-sfx', v ? 'on' : 'off'); if (v) ensure(); },
-      hover: () => tone(1500, 0.03, 'square', 0.014),
-      click: () => tone(520, 0.09, 'triangle', 0.06, 900),
-      zap: () => { noise(0.16, 0.06); tone(190, 0.12, 'sawtooth', 0.02, 80); },
-      ok: () => { tone(660, 0.08, 'square', 0.03); tone(990, 0.14, 'square', 0.03, 0, 0.08); },
+      hover: () => tone(1500, 0.03, 'square', 0.028),
+      /* 1回押したときに鳴る効果音は1つだけ（専用の音が鳴ったときは、ふつうの「カチッ」を重ねない） */
+      click: () => { if (performance.now() - fxAt > 80) tone(520, 0.09, 'triangle', 0.06, 900); },
+      zap: () => { fxAt = performance.now(); noise(0.16, 0.07); tone(190, 0.12, 'sawtooth', 0.024, 80); },
+      ok: () => { fxAt = performance.now(); tone(660, 0.08, 'square', 0.03); tone(990, 0.14, 'square', 0.03, 0, 0.08); },
       voice,
       preloadVoices: (list) => { (list || []).forEach(fetchVoice); },
     };
