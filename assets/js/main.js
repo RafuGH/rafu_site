@@ -324,14 +324,21 @@
   setText('#srv-version', S.version);
   if (S.versionNote) setText('#srv-version-note', `（${S.versionNote}）`);
 
+  // アドレスの文字数（大きさを欄の幅に合わせる計算に使う。style.css の .srv-code）
+  const addrEl = $('#srv-address');
+  const srvCard = $('.srv-card');
+  if (addrEl && srvCard) srvCard.style.setProperty('--addr-len', Math.max(8, addrEl.textContent.trim().length));
+
+  // ボタンの文字は「コピー／コピーしました／選択しました」を重ねて置き、data-state で出すものを切り替える
+  // （文字を書き換えるとボタンの幅が変わり、となりのアドレスの欄が縮んだり折り返したりするため）
   $$('[data-copy]').forEach((btn) => {
-    const label = $('span', btn);
+    let timer = 0;
     btn.addEventListener('click', async () => {
       const src = $(btn.dataset.copy);
       const text = src ? src.textContent.trim() : '';
       const ok = await copyText(text);
       if (ok) {
-        label.textContent = 'コピーしました';
+        btn.dataset.state = 'done';
         btn.classList.add('is-done');
         const card = btn.closest('.srv-card');
         card.classList.remove('is-copied');
@@ -345,9 +352,10 @@
         const sel = getSelection();
         sel.removeAllRanges();
         sel.addRange(r);
-        label.textContent = '選択しました';
+        btn.dataset.state = 'sel';
       }
-      setTimeout(() => { label.textContent = 'コピー'; btn.classList.remove('is-done'); }, 1800);
+      clearTimeout(timer);
+      timer = setTimeout(() => { btn.dataset.state = ''; btn.classList.remove('is-done'); }, 1800);
     });
   });
 

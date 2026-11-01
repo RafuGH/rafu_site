@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap">
 <link rel="preload" as="image" href="assets/img/logo-outline.webp">
 <!-- CSS・JSを更新したら ?v= の数字も変える（古いファイルがブラウザに残って表示が崩れるのを防ぐ）。ファビコンとog.pngを作り直したときは、上の ?v= も変える -->
-<link rel="stylesheet" href="assets/css/style.css?v=20261101-5">
+<link rel="stylesheet" href="assets/css/style.css?v=20261101-6">
 <script>
   (function (d) {
     var c = d.documentElement.classList;
@@ -165,6 +165,10 @@
           <a class="btn btn-yellow" href="#discord" data-sfx>
             <span class="btn-face"><span class="brand" data-icon="discord"></span><span>Discordに参加</span></span>
           </a>
+          <!-- 押すとMinecraftの欄のREDHUB（サーバーの案内 #redhub）までスクロール -->
+          <a class="btn btn-mc" href="#redhub" data-sfx>
+            <span class="btn-face"><i class="px" data-px="cube"></i><span>Minecraftサーバーに参加</span></span>
+          </a>
         </div>
       </div>
 
@@ -304,7 +308,7 @@
       </header>
     </div>
 
-    <div class="mc-server" data-progress>
+    <div class="mc-server" id="redhub" data-progress>
       <div class="srv-sky" aria-hidden="true"><i></i><i></i></div>
       <div class="voxels" aria-hidden="true">
         <div class="cube" style="--s:72px;--c:#e5121b;--x:5%;--y:10%;--t:22s"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -340,14 +344,14 @@
               <span class="srv-lbl">サーバーアドレス<small>SERVER ADDRESS</small></span>
               <div class="srv-row">
                 <code class="srv-code" id="srv-address">rafuserver.duckdns.org</code>
-                <button class="pxbtn pxbtn-green copy-btn" type="button" data-copy="#srv-address" data-sfx><span>コピー</span></button>
+                <button class="pxbtn pxbtn-green copy-btn" type="button" data-copy="#srv-address" data-sfx><span class="copy-lbl"><span data-l="">コピー</span><span data-l="done">コピーしました</span><span data-l="sel">選択しました</span></span></button>
               </div>
             </div>
             <div class="srv-field srv-port" id="srv-port-field" hidden>
               <span class="srv-lbl">ポート<small>PORT</small></span>
               <div class="srv-row">
                 <code class="srv-code" id="srv-port">19132</code>
-                <button class="pxbtn pxbtn-green copy-btn" type="button" data-copy="#srv-port" data-sfx><span>コピー</span></button>
+                <button class="pxbtn pxbtn-green copy-btn" type="button" data-copy="#srv-port" data-sfx><span class="copy-lbl"><span data-l="">コピー</span><span data-l="done">コピーしました</span><span data-l="sel">選択しました</span></span></button>
               </div>
             </div>
 
@@ -501,8 +505,8 @@
   <style>.loader{display:none!important}</style>
 </noscript>
 
-<script src="assets/js/content.js?v=20261101-5"></script>
-<script src="assets/js/common.js?v=20261101-5"></script>
-<script src="assets/js/main.js?v=20261101-5"></script>
+<script src="assets/js/content.js?v=20261101-6"></script>
+<script src="assets/js/common.js?v=20261101-6"></script>
+<script src="assets/js/main.js?v=20261101-6"></script>
 </body>
 </html>

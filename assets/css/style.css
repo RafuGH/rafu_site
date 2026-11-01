@@ -142,6 +142,8 @@ html[data-zone="mc"] ::selection { background: var(--mc-leaf-lo); color: #fff; }
 .btn-yellow { --bg: var(--yellow); --fg: var(--ink); --hv: var(--ink); --hfg: var(--yellow); }
 .btn-red { --bg: var(--tomato); --fg: #fff; --hv: var(--ink); }
 .btn-white { --bg: #fff; --fg: var(--ink); --hv: var(--tomato); --hfg: #fff; }
+.btn-mc { --bg: #3c8527; --fg: #fff; --hv: var(--ink); --hfg: #6cc349; }   /* Minecraftサーバー（サーバー欄の緑） */
+.btn .px { width: 22px; height: 22px; }
 
 /* ---------- loader ---------- */
 .loader { position: fixed; inset: 0; z-index: 150; display: none; place-items: center; cursor: pointer; }
@@ -423,7 +425,9 @@ html[data-zone="mc"] ::selection { background: var(--mc-leaf-lo); color: #fff; }
   font-size: 13.5px; font-weight: 900; line-height: 1.3; letter-spacing: .02em;
 }
 .kv-do li::before { content: ""; flex: none; width: 7px; height: 7px; background: var(--yellow); transform: rotate(45deg); }
-.kv-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+/* 上の段に YouTube・Discord、YouTube の下に Minecraftサーバー。左の列は長いほう（Minecraft）の幅にそろう */
+.kv-cta { display: grid; grid-template-columns: repeat(2, max-content); gap: 12px; }
+@container (max-width: 470px) { .kv-cta { grid-template-columns: minmax(0, 1fr); max-width: 360px; } }
 .kv-sns { position: absolute; z-index: 3; left: max(var(--gut), clamp(16px, 5vw, 80px)); bottom: calc(clamp(120px, 13vw, 170px) / 2 + 30px); display: flex; gap: 8px; flex-wrap: wrap; }
 @media (min-width: 1240px) { .kv-sns { left: calc((100% - 1240px) / 2 + 80px); } }
 .icon-link {
@@ -982,13 +986,30 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .srv-field { display: grid; gap: 8px; margin-bottom: 16px; }
 .srv-lbl { font-size: 13px; font-weight: 700; color: var(--ore-text); display: flex; gap: 10px; align-items: baseline; }
 .srv-lbl small { font-family: var(--f-px); font-weight: 400; letter-spacing: .14em; color: var(--ore-dim); font-size: 12px; }
-.srv-row { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
+/* アドレスは途中で折り返さず1行で見せる。文字の大きさは欄の幅とアドレスの文字数（--addr-len、main.js が入れる）から決める
+   （ドット文字は半角1文字が約0.5文字ぶん＋字間）。欄がせまいときは、コピーのボタンをアドレスの下に置く */
+.srv-field { container-type: inline-size; }
+.srv-row { display: flex; align-items: stretch; gap: 8px; }
 .srv-code {
-  flex: 1 1 260px; min-width: 0; padding: 12px 16px; display: flex; align-items: center;
+  --addr-w: calc(100cqi - 246px);   /* 欄の幅 − コピーのボタン(196) − すき間(8) − 内側の余白と枠(36) − ゆとり */
+  flex: 1 1 0; min-width: 0; padding: 12px 16px; display: flex; align-items: center;
   background: #000; border: 2px solid #a0a0a0; box-shadow: 0 0 0 2px var(--ore-line);
-  font-family: var(--f-px); font-size: clamp(17px, 1.9vw, 24px); letter-spacing: .02em; overflow-wrap: anywhere; color: #fff;
+  font-family: var(--f-px); font-size: clamp(14px, calc(var(--addr-w) / (var(--addr-len, 22) * .54)), 24px); letter-spacing: .02em;
+  white-space: nowrap; overflow-x: auto; scrollbar-width: none; color: #fff;
 }
-.copy-btn { flex: none; min-width: 150px; }
+.srv-code::-webkit-scrollbar { display: none; }
+.copy-btn { flex: none; width: 196px; padding-inline: 12px; }
+@container (max-width: 470px) {
+  .srv-row { flex-direction: column; }
+  .srv-code { --addr-w: calc(100cqi - 42px); flex: none; }
+  .copy-btn { width: auto; }
+}
+/* 「コピー」「コピーしました」「選択しました」は同じ場所に重ねて、出すものだけ見せる（ボタンの幅が変わらない） */
+.copy-lbl { display: grid; justify-items: center; }
+.copy-lbl > span { grid-area: 1 / 1; visibility: hidden; white-space: nowrap; }
+.copy-btn:not([data-state="done"]):not([data-state="sel"]) [data-l=""],
+.copy-btn[data-state="done"] [data-l="done"],
+.copy-btn[data-state="sel"] [data-l="sel"] { visibility: visible; }
 .copy-btn.is-done { --bg: var(--gold); --hi: #ffe39a; --lo: #c7900c; --fg: var(--wood-line); text-shadow: none; }
 .srv-spec { margin: 22px 0 0; display: grid; gap: 8px; padding-top: 16px; border-top: 2px solid var(--ore-2); }
 .srv-spec div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 10px; font-size: 14px; }
@@ -1252,6 +1273,7 @@ button.pev-media:hover .pev-play, button.pev-media:focus-visible .pev-play { opa
 
 /* 右: 選んだ作品 */
 #discord { scroll-margin-top: 28px; }
+#redhub { scroll-margin-top: calc(24px - clamp(80px, 9vw, 120px)); }   /* トップの「Minecraftサーバーに参加」で、REDHUBのロゴがヘッダーのすぐ下に来る */
 .dl-detail { padding: clamp(18px, 2.4vw, 28px); background: var(--cream-hi); color: var(--cream-ink); box-shadow: inset -4px -4px 0 var(--cream-2); scroll-margin-top: 16px; min-height: 420px; }
 .dl-detail.is-swap > * { animation: dt-in .5s var(--ease-out) both; }
 .dl-detail.is-swap > :nth-child(2) { animation-delay: .04s; }
@@ -1709,7 +1731,7 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
   .menu-links a { grid-template-columns: 30px minmax(0, 1fr); row-gap: 0; }
   .ml-en { grid-column: 2; margin-top: -4px; }
   .menu-inner { padding-left: max(var(--gut), 16vw); }
-  .kv-cta .btn { flex: 1 1 100%; }
+  .kv-cta { grid-template-columns: minmax(0, 1fr); max-width: none; }
   .logo-word { font-size: clamp(32px, 9vw, 48px); }
   .kv-catch .line-big { font-size: min(clamp(38px, 11.4vw, 64px), var(--big-max)); }
   .kv-do { gap: 6px; }
@@ -1742,7 +1764,6 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
   .sns-tile:last-child { grid-column: 1 / -1; }
   .srv-steps li { grid-template-columns: 44px minmax(0, 1fr); }
   .step-go { grid-column: 2; justify-self: start; }
-  .copy-btn { flex: 1 1 100%; }
   .tv { padding: 10px 10px 14px; }
   .tv-bar { padding-right: 24px; }
   .ft-row { flex-direction: column; align-items: flex-start; }
