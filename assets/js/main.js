@@ -117,7 +117,7 @@
       cards.push(card('a', `href="downloads.html#${esc(g.id)}"`, { tag: 'GAME', html: art }, esc(g.title), 'var(--tomato)'));
     }
     cards.push(card('a', 'href="#minecraft"', { tag: 'MINECRAFT', html: '<span class="pa-pixel"><img class="pa-chara" src="assets/img/rafu-mc.webp" alt="" width="589" height="900" loading="lazy"></span>' }, phr('参加型', 'Minecraft', 'サーバー'), '#f47a35'));
-    cards.push(card('a', `href="${esc(C.discord || '#community')}" target="_blank" rel="noopener"`, { tag: 'DISCORD', html: '<span class="pa-discord"><img src="assets/img/discord-server.webp" alt="" width="640" height="486" loading="lazy"></span>' }, phr('Discord', 'コミュニティに参加'), 'var(--discord)'));
+    cards.push(card('a', 'href="#discord"', { tag: 'DISCORD', html: '<span class="pa-discord"><img src="assets/img/discord-server.webp" alt="" width="640" height="486" loading="lazy"></span>' }, phr('Discord', 'コミュニティに参加'), 'var(--discord)'));
     pickupEl.innerHTML = cards.join('');
     const vb = $('[data-pick="video"]', pickupEl);
     if (vb) {
@@ -286,6 +286,7 @@
         <span class="soft-body">
           ${g.cat ? `<span class="soft-cat">${esc(g.cat)}</span>` : ''}
           <h3>${esc(g.title)}</h3>
+          ${g.developer ? `<span class="soft-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128" loading="lazy">Developed by <b>${esc(g.developer)}</b></span>` : ''}
           ${g.catch ? `<span class="soft-catch">${esc(g.catch)}</span>` : ''}
           ${date ? `<span class="soft-date"><time datetime="${esc(date)}">${esc(fmtDate(date))}</time> 公開</span>` : ''}
           <span class="soft-go">ダウンロードページへ${ARROW}</span>
@@ -315,6 +316,7 @@
   /* ---------- SERVER ---------- */
   const S = C.server || {};
   const setText = (sel, v) => { const el = $(sel); if (el && v) el.textContent = v; };
+  setText('#srv-name', S.name);
   setText('#srv-address', S.address);
   setText('#srv-port', S.bedrockPort);
   setText('#srv-editions', S.editions);

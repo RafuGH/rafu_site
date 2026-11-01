@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RAFU | Rafu 公式サイト</title>
-<meta name="description" content="ゲーム配信・ゲーム実況・ゲームソフト制作のRafu公式サイト。参加型Minecraftサーバー、自作データパックの配布、Discordコミュニティの案内。">
+<meta name="description" content="ゲーム配信・ゲーム実況・ゲームソフト制作のRafu公式サイト。ゲーム開発ブランド「RafuPixels」、参加型Minecraftサーバー「REDHUB」、自作データパックの配布、Discordコミュニティの案内。">
 <link rel="canonical" href="https://rafugh.github.io/rafu_site/">
 <meta name="theme-color" content="#0c0c10">
 <meta property="og:type" content="website">
@@ -12,19 +12,19 @@
 <meta property="og:title" content="RAFU | Rafu 公式サイト">
 <meta property="og:description" content="面白いと思ったものを、全力でやる漢。ゲーム配信・実況・ゲームソフト・Minecraftサーバー。">
 <meta property="og:url" content="https://rafugh.github.io/rafu_site/">
-<meta property="og:image" content="https://rafugh.github.io/rafu_site/assets/img/og.png">
+<meta property="og:image" content="https://rafugh.github.io/rafu_site/assets/img/og.png?v=20261101">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@Rafu121">
-<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="assets/img/favicon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="icon" href="assets/img/favicon-32.png?v=20261101" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/img/favicon-192.png?v=20261101" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v=20261101">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap">
-<link rel="preload" as="image" href="assets/img/logo-sticker.webp">
-<!-- CSS・JSを更新したら ?v= の数字も変える（古いファイルがブラウザに残って表示が崩れるのを防ぐ） -->
-<link rel="stylesheet" href="assets/css/style.css?v=20261101-2">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap">
+<link rel="preload" as="image" href="assets/img/logo-outline.webp">
+<!-- CSS・JSを更新したら ?v= の数字も変える（古いファイルがブラウザに残って表示が崩れるのを防ぐ）。ファビコンとog.pngを作り直したときは、上の ?v= も変える -->
+<link rel="stylesheet" href="assets/css/style.css?v=20261101-3">
 <script>
   (function (d) {
     var c = d.documentElement.classList;
@@ -59,7 +59,7 @@
 
 <header class="hdr" id="hdr">
   <a class="hdr-logo" href="#home" aria-label="RAFU 公式サイト トップへ" data-sfx>
-    <img src="assets/img/logo-sticker-512.webp" alt="" width="512" height="512">
+    <img src="assets/img/logo-outline-512.webp" alt="" width="512" height="512">
   </a>
   <nav class="hdr-nav" aria-label="メイン">
     <a href="#home" data-sfx>ホーム</a>
@@ -79,7 +79,7 @@
     </div>
   </nav>
   <div class="hdr-tools">
-    <a class="pill-cta" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
+    <a class="pill-cta" href="#discord" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
     <button class="round-btn" type="button" aria-pressed="false" data-sfx-toggle data-sfx><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
     <button class="round-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="メニューを開く" data-sfx>
       <span class="mb-lines" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -102,10 +102,10 @@
       <li style="--i:6"><a href="downloads.html" data-sfx><span class="ml-num">07</span><span class="ml-jp">ダウンロード</span><span class="ml-en">DOWNLOADS</span></a></li>
     </ol>
     <div class="menu-foot">
-      <a class="pill-cta" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
+      <a class="pill-cta" href="#discord" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
       <div class="menu-sns" data-sns-icons></div>
     </div>
-    <img class="menu-mascot" src="assets/img/logo-sticker-512.webp" alt="" width="220" height="220" loading="lazy">
+    <img class="menu-mascot" src="assets/img/logo-outline-512.webp" alt="" width="220" height="220" loading="lazy">
   </div>
 </nav>
 
@@ -147,14 +147,22 @@
         </h1>
         <p class="kv-catch">
           <span class="line"><span data-split>面白いと思ったものを、</span></span>
-          <span class="line"><em><span data-split data-split-offset="11">全力でやる漢。</span></em></span>
+          <span class="line line-big"><span data-split data-split-offset="11">全力でやる漢。</span></span>
         </p>
-        <p class="kv-lead">ゲーム配信とゲーム実況、それから自分でゲームを作っています。Minecraftの参加型企画や、自作データパックの配布もやっています。</p>
+        <!-- やっていること（増えたら li を足す） -->
+        <ul class="kv-do" aria-label="やっていること">
+          <li>ゲーム配信</li>
+          <li>ゲーム実況</li>
+          <li>制作ゲームの配布</li>
+          <li>参加型企画</li>
+          <li>Minecraftサーバー</li>
+          <li>データパック・MOD・プラグイン配布</li>
+        </ul>
         <div class="kv-cta">
           <a class="btn btn-ink" href="https://www.youtube.com/@Rafu_" data-link="youtube" target="_blank" rel="noopener" data-sfx>
             <span class="brand" data-icon="youtube"></span><span>YouTubeを見る</span>
           </a>
-          <a class="btn btn-yellow" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>
+          <a class="btn btn-yellow" href="#discord" data-sfx>
             <span class="brand" data-icon="discord"></span><span>Discordに参加</span>
           </a>
         </div>
@@ -163,7 +171,7 @@
       <div class="kv-stage">
         <div class="kv-mascot" data-depth="18">
           <button class="mascot" id="mascot" type="button" aria-label="トマトを笑わせる">
-            <img class="mascot-img" id="mascot-img" src="assets/img/logo-sticker.webp" alt="" width="1024" height="1024" fetchpriority="high">
+            <img class="mascot-img" id="mascot-img" src="assets/img/logo-outline.webp" alt="" width="1024" height="1024" fetchpriority="high">
           </button>
         </div>
         <div class="kv-pops" id="kv-pops" aria-hidden="true">
@@ -253,11 +261,23 @@
   <!-- GAME -->
   <section class="sec sec-game" id="game" data-section data-zone="stream" data-en="GAME" data-progress>
     <div class="wrap">
-      <header class="sh sh-dark" data-reveal>
-        <p class="sh-en" aria-hidden="true">GAME</p>
-        <h2 class="sh-jp"><span>ゲームソフト</span></h2>
-        <p class="sh-lead">チームで作ったゲームソフトです。気になるソフトを選ぶと、紹介とダウンロードのページに移ります。</p>
-      </header>
+      <div class="game-head">
+        <header class="sh sh-dark" data-reveal>
+          <p class="sh-en" aria-hidden="true">GAME</p>
+          <h2 class="sh-jp"><span>ゲームソフト</span></h2>
+          <p class="sh-lead">チームで作ったゲームソフトです。気になるソフトを選ぶと、紹介とダウンロードのページに移ります。</p>
+        </header>
+        <!-- ゲーム開発のブランド（名前を変えるときは、ここと下のフッター・downloads.html のフッターを書き換える） -->
+        <div class="studio" data-reveal style="--d:.25s">
+          <img class="studio-logo" src="assets/img/logo-outline-flat-256.webp" alt="" width="256" height="256" loading="lazy">
+          <div class="studio-body">
+            <p class="studio-en">GAME DEVELOPMENT STUDIO</p>
+            <p class="studio-name">RafuPixels</p>
+            <p class="studio-kana">ラフピクセルズ</p>
+            <p class="studio-note">これから出すゲームは、この名前でリリースします。</p>
+          </div>
+        </div>
+      </div>
       <div class="softs" id="games-list"></div>
       <nav class="soft-lists" id="games-lists" aria-label="ゲームソフトの一覧" data-reveal></nav>
     </div>
@@ -280,7 +300,7 @@
         <span class="mc-icon"><i class="px" data-px="cube"></i></span>
         <h2 class="mc-title">Minecraft</h2>
         <p class="mc-en">SERVER &amp; CREATIONS</p>
-        <p class="mc-lead">参加型の企画やイベントはMinecraftサーバーで開催しています。自作のデータパックも配布中。</p>
+        <p class="mc-lead">参加型の企画やイベントはMinecraftサーバー「REDHUB」で開催しています。自作のデータパックも配布中。</p>
       </header>
     </div>
 
@@ -293,9 +313,10 @@
         <div class="cube" style="--s:36px;--c:#8a5a33;--x:3%;--y:78%;--t:18s;--r:-1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
       <div class="wrap">
-        <header class="px-head" data-reveal>
-          <h3 class="px-title"><span class="wipe"><span>Minecraftサーバー</span></span></h3>
-          <p class="px-en">SERVER</p>
+        <!-- サーバーの名前とロゴ（ロゴは assets/img/redhub-logo.webp。元データは assets/img/logo/redhub-logo.png） -->
+        <header class="px-head srv-head" data-reveal>
+          <h3 class="srv-logo"><span class="sr-only">Minecraftサーバー </span><img src="assets/img/redhub-logo.webp" alt="REDHUB" width="1306" height="273" loading="lazy" decoding="async"></h3>
+          <p class="srv-tag"><span>MINECRAFT SERVER</span></p>
           <p class="px-lead">参加するにはDiscordに入り、入室時の質問で「Minecraftをプレイする」を選んでください。</p>
         </header>
 
@@ -331,6 +352,7 @@
             </div>
 
             <dl class="srv-spec">
+              <div><dt>サーバー名</dt><dd id="srv-name">REDHUB</dd></div>
               <div><dt>エディション</dt><dd id="srv-editions">Java版・統合版 どちらもOK</dd></div>
               <div><dt>バージョン</dt><dd><span id="srv-version">1.18.1 以上</span><small id="srv-version-note">（今後変わることがあります）</small></dd></div>
             </dl>
@@ -384,7 +406,8 @@
         <h2 class="sh-jp"><span>コミュニティ</span></h2>
       </header>
 
-      <div class="cm-panel" data-reveal>
+      <!-- Discordの説明（ページ上の「Discordに参加」はここへスクロールする） -->
+      <div class="cm-panel" id="discord" data-reveal>
         <div class="cm-copy">
           <p class="cm-kicker"><span class="brand" data-icon="discord"></span>RAFU DISCORD SERVER</p>
           <h3 class="cm-title">Discordで、<br>待ってる。</h3>
@@ -418,7 +441,7 @@
   <div class="wrap">
     <div class="ft-row">
       <a class="ft-logo" href="#home" aria-label="RAFU 公式サイト トップへ" data-sfx>
-        <img src="assets/img/logo-sticker-512.webp" alt="" width="72" height="72" loading="lazy">
+        <img src="assets/img/logo-outline-512.webp" alt="" width="72" height="72" loading="lazy">
         <span class="ft-word"><b>RAFU</b><small>OFFICIAL SITE</small></span>
       </a>
       <nav class="ft-nav" aria-label="フッター">
@@ -432,8 +455,19 @@
     </div>
     <p class="ft-head"><span>FOLLOW RAFU</span><b>各SNSはこちら</b></p>
     <div class="sns-grid" id="sns-grid"></div>
+    <!-- Rafuのブランド（ゲーム開発とMinecraftサーバー） -->
+    <div class="ft-brands">
+      <a class="ft-brand" href="#game" data-sfx>
+        <img class="ft-brand-tomato" src="assets/img/logo-outline-flat-256.webp" alt="" width="256" height="256" loading="lazy">
+        <span class="ft-brand-text"><b>RafuPixels</b><small>GAME DEVELOPMENT STUDIO</small></span>
+      </a>
+      <a class="ft-brand" href="#minecraft" data-sfx>
+        <img class="ft-brand-redhub" src="assets/img/redhub-logo.webp" alt="REDHUB" width="1306" height="273" loading="lazy">
+        <span class="ft-brand-text"><small>MINECRAFT SERVER</small></span>
+      </a>
+    </div>
     <div class="ft-bottom">
-      <p>© Rafu / RedHub</p>
+      <p>© Rafu / RafuPixels / REDHUB</p>
       <a class="ft-pagetop" href="#home" data-sfx>PAGE TOP<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
     </div>
   </div>
@@ -457,8 +491,8 @@
   <style>.loader{display:none!important}</style>
 </noscript>
 
-<script src="assets/js/content.js?v=20261101-2"></script>
-<script src="assets/js/common.js?v=20261101-2"></script>
-<script src="assets/js/main.js?v=20261101-2"></script>
+<script src="assets/js/content.js?v=20261101-3"></script>
+<script src="assets/js/common.js?v=20261101-3"></script>
+<script src="assets/js/main.js?v=20261101-3"></script>
 </body>
 </html>

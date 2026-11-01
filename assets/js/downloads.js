@@ -128,7 +128,8 @@
 
   const norm = (s) => String(s || '').normalize('NFKC').toLowerCase();
   const hay = (it) => norm([
-    it.title, it.cat, it.series, it.edition, it.text, it.about, it.maker, it.id, TYPE[it.kind], ...(it.tags || []), ...(it.specs || []),
+    it.title, it.cat, it.series, it.edition, it.text, it.about, it.maker, it.developer, it.id, TYPE[it.kind], ...(it.tags || []), ...(it.specs || []),
+    ...Object.values(it.info || {}),
     it.team && it.team.name, ...((it.team && it.team.members) || []).flatMap((m) => [m.name, m.role]),
     ...it.vers.flatMap((v) => [v.label, v.range, v.version && `v${v.version}`, v.loader, v.platform && osInfo(osOf(v.platform)).name]),
     ...it.ups.flatMap((u) => [u.title, ...(u.notes || [])]),
@@ -412,6 +413,26 @@
       </div>`;
   };
 
+  /* ゲームソフトの「詳細情報」（content.js の info に書いたものと、versions・team から分かるもの。空の項目は出さない） */
+  const infoRows = (it) => {
+    const i = it.info || {};
+    const members = ((it.team && it.team.members) || []).filter((m) => m && m.name);
+    const release = i.release || it.vers.map((v) => v.date).filter(Boolean).sort()[0] || '';
+    return [
+      ['ジャンル', it.cat],
+      ['対応機種', i.platforms || platforms(it).map((k) => osInfo(k).name).join('・')],
+      ['プレイ人数', i.players],
+      ['操作', i.controls],
+      ['プレイ時間', i.playtime],
+      ['対応言語', i.lang],
+      ['価格', i.price],
+      ['必要な容量', i.size || uniq(it.vers.map((v) => v.size)).join(' / ')],
+      ['使用エンジン', i.engine],
+      ['制作', it.developer || (members.length ? `チーム「${it.title}」（${members.length}人）` : '')],
+      ['公開日', release && fmtDate(release)],
+    ].filter(([, v]) => v);
+  };
+
   const renderDetail = (it) => {
     prefer(it, !pick[it.id]);
 
@@ -436,6 +457,9 @@
     /* 特徴（content.js の points） */
     const points = (it.points || []).filter((p) => p && p.title);
     const feats = points.length ? `<ul class="dt-points">${points.map((p) => `<li><b>${esc(p.title)}</b><span>${esc(p.text || '')}</span></li>`).join('')}</ul>` : '';
+    /* 開発の名義（content.js の developer。RafuPixels で出したソフトだけ） */
+    const devRow = it.developer ? `
+          <p class="dt-meta dt-dev-row"><span class="dt-meta-lbl">開発</span><span class="dt-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128">${esc(it.developer)}</span></p>` : '';
     /* 制作チーム（チーム「作品のタイトル」と出して、押すと担当が開く） */
     const members = ((it.team && it.team.members) || []).filter((m) => m && m.name);
     const teamName = `チーム「${it.title}」`;
@@ -450,6 +474,22 @@
         ${(it.credits || []).length ? `<p class="dt-credits">${it.credits.map((c) => `<span>${esc(c)}</span>`).join('')}</p>` : ''}
       </div>` : '';
     const links = (it.links || []).filter((l) => l && l.url).map((l) => `<p class="dt-alt dt-link"><i class="px" data-px="globe"></i><span>${esc(l.label || l.url)}</span><a href="${esc(l.url)}" target="_blank" rel="noopener" data-sfx>開く ↗</a></p>`).join('');
+    /* 関連タグ（押すとその言葉で一覧を絞り込む）と詳細情報の表。ゲームソフトだけ */
+    const tags = it.kind === 'game' ? uniq([it.cat, ...(it.tags || [])]) : [];
+    const rows = it.kind === 'game' ? infoRows(it) : [];
+    const infoBox = tags.length || rows.length ? `
+      <div class="dt-info">
+        ${tags.length ? `
+        <div class="dt-info-sec">
+          <p class="howto-title"><i class="px" data-px="search"></i><span>関連タグ</span></p>
+          <ul class="dt-tags">${tags.map((t) => `<li><button class="dt-kw" type="button" data-tag="${esc(t)}" aria-label="${esc(`「${t}」で一覧を絞り込む`)}" data-sfx>${esc(t)}</button></li>`).join('')}</ul>
+        </div>` : ''}
+        ${rows.length ? `
+        <div class="dt-info-sec">
+          <p class="howto-title"><i class="px" data-px="news"></i><span>詳細情報</span></p>
+          <dl class="dt-spec">${rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+        </div>` : ''}
+      </div>` : '';
 
     detail.style.setProperty('--c', it.color);
     detail.innerHTML = `
@@ -458,7 +498,7 @@
         <div>
           <p class="dt-kicker"><span class="dt-type">${TYPE[it.kind]}</span><span class="dt-cat">${esc(it.cat)}</span>${it.series ? `<span class="dt-series">${esc(it.series)}</span>` : ''}<button class="dt-share" type="button" data-share data-sfx><i class="px" data-px="copy"></i><span>リンクをコピー</span></button></p>
           <h2 class="dt-title">${esc(it.title)}</h2>
-          ${metaHtml(it)}${teamBtn}
+          ${metaHtml(it)}${devRow}${teamBtn}
         </div>
       </header>
       ${team}
@@ -479,7 +519,8 @@
       <div class="dt-howto">
         <p class="howto-title"><i class="px" data-px="star"></i><span>${esc(it.howtoTitle || '導入のしかた')}</span></p>
         <ol>${howto.map((h) => `<li><span>${rich(h)}</span></li>`).join('')}</ol>
-      </div>` : ''}`;
+      </div>` : ''}
+      ${infoBox}`;
 
     paintPx(detail);
     paintPick(it);
@@ -503,6 +544,15 @@
       pvBtn.addEventListener('click', () => openPlayer({ id: pv, title: it.title, kind: 'live', n: 0 }, `${pvLabel} / ${it.title}`));
     }
     $$('[data-shot]', detail).forEach((b) => b.addEventListener('click', () => openShot(b.dataset.shot, it.title)));
+    $$('[data-tag]', detail).forEach((b) => b.addEventListener('click', () => {
+      const t = b.dataset.tag;
+      qEl.value = t;
+      state.q = t;
+      renderGrid();
+      const inv = $('.inv');
+      if (inv.getBoundingClientRect().top < 0 || narrow.matches) inv.scrollIntoView({ behavior: reduce ? 'instant' : 'smooth', block: 'start' });
+      toast(`「${t}」で絞り込みました`);
+    }));
     /* チーム「…」を押すと、担当を開く・閉じる */
     const teamBtnEl = $('.dt-team-btn', detail);
     if (teamBtnEl) {

@@ -22,6 +22,6 @@
 hero: {
   video: "assets/video/hero.mp4",
   poster: "assets/video/hero.jpg",
-  mascot: "assets/img/logo-sticker.webp",
+  mascot: "assets/img/logo-outline.webp",
 },
 ```

@@ -9,7 +9,7 @@ window.RAFU_CONTENT = {
     image: "",                              // 1枚絵のキービジュアル（入れると赤い集中線の背景と入れ替わる）。例: "assets/img/kv/key-visual.jpg"
     video: "",                              // 背景動画（画像より優先）。例: "assets/video/hero.mp4"
     poster: "",                             // 動画の読み込み前に出す画像。例: "assets/video/hero.jpg"
-    mascot: "assets/img/logo-sticker.webp", // 真ん中のキャラ画像（立ち絵などに差し替え可）
+    mascot: "assets/img/logo-outline.webp", // 真ん中のキャラ画像（立ち絵などに差し替え可）
   },
 
   /*
@@ -77,8 +77,9 @@ window.RAFU_CONTENT = {
     { id: "xxgSUu2noWs", kind: "shorts", date: "2026-03-29", title: "スマホロトムの安全装置を使いこなせない漢【ポケモンZA】" },
   ],
 
-  /* Minecraftサーバー */
+  /* Minecraftサーバー（ロゴは assets/img/redhub-logo.webp） */
   server: {
+    name: "REDHUB",                         // サーバーの名前（サーバー欄の「サーバー名」に出る）
     address: "rafuserver.duckdns.org",
     bedrockPort: "19132",                   // 統合版のポート
     editions: "Java版・統合版 どちらもOK",
@@ -120,12 +121,21 @@ window.RAFU_CONTENT = {
    *             version … 作品のバージョン / date … 日付 / title … ひとことで / notes … くわしい内容（1行ずつ）
    * howto     … 導入のしかた（1行ずつ。空なら出ない）。howtoTitle で見出しを変えられる（ゲームは "遊び方" など）
    * ― ここからゲームソフト（games）で使うもの ―
-   * cat       … ジャンル（例: "アクション" ）/ tags … 検索に引っかかる言葉
-   * specs     … 「対応」の横に出す情報（例: ["Unity", "1人", "10〜15分"] ）
+   * cat       … ジャンル（例: "アクション" ）
+   * tags      … 関連タグ（ダウンロードページの下に並び、押すとその言葉で一覧を絞り込む。検索にも使う）
+   * info      … 「詳細情報」の表に出す項目（書いたものだけ出る。ジャンル・対応機種・制作・公開日は自動で出る）
+   *             players … プレイ人数（例: "1人"） / controls … 操作（例: "キーボード＋マウス"）
+   *             playtime … 1回のプレイ時間（例: "10〜15分"） / lang … 対応言語（例: "日本語"）
+   *             price … 価格（例: "無料"） / size … 必要な容量（例: "250MB"。ダウンロードするソフトだけ）
+   *             engine … 使ったエンジン（例: "Unity"） / platforms … 対応機種の書き方を変えたいときだけ（例: "ブラウザ（PCがおすすめ）"）
+   *             release … 公開日を versions の日付と変えたいときだけ（例: "2026-09-10"）
+   * specs     … 「対応」の横に出す短い情報（なくてもOK。例: ["10〜15分"] ）
    * catch     … トップのカードに出る一言
    * points    … 特徴を3つくらい（ダウンロードページの紹介文の下に出る）。例: [{ title: "誘導", text: "…" }]
    * team      … 制作チーム。{ members: [{ name: "Rafu", role: "ディレクター" }, …] }
    *             ダウンロードページに チーム「作品のタイトル」 と出て、押すと担当が開く（Rafu の行は色が変わる）
+   * developer … 開発の名義（例: "RafuPixels" ）。書くと、トップのカードに「Developed by RafuPixels」、
+   *             ダウンロードページに「開発 RafuPixels」が出る。チームで作った作品は書かない（空のまま）
    * credits   … 使った素材のクレジット（1行ずつ。チームの下に小さく出る）
    * links     … 作品ページなどへのリンク。[{ label: "unityroom の作品ページ", url: "https://…" }]
    * image     … トップのカードの絵（16:9）。空なら iconImage を集中線の上に貼る
@@ -150,7 +160,7 @@ window.RAFU_CONTENT = {
         { title: "駆け引き", text: "もう少し吸うか、逃げるか。欲張りすぎに注意" },
         { title: "ランク", text: "結果はランクで評価。上のランクはかなり手ごわい" },
       ],
-      specs: ["Unity", "1人"],
+      info: { players: "1人", controls: "キーボード＋マウス", lang: "日本語", price: "無料", engine: "Unity", platforms: "ブラウザ（PCがおすすめ）" },
       versions: [
         { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/yokubarikabuto", date: "2026-09-10", note: "スマホでは動かないことがあります。PCがおすすめ" },
       ],
@@ -192,7 +202,7 @@ window.RAFU_CONTENT = {
         { title: "起爆", text: "好きなタイミングで一気にドカン" },
         { title: "ボーナス", text: "まとめて倒すほど得点アップ" },
       ],
-      specs: ["キーボード＋マウス", "1人", "10〜15分"],
+      info: { players: "1人", controls: "キーボード＋マウス", playtime: "10〜15分", lang: "日本語", price: "無料" },
       versions: [
         { platform: "windows", label: "最新版", file: "https://drive.google.com/file/d/1FsuSEMDqHjJ4aW0asCPm_NrtAVNmm5kw/view?usp=sharing", fileName: "ゾンバク.zip", date: "2025-11-14" },
       ],
@@ -224,7 +234,7 @@ window.RAFU_CONTENT = {
       iconImage: "assets/img/games/yukikoro.webp",
       trailer: "",
       points: [],
-      specs: ["Unity", "1人"],
+      info: { players: "1人", controls: "キーボード", lang: "日本語", price: "無料", engine: "Unity", platforms: "ブラウザ（PCがおすすめ）" },
       versions: [
         { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/yukikorokorokoro", date: "2025-09-20", note: "スマホでは動かないことがあります。PCがおすすめ" },
       ],

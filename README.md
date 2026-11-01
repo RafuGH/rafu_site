@@ -30,9 +30,9 @@ assets/js/common.js     全ページ共通（ヘッダー、メニュー、ツ�
 assets/js/main.js       トップページの演出（ローディング、ピックアップ、モニターの切り替えなど）
 assets/js/downloads.js  ダウンロードページ（アイコン一覧、検索・絞り込み、作品の切り替え、機種・バージョン・ローダーの選択）
 assets/css/style.css    デザイン
-assets/img/             ロゴ・ファビコン・SNS共有画像（og.png）・Discordサーバーのアイコン・Minecraftのキャラ・画像がないときの絵
+assets/img/             トマトのロゴ・REDHUBのロゴ・ファビコン・SNS共有画像（og.png）・Discordサーバーのアイコン・Minecraftのキャラ・画像がないときの絵（ロゴの使い分けは下の表）
 assets/img/works/       配布物のアイコン（正方形 256px。ダウンロードページとトップのカードに出る）
-assets/img/logo/        受け取ったロゴの元データ（1024px）
+assets/img/logo/        ロゴの元データ（受け取ったトマト: 白枠なし1024px・白枠アリ1080px、REDHUBのロゴの大きい版）
 assets/img/orig/        受け取った素材の元データ（Discordサーバーのアイコン3種・Minecraftのキャラ・Image not found）
 assets/img/kv/          Minecraftの欄の夕焼けのドット絵（仮素材。雲・山3枚・太陽）
 assets/img/px/          草ブロック・土・星・区切りのギザギザ
@@ -41,6 +41,20 @@ assets/audio/laugh/     トマトを押したときに鳴るRafuの笑い声（M
 assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。かな・英数字・記号だけに減らしたもの）とライセンス
 ```
 
+## ロゴの使い分け
+
+| ファイル | 出る場所 |
+| --- | --- |
+| `assets/img/logo-outline.webp`（白枠アリ・グラデ） | トップのまんなかのトマト |
+| `assets/img/logo-outline-512.webp`（白枠アリ・グラデ） | ヘッダー・メニュー・フッターのロゴ |
+| `assets/img/logo-outline-flat-256.webp`（白枠アリ・フラット） | ローディング・ゲームソフト欄のRafuPixelsの札・フッターのRafuPixels |
+| `assets/img/logo-outline-mono-128.webp`（白枠アリ・黒） | 「Developed by RafuPixels」「開発 RafuPixels」の小さいマーク |
+| `assets/img/favicon-32.png`・`favicon-192.png`・`apple-touch-icon.png` | ブラウザのタブとスマホのホーム画面（フラットのトマト。小さくても見えるよう白枠を太くしたもの） |
+| `assets/img/og.png`（1200×630） | XやDiscordでURLを貼ったときに出る画像 |
+| `assets/img/redhub-logo.webp`（横長・背景が透明） | Minecraftのサーバー欄の見出しとフッターのREDHUB |
+
+開発ブランドは **RafuPixels**（ラフピクセルズ / GAME DEVELOPMENT STUDIO）、Minecraftサーバーは **REDHUB**。YouTubeなど個人の活動は Rafu のままです。
+
 ## よくある更新
 
 | やりたいこと | 直す場所 |
@@ -48,6 +62,7 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 | ニュースを載せる | `content.js` の `news` の先頭に1行足す（`date`・`tag`・`title`・`url`）。`date` から2週間は「NEW」が付きます |
 | 新しい配信・切り抜き・Shortsを載せる | `content.js` の `videos` の先頭に1行足す（`id` はYouTubeの動画ID）。先頭の動画がピックアップとトップの「最新の動画を見る」にも出ます |
 | ゲームソフトを載せる・増やす | `content.js` の `games` に足す（`image` にトップのカードの絵（16:9）、`iconImage` にアイコン、`trailer` に紹介動画のYouTube ID、`catch` にカードの一言、`points` に特徴、`shots` に画面写真。カードの絵がなければアイコンを集中線の上に貼ります）。トップにはカードだけが並び、押すとダウンロードページへ。先頭のソフトがピックアップに出ます |
+| ゲームソフトの関連タグ・詳細情報を書く | その作品の `tags` に関連タグ（ダウンロードページに出て、押すとその言葉で一覧を絞り込む。ジャンルの `cat` も先頭に入る）、`info` に詳細情報（`players` プレイ人数・`controls` 操作・`playtime` プレイ時間・`lang` 対応言語・`price` 価格・`size` 必要な容量・`engine` 使用エンジン・`release` 公開日・`platforms` 対応機種の書き方を変えたいとき）を書く。書かなかった項目は出ません。対応機種・制作・公開日は `versions` と `team` から自動で入ります |
 | Minecraftの配布物を増やす | `content.js` の `works` に足す（`icon` は `datapack` / `mod` / `plugin`。`series` に「第四弾」などのラベル、`edition` に「Java版」）。トップのカードとダウンロードページの両方に出ます |
 | 配布ファイルを載せる | ファイルを `downloads/作品のid/` に置き、`content.js` のその作品の `versions` の `file` にパスを書く（例: `"downloads/clear-xp/Clear_XP.zip"`）。`file` が空のものは「準備中」と表示されます |
 | Minecraftの対応バージョンを書く | その作品の `versions` の `label` に書く。`"1.18.2〜1.20.6"` のように範囲で書くと、間のバージョンが全部プルダウンと一覧の絞り込みに出ます（`"1.18〜"` は最新まで）。ファイルが分かれているときは1行ずつ（MODやプラグインは `loader` に `"Fabric"` / `"Forge"` / `"NeoForge"` / `"Paper"` などを書く）。ページではバージョン→ローダー→作品のバージョンの順に選びます |
@@ -55,9 +70,11 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 | 作品をアップデートした | 新しいファイルを置いて `versions` の `file`・`version`・`date` を書き換え（古い版も配るなら行を残す）、`updates` の先頭に1つ足す（`version`・`date`・`title` に短く・`notes` にくわしく）。ダウンロードページに「UPDATE」の矢印のリボンが出て、トップのカードと一覧のアイコンにも印が付きます |
 | ゲームソフトの対応機種を書く | その作品の `versions` に機種ごとに1行ずつ書く（`platform` は `"windows"` / `"mac"` / `"ios"` / `"android"` / `"web"`）。対応していない機種の行は消す。iOS・Androidの `file` に App Store / Google Play のURLを書くと「App Storeで開く」「Google Playで開く」のボタンになります |
 | ブラウザで遊べるゲームを載せる | `platform: "web"` の行の `file` に遊べるページのURL（unityroom など）を書くと、ダウンロードページに「ブラウザで遊ぶ」ボタンが出て、トップに「ブラウザで遊べるソフト」の一覧が増えます |
+| これから出すソフトを RafuPixels 名義にする | その作品に `developer: "RafuPixels"` を書く。トップのカードに「Developed by RafuPixels」、ダウンロードページに「開発 RafuPixels」が出ます。チームで作った作品には書かない（チームの表記だけになります） |
 | ゲームの制作チームを書く | その作品の `team` の `members` に `{ name, role }` を1人ずつ書く。ダウンロードページに チーム「作品のタイトル」 と出て、押すと担当が開きます。素材のクレジットは `credits`（担当の下に出る）、作品ページは `links` |
 | 紹介PVや使った動画を付ける | その作品の `pv`（ゲームソフトは `trailer`）にYouTubeのURLかIDを書く。左上の名前は `pvLabel`（例: `"使用した動画"`）、動画の下の一言は `pvNote` |
 | 作品のアイコンを絵にする | 正方形の画像を `assets/img/works/` に置き、その作品の `iconImage` にパスを書く（ダウンロードページとトップのカードに出る。空ならドット絵のアイコン） |
+| トップの「やっていること」を変える | `index.html` の `class="kv-do"` の `li` を足す・消す（キャッチコピーの下に札で並びます） |
 | トップの背景を1枚絵にする | 画像を `assets/img/kv/` に置き、`content.js` の `hero.image` にパスを書く（赤い集中線の背景と入れ替わる） |
 | トップに背景動画を流す | 動画を `assets/video/` に置き、`content.js` の `hero.video` にパスを書く |
 | 真ん中のキャラ画像を変える | 画像を `assets/img/` に置き、`hero.mascot` にパスを書く |
@@ -69,11 +86,16 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 | 画像がないときの絵を変える | `assets/img/not-found.webp`（16:9）と `assets/img/not-found-sq.webp`（正方形。アイコンなど四角い枠用）を差し替える |
 | Minecraftの夕焼けを描き直す | `assets/img/kv/` の同じ名前の画像を差し替える（横につながる絵。山は 640×300 が基準） |
 | サーバーのバージョンが変わった | `server.version` を書き換える |
+| サーバーの名前が変わった | `server.name` を書き換え（サーバー欄の「サーバー名」に出る）、`assets/img/redhub-logo.webp` を新しいロゴに差し替える（`index.html` のサーバー欄とフッター、`downloads.html` のフッターにある `alt="REDHUB"` も直す） |
+| ブランドの名前が変わった | ゲームソフト欄の札（`index.html` の `class="studio"`）、両ページのフッター（`ft-brands` と `©`）、`index.html` の説明文（`description`）を書き換える |
+| ロゴを差し替える | 上の「ロゴの使い分け」の同じ名前のファイルを差し替える |
+| フォントを変える | `style.css` の先頭の `--f-logo`（見出しの太い文字）・`--fw-logo`（その太さ。太さが1つしかないフォントは 400）・`--f-body`（本文とボタン）を書き換え、両ページの Google Fonts の読み込み（`fonts.googleapis.com` の行）も同じフォントに変える。`og.png` の文字は画像なので、作り直すまで前のフォントのままです |
 | 投稿スケジュールが変わった | `schedule` を書き換える |
 
 ## 更新するときの注意
 
-- CSS・JS（`content.js` も）を変えたら、`index.html` と `downloads.html` の読み込み部分にある `?v=20261031-2` の数字も変える（例: `?v=20261105-1`。2つのページで同じ数字にそろえる）。変えないと、前に見た人のブラウザに古いファイルが残り、新しいページと混ざって表示が崩れることがあります
+- CSS・JS（`content.js` も）を変えたら、`index.html` と `downloads.html` の読み込み部分にある `?v=20261101-3` の数字も変える（例: `?v=20261105-1`。2つのページで同じ数字にそろえる）。変えないと、前に見た人のブラウザに古いファイルが残り、新しいページと混ざって表示が崩れることがあります
+- ファビコン・`apple-touch-icon.png`・`og.png` を作り直したときは、両ページの先頭にある `?v=20261101` も変える（ブラウザやSNSは前の画像を長く覚えているため）
 - スクリプトが途中で止まったときは、ローディングを消して中身をそのまま表示します（各ページの先頭の小さなスクリプト）
 - 配布ファイルは1つ100MBまで（GitHubの画面からアップロードするときは25MBまで）。それより大きいものは GitHub の Releases などに置き、`file` にそのURLを書く
 - 作品の `id` は半角英数字とハイフンだけにする。`top` と `list` はページの中で使っているので避ける
@@ -84,12 +106,14 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 - 効果音は初期状態OFF。ヘッダーの丸いボタン（音量バー）か、右端のツールバーのスピーカーでON（合成音なので音声ファイルは不要）。大きさは笑い声と同じくらいにそろえてあります（カーソルを乗せたときの音だけ少し控えめ）
 - 効果音はページを一度押すまで鳴らしません（ブラウザは押すまで音を止めていて、その間の音が溜まって最初に一度に鳴ってしまうため）。1回押したときに鳴る効果音は1つだけです（動画を切り替えたとき・ダウンロードしたときは、その専用の音だけ）
 - トマトの笑い声だけは押したときに鳴らすので、初期状態でも鳴ります。効果音をOFFに切り替えた人には鳴りません。連打すると前の声を止めて次の声に替わります（同じ声は続けて出ません）
+- ページの「Discordに参加」（トップの大きいボタン・ヘッダー・メニュー・ピックアップのカード）は、招待リンクを開かずにDiscordの説明の欄（`#discord`）までスクロールします。招待リンクを開くのは、その欄の「Discordに参加する」ボタン・フッター・サーバー欄の「参加する」。ダウンロードページの「Discordに参加」はトップのDiscordの欄へ移ります
 - 右端のツールバーは「>」でしまえます。しまった状態はブラウザに記憶されます
 - ヘッダーの「もっと見る」に各SNSが並びます（中身は `content.js` の `sns`）
 - Minecraftサーバーのオンライン表示は api.mcsrvstat.us を使用（数分遅れることがあります）
 - トマトを押すと笑います。1回押すごとに笑いの文字（けいふぉんと・白文字に黒ふち）が1つ出て、Rafuの笑い声がランダムで1つ鳴ります
 - 画像が読めないとき（パスの書き間違い・消した動画のサムネイルなど）は、「Image not found」の絵に自動で差し替わります。トップの背景の1枚絵とまんなかのキャラだけは、いつもの赤い背景とトマトに戻ります
 - Minecraftの欄のキャラは、見えたときに丘の下から飛び出し、ときどきビクッと跳ねます
+- ゲームソフト欄のRafuPixelsの札は、見えたときにスタンプのように押されます。サーバー欄のREDHUBのロゴは、見えたときに上から落ちてきます
 - スクロールバーと文字を選んだときの色は、いま見ている欄（配信は赤、Minecraftは木）に合わせて変わります
 - ダウンロードページの「リンクをコピー」は、その作品が選ばれた状態で開くURL（`downloads.html#作品のid`）をコピーします。Discordで紹介するときに使えます
 - ダウンロードページのアイコン一覧は、矢印キーで移動・Enterで選べます
@@ -100,4 +124,5 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 
 ## 使っている素材のライセンス
 
+- 見出し・本文のフォント: [Noto Sans JP](https://fonts.google.com/noto/specimen/Noto+Sans+JP)、ドット文字: [DotGothic16](https://fonts.google.com/specimen/DotGothic16)（どちらも Google Fonts から読み込み。SIL Open Font License 1.1）
 - 笑いの文字のフォント: [けいふぉんと](https://font.sumomo.ne.jp/font_1.html)（Apache License 2.0）。サイトで使う分だけ（ひらがな・カタカナ・英数字・記号）に減らして `assets/fonts/keifont/` に置いています。ライセンスと元のフォントのクレジットは同じフォルダの `LICENSE.txt` と `README.txt`
