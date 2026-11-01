@@ -39,10 +39,11 @@ window.RAFU_CONTENT = {
   /*
    * 音の大きさ（1 がいまの大きさ。0.5 にすると小さく、1.5 にすると大きくなる。0 で鳴らない）
    * effects … ボタンを押したとき・カーソルを乗せたときの効果音（効果音をONにした人だけに鳴る）
+   * hover   … そのうち、カーソルを乗せたときの音だけの大きさ（effects にかけ算。0.5 で半分）
    * voice   … トマトを押したときの笑い声
-   * いまは効果音と笑い声が同じくらいの大きさに聞こえるようにそろえてあります
+   * いまは効果音と笑い声が同じくらいの大きさに聞こえるようにそろえてあり、カーソルを乗せたときの音だけ半分にしてあります
    */
-  sound: { effects: 1, voice: 1 },
+  sound: { effects: 1, hover: 0.5, voice: 1 },
 
   /*
    * ニュース（上から新しい順。トップの下に並びます）
@@ -87,6 +88,98 @@ window.RAFU_CONTENT = {
     versionNote: "今後変わることがあります",
     showStatus: true,                       // サーバーのオンライン状態を表示する
   },
+
+  /*
+   * これまでの参加型企画（トップの REDHUB の欄に、上から順に並びます）
+   * title  … 企画の名前（ドット文字で大きく出る）
+   * sub    … 名前の下の小さい英語（なくてもOK）
+   * kind   … 左上の札（例: "長期サバイバル"）
+   * date   … 開いた日。"2023-09-10" のように書く。期間なら "2023-09-30〜2024-01-01"
+   * dateNote … 日付の後ろに付ける一言（例: "配信" / "動画公開"）。なくてもOK
+   * text   … 紹介文
+   * facts  … 小さい札で並べる一言（例: "参加 5人"）。なくてもOK
+   * image  … いちばん大きい画像（16:9。assets/img/events/ に置く）。押すと videos の1つ目が流れる
+   * videos … 動画（YouTubeのURL。"?t=1519" のように付けると、その秒から流れる）。label はボタンの文字
+   *          1つ目は緑の大きいボタン、2つ目からは灰色の小さいボタンになる
+   * shots  … 画面写真（押すと大きく見られる。何枚でもOK）
+   */
+  events: [
+    {
+      title: "鼓膜クラフト",
+      sub: "Earsplitting Survival",
+      kind: "爆音サバイバル",
+      date: "2024-11-17〜2024-11-24",
+      dateNote: "配信",
+      text: "ブロックを置く音も、レシピ解放の音も、マイクラの音がぜんぶ爆音になるサバイバル。モブも強くなった中で、サーバーを開いている期間のうちに、鼓膜を守りながらエンダードラゴンを倒すのが目標でした。配信のない日もみんなが素材を集めてくれて、最終日に討伐成功。普通の音に戻したとき、マイクラは耳に優しいゲームだったと気づきました。",
+      facts: ["目標はエンドラ討伐", "配信 3回"],
+      image: "assets/img/events/komaku.webp",
+      videos: [
+        { url: "https://youtu.be/uu31iBYU1hs?t=15410", label: "エンドラ戦 4:16:50〜" },
+        { url: "https://youtu.be/B2dQk1ZqQjQ", label: "1日目" },
+        { url: "https://youtu.be/QUrRv372wHs", label: "2日目" },
+      ],
+      shots: [
+        "assets/img/events/komaku-2.webp",
+        "assets/img/events/komaku-3.webp",
+        "assets/img/events/komaku-4.webp",
+        "assets/img/events/komaku-5.webp",
+        "assets/img/events/komaku-6.webp",
+      ],
+    },
+    {
+      title: "WildCraft",
+      sub: "Savagery Minecraft",
+      kind: "長期サバイバル",
+      date: "2023-09-30〜2024-01-01",
+      text: "MODとデータパックを85個入れた、いつもどおり野蛮なサバイバル。建築破壊も放火も当たり前の中、巨大なダンジョンで銃の設計図やボスの武器を探したり、メイドを仲間にしたり、街や工場を作ったりと、みんな好きに暮らしていました。サーバーが壊れてしまい、元日で幕を閉じました。",
+      facts: ["MOD・データパック 85個", "ダンジョン・ボス・銃"],
+      image: "assets/img/events/wildcraft.webp",
+      videos: [
+        { url: "https://youtu.be/4f34sAY_MfQ?t=1519", label: "総まとめ動画 25:19〜" },
+      ],
+      shots: [
+        "assets/img/events/wildcraft-2.webp",
+        "assets/img/events/wildcraft-3.webp",
+        "assets/img/events/wildcraft-4.webp",
+        "assets/img/events/wildcraft-5.webp",
+        "assets/img/events/wildcraft-6.webp",
+      ],
+    },
+    {
+      title: "SavageWars",
+      sub: "Survival Battleroyale",
+      kind: "サバイバルPVP",
+      date: "2023-09-10",
+      dateNote: "配信",
+      text: "サバイバルで集めた物資で戦うバトルロイヤル。ソロ・デュオ・トリオなどのモードがあり、地形も自然のままなので、腕前だけでなく作戦とその場の判断も試されます。PvPは昔の仕様に寄せて、剣のクールダウンなし。Rafuがコマンドだけで1人で作りました。",
+      facts: ["参加 5人", "ソロ・デュオ・トリオ"],
+      image: "assets/img/events/savagewars.webp",
+      videos: [
+        { url: "https://youtu.be/-63ugRP6oI4", label: "動画を見る" },
+        { url: "https://youtu.be/4f34sAY_MfQ?t=828", label: "総まとめ 13:48〜" },
+      ],
+      shots: [
+        "assets/img/events/savagewars-2.webp",
+        "assets/img/events/savagewars-3.webp",
+        "assets/img/events/savagewars-4.webp",
+        "assets/img/events/savagewars-5.webp",
+      ],
+    },
+    {
+      title: "即退場ハードコア",
+      sub: "Hardcore Survival",
+      kind: "ハードコア",
+      date: "2022-10-08",
+      dateNote: "動画公開",
+      text: "一度でも死んだら、その場で退場のサバイバル。ベッドで夜を飛ばすのも禁止の中、みんなで拠点を作って生き残りを目指しました。初日から退場者が出る波乱のスタートに。ゆっくり実況のシリーズで公開しています。",
+      facts: ["死んだら即退場", "ベッドで夜スキップ禁止"],
+      image: "assets/img/events/hardcore.webp",
+      videos: [
+        { url: "https://youtu.be/NWcKF4DudGQ", label: "動画を見る（Part1）" },
+      ],
+      shots: [],
+    },
+  ],
 
   /*
    * 配布物（ダウンロードページ downloads.html に並びます）

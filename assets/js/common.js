@@ -88,6 +88,7 @@
     const SOUND = C.sound || {};
     const vol = (v) => (typeof v === 'number' && v >= 0 ? v : 1);
     const FX_LEVEL = 12 * vol(SOUND.effects);
+    const HOVER_GAIN = 0.028 * vol(SOUND.hover); // カーソルを乗せたときの音（content.js の sound.hover）
     const VOICE_GAIN = 0.65 * vol(SOUND.voice);
     let ctx = null;
     let fxOut = null;
@@ -216,7 +217,7 @@
     return {
       get on() { return on; },
       set(v) { on = v; store.set('rafu-sfx', v ? 'on' : 'off'); if (v) ensure(); },
-      hover: () => tone(1500, 0.03, 'square', 0.028),
+      hover: () => { if (HOVER_GAIN > 0) tone(1500, 0.03, 'square', HOVER_GAIN); },
       /* 1回押したときに鳴る効果音は1つだけ（専用の音が鳴ったときは、ふつうの「カチッ」を重ねない） */
       click: () => { if (performance.now() - fxAt > 80) tone(520, 0.09, 'triangle', 0.06, 900); },
       zap: () => { fxAt = performance.now(); noise(0.16, 0.07); tone(190, 0.12, 'sawtooth', 0.024, 80); },
@@ -243,10 +244,17 @@
   };
   sfxBtns.forEach((b) => b.addEventListener('click', () => { SFX.set(!SFX.on); paintSfx(); SFX.ok(); refreshTip(b); }));
 
+  /* カーソルを乗せたときの音。離れてすぐ（0.25秒以内）に同じボタンへ戻ったときは鳴らさない
+     （ボタンのふちでカーソルが細かく出入りしても、音が何度も鳴らないように） */
   let lastHover = null;
+  let leftEl = null;
+  let leftAt = -1e9;
   document.addEventListener('pointerover', (e) => {
     const t = e.target.closest('[data-sfx]');
-    if (t && t !== lastHover && e.pointerType === 'mouse') SFX.hover();
+    if (t === lastHover) return;
+    const now = performance.now();
+    if (lastHover) { leftEl = lastHover; leftAt = now; }
+    if (t && e.pointerType === 'mouse' && !(t === leftEl && now - leftAt < 250)) SFX.hover();
     lastHover = t;
   });
   document.addEventListener('click', (e) => { if (e.target.closest('[data-sfx]') && !e.target.closest('[data-sfx-toggle]')) SFX.click(); });
@@ -341,13 +349,22 @@
   /* ---------- YouTube（サムネ・URL・プレイヤーで共通） ---------- */
   const KIND = { live: '配信', clip: '切り抜き', shorts: 'Shorts' };
   const thumbUrl = (v, q = 'hqdefault') => v.thumb || `https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/${q}.jpg`;
-  const watchUrl = (v) => (v.kind === 'shorts' ? `https://www.youtube.com/shorts/${encodeURIComponent(v.id)}` : `https://www.youtube.com/watch?v=${encodeURIComponent(v.id)}`);
+  const watchUrl = (v) => (v.kind === 'shorts' ? `https://www.youtube.com/shorts/${encodeURIComponent(v.id)}`
+    : `https://www.youtube.com/watch?v=${encodeURIComponent(v.id)}${v.start > 0 ? `&t=${Math.floor(v.start)}s` : ''}`);
   const ch = (n) => `CH.${pad2(n)}`;
   const fmtDate = (d) => (d ? String(d).replace(/-/g, '.') : '');
   /* YouTubeのURLでもIDだけでも受け付ける */
   const ytId = (s) => {
     const m = /(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{6,})/.exec(String(s || ''));
     return m ? m[1] : String(s || '').trim();
+  };
+  /* URLの ?t=1519 / &t=25m19s / ?start=1519 から、流し始める秒を取り出す（無ければ 0） */
+  const ytStart = (s) => {
+    const m = /[?&#](?:t|start)=([\dhms]+)/.exec(String(s || ''));
+    if (!m) return 0;
+    if (/^\d+s?$/.test(m[1])) return parseInt(m[1], 10);
+    const part = (u) => { const x = new RegExp(`(\\d+)${u}`).exec(m[1]); return x ? Number(x[1]) : 0; };
+    return part('h') * 3600 + part('m') * 60 + part('s');
   };
 
   /* ---------- 画像が読めないときは「Image not found」の絵に差し替える ----------
@@ -391,13 +408,57 @@
   function openPlayer(v, label) {
     if (!dlg || typeof dlg.showModal !== 'function') { window.open(watchUrl(v), '_blank', 'noopener'); return; }
     lastFocus = document.activeElement;
-    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?autoplay=1&rel=0&playsinline=1" title="${esc(v.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    const start = v.start > 0 ? `&start=${Math.floor(v.start)}` : '';
+    frame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?autoplay=1&rel=0&playsinline=1${start}" title="${esc(v.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
     dlg.classList.toggle('is-vertical', v.kind === 'shorts');
     $('#player-ch').textContent = label || `${ch(v.n)} / ${KIND[v.kind]}`;
     $('#player-link').href = watchUrl(v);
     dlg.showModal();
     root.style.overflow = 'hidden';
   }
+  /* ---------- 画面写真を大きく見る ----------
+   * どこを押しても・Escでも閉じる。2枚以上なら 左右のボタン・← → キーで切り替え。
+   * tone を "ore" にすると灰色の枠（REDHUB の欄）、空なら木の枠 */
+  let shotView = null;
+  let shotList = [];
+  let shotAt = 0;
+  let shotTitle = '';
+  const paintShot = () => {
+    const img = $('img', shotView);
+    img.src = shotList[shotAt];
+    img.alt = `${shotTitle}の画面${shotList.length > 1 ? ` ${shotAt + 1}` : ''}`;
+    $('.shot-count', shotView).textContent = shotList.length > 1 ? `${shotAt + 1} / ${shotList.length}` : '';
+    shotView.classList.toggle('is-multi', shotList.length > 1);
+  };
+  const stepShot = (d) => { shotAt = (shotAt + d + shotList.length) % shotList.length; paintShot(); };
+  function openShot(list, index = 0, title = '', tone = '') {
+    shotList = (Array.isArray(list) ? list : [list]).filter(Boolean);
+    if (!shotList.length) return;
+    shotAt = clamp(index, 0, shotList.length - 1);
+    shotTitle = title;
+    if (!shotView) {
+      shotView = document.createElement('dialog');
+      shotView.className = 'shot-view';
+      shotView.innerHTML = '<img alt=""><button class="shot-x" type="button" aria-label="閉じる">×</button>'
+        + '<button class="shot-nav shot-prev" type="button" aria-label="前の画面" data-sfx>‹</button><button class="shot-nav shot-next" type="button" aria-label="次の画面" data-sfx>›</button>'
+        + '<span class="shot-count" aria-live="polite"></span>';
+      shotView.addEventListener('click', (e) => {
+        const nav = e.target.closest('.shot-nav');
+        if (nav) stepShot(nav.classList.contains('shot-prev') ? -1 : 1); else shotView.close();
+      });
+      shotView.addEventListener('keydown', (e) => {
+        if (shotList.length < 2 || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+        e.preventDefault();
+        stepShot(e.key === 'ArrowLeft' ? -1 : 1);
+      });
+      document.body.append(shotView);
+    }
+    shotView.dataset.tone = tone;
+    paintShot();
+    if (typeof shotView.showModal !== 'function') { window.open(shotList[shotAt], '_blank', 'noopener'); return; }
+    if (!shotView.open) shotView.showModal();
+  }
+
   if (dlg) {
     $('#player-close').addEventListener('click', () => dlg.close());
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
@@ -550,7 +611,7 @@
     C, root, $, $$, reduce, finePointer, clamp, pad2, esc, store,
     ICON, SFX, ARROW, PLAY, PAD, setPx, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
-    KIND, ch, fmtDate, ytId, thumbUrl, watchUrl, loadThumb, openPlayer,
+    KIND, ch, fmtDate, ytId, ytStart, thumbUrl, watchUrl, loadThumb, openPlayer, openShot,
     WORK_PX, lighten, reveal,
     OS, osOf, osInfo, osList,
   };

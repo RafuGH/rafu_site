@@ -6,7 +6,7 @@
     C, $, $$, reduce, finePointer, esc,
     ICON, SFX, PLAY, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
-    fmtDate, ytId, watchUrl, loadThumb, openPlayer,
+    fmtDate, ytId, watchUrl, loadThumb, openPlayer, openShot,
     WORK_PX, lighten, reveal,
     OS, osOf, osInfo, osList,
   } = window.RAFU;
@@ -543,7 +543,7 @@
       loadThumb($('img', pvBtn), { id: pv, thumb: it.pvThumb || '' }, true);
       pvBtn.addEventListener('click', () => openPlayer({ id: pv, title: it.title, kind: 'live', n: 0 }, `${pvLabel} / ${it.title}`));
     }
-    $$('[data-shot]', detail).forEach((b) => b.addEventListener('click', () => openShot(b.dataset.shot, it.title)));
+    $$('[data-shot]', detail).forEach((b, i) => b.addEventListener('click', () => openShot(shots, i, it.title)));
     $$('[data-tag]', detail).forEach((b) => b.addEventListener('click', () => {
       const t = b.dataset.tag;
       qEl.value = t;
@@ -578,23 +578,6 @@
       void detail.offsetWidth;
       detail.classList.add('is-swap');
     }
-  };
-
-  /* 画面写真を大きく見る（どこを押しても・Escでも閉じる） */
-  const openShot = (src, title) => {
-    let dlg = $('#dt-shot-view');
-    if (!dlg) {
-      dlg = document.createElement('dialog');
-      dlg.id = 'dt-shot-view';
-      dlg.className = 'dt-shot-view';
-      dlg.innerHTML = '<img alt=""><button class="dt-shot-x" type="button" aria-label="閉じる">×</button>';
-      dlg.addEventListener('click', () => dlg.close());
-      document.body.append(dlg);
-    }
-    const img = $('img', dlg);
-    img.src = src;
-    img.alt = `${title}の画面`;
-    if (dlg.showModal) dlg.showModal(); else window.open(src, '_blank', 'noopener');
   };
 
   /* ---------- 選ぶ（URLの #作品id もそろえる） ---------- */

@@ -6,7 +6,7 @@
     C, root, $, $$, reduce, finePointer, clamp, esc, store,
     SFX, ARROW, PAD, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
-    KIND, ch, fmtDate, ytId, loadThumb, openPlayer,
+    KIND, ch, fmtDate, ytId, ytStart, watchUrl, loadThumb, openPlayer, openShot,
     WORK_PX, lighten, reveal,
     osInfo, osList,
   } = window.RAFU;
@@ -100,10 +100,11 @@
   const games = (C.games || []).filter((g) => g && g.title);
   const pickupEl = $('#pickup');
   if (pickupEl) {
-    const card = (tag, attrs, art, title, c) => `<${tag} class="pick" ${attrs} style="--c:${c}" data-sfx>
+    /* 見た目は .pick-in（カーソルを乗せると浮く）。外側の .pick は当たり判定で動かさない */
+    const card = (tag, attrs, art, title, c) => `<${tag} class="pick" ${attrs} style="--c:${c}" data-sfx><span class="pick-in">
         <span class="pick-art">${art.tag ? `<span class="pick-tag">${art.tag}</span>` : ''}${art.html}</span>
         <span class="pick-body"><span class="pick-title">${title}</span>${ARROW}</span>
-      </${tag}>`;
+      </span></${tag}>`;
     /* 決まった見出しは、言葉の切れ目でだけ折り返す（狭いカードで「サー/バー」のように割れないように） */
     const phr = (...parts) => parts.map((s) => `<span class="ph">${esc(s)}</span>`).join('');
     const cards = [];
@@ -281,7 +282,7 @@
         : g.iconImage ? `<span class="soft-burst"></span><img class="soft-icon" src="${esc(g.iconImage)}" alt="" loading="lazy">`
           : `<span class="soft-burst"></span><span class="soft-pad">${PAD}</span>`;
       return `
-      <a class="soft" href="downloads.html#${esc(g.id)}" style="--d:${(i * 0.08).toFixed(2)}s" data-reveal data-sfx>
+      <a class="soft" href="downloads.html#${esc(g.id)}" style="--d:${(i * 0.08).toFixed(2)}s" data-reveal data-sfx><span class="soft-in">
         <span class="soft-art">${art}${ps.length ? `<span class="soft-plat">${ps.map((k) => `<span><i class="px" data-px="${osInfo(k).px}"></i>${esc(osInfo(k).name)}</span>`).join('')}</span>` : ''}</span>
         <span class="soft-body">
           ${g.cat ? `<span class="soft-cat">${esc(g.cat)}</span>` : ''}
@@ -291,7 +292,7 @@
           ${date ? `<span class="soft-date"><time datetime="${esc(date)}">${esc(fmtDate(date))}</time> 公開</span>` : ''}
           <span class="soft-go">ダウンロードページへ${ARROW}</span>
         </span>
-      </a>`;
+      </span></a>`;
     }).join('');
 
     /* 一覧へ（ダウンロードページを「ゲームソフト」や機種で絞り込んだ状態で開く） */
@@ -382,6 +383,66 @@
     statusEl.hidden = true;
   }
 
+  /* ---------- REDHUB の これまでの参加型企画（content.js の events） ----------
+   * 大きい画像と緑のボタンで動画、小さい画面写真は押すと大きく見られる */
+  const evList = $('#events-list');
+  if (evList) {
+    const events = (C.events || []).filter((e) => e && e.title);
+    const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>';
+    const SHOTS_PC = 5; // PCで並べる画面写真の数（多いときは最後の1枚に「+2」のように出す）
+    const SHOTS_SP = 3; // スマホで並べる数
+    /* "2023-09-30〜2024-01-01" のような期間は2つの日付に分ける */
+    const evDate = (d) => String(d).split(/\s*[〜～~]\s*/).filter(Boolean)
+      .map((x) => `<time datetime="${esc(x)}">${esc(fmtDate(x))}</time>`).join('<span class="pev-tilde">〜</span>');
+    const evVideos = (e) => (e.videos || []).filter((v) => v && v.url).map((v) => (
+      { id: ytId(v.url), start: ytStart(v.url), title: e.title, kind: 'live', n: 0, label: v.label || '動画を見る' }
+    ));
+    const evShots = (e) => (e.shots || []).filter(Boolean);
+    evList.innerHTML = events.map((e, i) => {
+      const vs = evVideos(e);
+      const shots = evShots(e);
+      const img = e.image ? `<img src="${esc(e.image)}" alt="" width="1280" height="720" loading="lazy" decoding="async">` : '';
+      const more = (n, k) => (shots.length > n && k === n - 1 ? `+${shots.length - n}` : '');
+      return `
+      <li class="pev" data-reveal style="--d:${(i * 0.06).toFixed(2)}s">
+        <div class="pev-pics">
+          ${vs.length ? `<button class="pev-media" type="button" data-ev="${i}" data-v="0" aria-label="${esc(e.title)}の動画を見る" data-sfx>${img}<span class="pev-watch">${PLAY}再生</span><span class="pev-play">${PLAY}</span></button>`
+            : `<span class="pev-media">${img}</span>`}
+          ${shots.length ? `<ul class="pev-shots" style="--cols:${Math.min(shots.length, SHOTS_PC)};--cols-sp:${Math.min(shots.length, SHOTS_SP)}">${shots.map((s, k) => `
+            <li${more(SHOTS_PC, k) ? ` data-more-pc="${more(SHOTS_PC, k)}"` : ''}${more(SHOTS_SP, k) ? ` data-more-sp="${more(SHOTS_SP, k)}"` : ''}><button class="pev-shot" type="button" data-ev="${i}" data-shot="${k}" aria-label="${esc(e.title)}の画面 ${k + 1} を大きく見る" data-sfx><img src="${esc(s)}" alt="" loading="lazy" decoding="async"></button></li>`).join('')}
+          </ul>` : ''}
+        </div>
+        <div class="pev-body">
+          <p class="pev-meta">${e.kind ? `<span class="pev-kind">${esc(e.kind)}</span>` : ''}${e.date ? `<span class="pev-date">${evDate(e.date)}${e.dateNote ? `<small>${esc(e.dateNote)}</small>` : ''}</span>` : ''}</p>
+          <h4 class="pev-title">${esc(e.title)}</h4>
+          ${e.sub ? `<p class="pev-sub">${esc(e.sub)}</p>` : ''}
+          ${e.text ? `<p class="pev-text">${esc(e.text)}</p>` : ''}
+          ${(e.facts || []).length ? `<ul class="pev-facts">${e.facts.map((f) => `<li>${esc(f)}</li>`).join('')}</ul>` : ''}
+          ${vs.length ? `<div class="pev-btns">${vs.map((v, k) => `<a class="pxbtn pev-btn${k ? ' is-sub' : ''}" href="${esc(watchUrl(v))}" target="_blank" rel="noopener" data-ev="${i}" data-v="${k}" data-sfx>${k ? '' : PLAY}<span>${esc(v.label)}</span></a>`).join('')}</div>` : ''}
+        </div>
+      </li>`;
+    }).join('');
+
+    evList.addEventListener('click', (ev) => {
+      const t = ev.target.closest('[data-ev]');
+      if (!t) return;
+      const e = events[Number(t.dataset.ev)];
+      if (t.dataset.shot != null) {
+        /* 大きい画像も含めて、左右で切り替えられるようにする */
+        const all = [e.image, ...evShots(e)].filter(Boolean);
+        openShot(all, Number(t.dataset.shot) + (e.image ? 1 : 0), e.title, 'ore');
+        return;
+      }
+      /* Ctrl・Shift・中クリックなどはふつうにYouTubeを開く */
+      if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey || ev.button) return;
+      const v = evVideos(e)[Number(t.dataset.v)];
+      if (!v) return;
+      ev.preventDefault();
+      openPlayer(v, `REDHUB / ${e.title}`);
+    });
+    if (!events.length) $('#events').hidden = true;
+  }
+
   /* ---------- Minecraftの配布物 ---------- */
   const worksEl = $('#works-list');
   if (worksEl) {
@@ -395,7 +456,7 @@
       const up = lastUp(w);
       const vs = vers(w);
       return `
-      <a class="work" href="downloads.html#${esc(w.id)}" style="--c:${esc(w.color || '#e5121b')}" data-reveal data-sfx>
+      <a class="work" href="downloads.html#${esc(w.id)}" style="--c:${esc(w.color || '#e5121b')}" data-reveal data-sfx><span class="work-in">
         <span class="work-art">
           <span class="work-tag">${esc((w.icon || 'work').toUpperCase())}</span>
           ${up ? `<span class="work-up"><i class="px" data-px="up"></i>UPDATE${upVer(up) ? ` ${esc(upVer(up))}` : ''}</span>` : ''}
@@ -408,7 +469,7 @@
           ${vs.length ? `<span class="work-ver"><i class="px" data-px="cube"></i>${esc([w.edition, vs.slice(0, 2).join(' / ')].filter(Boolean).join(' '))}${vs.length > 2 ? ` +${vs.length - 2}` : ''}</span>` : ''}
           <span class="work-go">ダウンロード<i class="px" data-px="right"></i></span>
         </span>
-      </a>`;
+      </span></a>`;
     }).join('');
     $$('.work', worksEl).forEach((el, i) => {
       const w = works[i];

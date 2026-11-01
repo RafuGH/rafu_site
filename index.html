@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap">
 <link rel="preload" as="image" href="assets/img/logo-outline.webp">
 <!-- CSS・JSを更新したら ?v= の数字も変える（古いファイルがブラウザに残って表示が崩れるのを防ぐ）。ファビコンとog.pngを作り直したときは、上の ?v= も変える -->
-<link rel="stylesheet" href="assets/css/style.css?v=20261101-3">
+<link rel="stylesheet" href="assets/css/style.css?v=20261101-4">
 <script>
   (function (d) {
     var c = d.documentElement.classList;
@@ -160,10 +160,10 @@
         </ul>
         <div class="kv-cta">
           <a class="btn btn-ink" href="https://www.youtube.com/@Rafu_" data-link="youtube" target="_blank" rel="noopener" data-sfx>
-            <span class="brand" data-icon="youtube"></span><span>YouTubeを見る</span>
+            <span class="btn-face"><span class="brand" data-icon="youtube"></span><span>YouTubeを見る</span></span>
           </a>
           <a class="btn btn-yellow" href="#discord" data-sfx>
-            <span class="brand" data-icon="discord"></span><span>Discordに参加</span>
+            <span class="btn-face"><span class="brand" data-icon="discord"></span><span>Discordに参加</span></span>
           </a>
         </div>
       </div>
@@ -378,6 +378,16 @@
             </ol>
           </div>
         </div>
+
+        <!-- これまでの参加型企画（中身は content.js の events。画像は assets/img/events/） -->
+        <div class="pevs" id="events">
+          <header class="px-head pev-head" data-reveal>
+            <h3 class="px-title"><span class="wipe"><span>これまでの参加型企画</span></span></h3>
+            <p class="px-en">PAST EVENTS</p>
+            <p class="px-lead">REDHUBで開いてきた企画です。画像を押すと動画が見られます。</p>
+          </header>
+          <ol class="pev-list" id="events-list"></ol>
+        </div>
       </div>
       <div class="ground" aria-hidden="true"></div>
     </div>
@@ -414,7 +424,7 @@
           <p>配信の通知、参加型企画の募集、作品の配布、雑談はぜんぶここ。日本語・英語・ロシア語のチャンネルがあります。</p>
           <div class="langs"><span>日本語</span><span>English</span><span>Русский</span></div>
           <a class="btn btn-ink" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>
-            <span class="brand" data-icon="discord"></span><span>Discordに参加する</span>
+            <span class="btn-face"><span class="brand" data-icon="discord"></span><span>Discordに参加する</span></span>
           </a>
         </div>
         <div class="cm-visual" aria-hidden="true">
@@ -491,8 +501,8 @@
   <style>.loader{display:none!important}</style>
 </noscript>
 
-<script src="assets/js/content.js?v=20261101-3"></script>
-<script src="assets/js/common.js?v=20261101-3"></script>
-<script src="assets/js/main.js?v=20261101-3"></script>
+<script src="assets/js/content.js?v=20261101-4"></script>
+<script src="assets/js/common.js?v=20261101-4"></script>
+<script src="assets/js/main.js?v=20261101-4"></script>
 </body>
 </html>
