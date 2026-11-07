@@ -741,7 +741,7 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
   margin-block: -4vw; padding-block: calc(clamp(100px, 11vw, 160px) + 4vw) calc(clamp(90px, 10vw, 140px) + 4vw);
   z-index: 1;
 }
-/* 見出しの右に、ゲーム開発のブランド（RafuPixels）の札を置く */
+/* 見出しの右に、ゲーム開発のブランド（Rafixel）の札を置く */
 .game-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 26px 48px; margin-bottom: clamp(30px, 4vw, 52px); }
 .game-head .sh { margin-bottom: 0; }
 .studio {
@@ -756,6 +756,8 @@ a.news-item:hover svg { transform: translateX(4px); stroke: var(--yellow); }
 .studio-body p { margin: 0; }
 .studio-en { font-family: var(--f-logo); font-weight: var(--fw-logo); font-size: 11px; letter-spacing: .18em; color: var(--yellow); transform: skewX(-10deg); transform-origin: left; }
 .studio-name { font-family: var(--f-logo); font-weight: var(--fw-logo); font-size: clamp(28px, 2.7vw, 36px); line-height: 1.1; letter-spacing: .01em; transform: skewX(-8deg); transform-origin: left; text-shadow: .06em .06em 0 var(--tomato); }
+.studio-name:has(img) { transform: none; text-shadow: none; }
+.studio-name img { display: block; width: auto; height: clamp(26px, 2.5vw, 34px); max-width: 100%; margin: 4px 0 6px; filter: drop-shadow(3px 3px 0 var(--tomato)); }
 .studio-kana { font-size: 12px; font-weight: 900; letter-spacing: .14em; color: var(--muted); }
 .studio-note { margin-top: 8px !important; padding-top: 8px; border-top: 2px solid #26252c; font-size: 12.5px; font-weight: 800; line-height: 1.6; color: #e6e1ea; }
 /* 出てくるときは、ハンコを押すように */
@@ -1589,6 +1591,8 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
 .ft-brand:hover .ft-brand-redhub { transform: translateY(-2px) scale(1.04); }
 .ft-brand-text { display: grid; gap: 4px; line-height: 1.1; }
 .ft-brand-text b { font-family: var(--f-logo); font-weight: var(--fw-logo); font-size: 21px; transform: skewX(-8deg); transform-origin: left; }
+.ft-brand-text b:has(img) { transform: none; }
+.ft-brand-rafixel { display: block; width: auto; height: 19px; max-width: 100%; }
 .ft-brand-text small { font-size: 10px; font-weight: 900; letter-spacing: .24em; color: var(--dim); transition: color .2s ease; }
 .ft-brand:hover .ft-brand-text small { color: var(--yellow); }
 .ft-bottom { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 28px; padding-block: 20px calc(20px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); }

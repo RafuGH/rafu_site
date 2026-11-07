@@ -457,7 +457,7 @@
     /* 特徴（content.js の points） */
     const points = (it.points || []).filter((p) => p && p.title);
     const feats = points.length ? `<ul class="dt-points">${points.map((p) => `<li><b>${esc(p.title)}</b><span>${esc(p.text || '')}</span></li>`).join('')}</ul>` : '';
-    /* 開発の名義（content.js の developer。RafuPixels で出したソフトだけ） */
+    /* 開発の名義（content.js の developer。Rafixel で出したソフトだけ） */
     const devRow = it.developer ? `
           <p class="dt-meta dt-dev-row"><span class="dt-meta-lbl">開発</span><span class="dt-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128">${esc(it.developer)}</span></p>` : '';
     /* 制作チーム（チーム「作品のタイトル」と出して、押すと担当が開く） */

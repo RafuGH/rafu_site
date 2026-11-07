@@ -52,6 +52,7 @@ window.RAFU_CONTENT = {
    * 日付が2週間以内のものには自動で「NEW」が付きます
    */
   news: [
+    { date: "2026-11-07", tag: "更新",     title: "ゲームソフト「寒がりマジロ」を載せました（Windows版・unityroom）", url: "downloads.html#samugari-majiro" },
     { date: "2026-10-31", tag: "更新",     title: "ゲームソフト「よくばりカブト」「ゾンバク」「ゆきコロ」を載せました", url: "downloads.html?tab=game" },
     { date: "2026-10-30", tag: "お知らせ", title: "公式サイトをリニューアルしました", url: "" },
     { date: "2026-10-30", tag: "Discord",  title: "Discordサーバーが 日本語・English・Русский の3言語に対応しました", url: "discord" },
@@ -227,8 +228,8 @@ window.RAFU_CONTENT = {
    * points    … 特徴を3つくらい（ダウンロードページの紹介文の下に出る）。例: [{ title: "誘導", text: "…" }]
    * team      … 制作チーム。{ members: [{ name: "Rafu", role: "ディレクター" }, …] }
    *             ダウンロードページに チーム「作品のタイトル」 と出て、押すと担当が開く（Rafu の行は色が変わる）
-   * developer … 開発の名義（例: "RafuPixels" ）。書くと、トップのカードに「Developed by RafuPixels」、
-   *             ダウンロードページに「開発 RafuPixels」が出る。チームで作った作品は書かない（空のまま）
+   * developer … 開発の名義（例: "Rafixel" ）。書くと、トップのカードに「Developed by Rafixel」、
+   *             ダウンロードページに「開発 Rafixel」が出る。チームで作った作品は書かない（空のまま）
    * credits   … 使った素材のクレジット（1行ずつ。チームの下に小さく出る）
    * links     … 作品ページなどへのリンク。[{ label: "unityroom の作品ページ", url: "https://…" }]
    * image     … トップのカードの絵（16:9）。空なら iconImage を集中線の上に貼る
@@ -237,6 +238,45 @@ window.RAFU_CONTENT = {
    * discord   … Discordの配布チャンネル（ダウンロードページの予備のリンク）
    */
   games: [
+    {
+      id: "samugari-majiro",
+      title: "寒がりマジロ",
+      cat: "アクション",
+      tags: ["冬", "雪", "アクション", "スコアアタック", "3D", "マウスだけ", "Unity"],
+      catch: "ころがれ、もぐれ、割りまくれ！ 寒がりなアルマジロのスコアアタック。",
+      text: "雪原を転がって、潜って、雪雲で結晶にしたポイントをまとめて割る。コンボをつないでハイスコアをねらうアクション。",
+      about: "主人公は寒がりなアルマジロ「マジロ」！\n雪原をゴロゴロ転がって、クリックで地中に潜り、埋まったポイントを集めよう。\n雪雲の下ではポイントがキラキラの結晶に。まとめて割ればコンボがつながり、スコアが一気に伸びる！\n【のこり20秒、嵐が来る】\n終盤は雪雲が強くなる大チャンス。嵐の中を突っ切って、最大コンボをねらおう。\nランク・ランキング・コスチュームの着せかえ・コレクションで、何度でもやりこめます。",
+      image: "assets/img/games/majiro-key.webp",
+      iconImage: "assets/img/games/majiro-icon.webp",
+      trailer: "",
+      shots: [
+        "assets/img/games/majiro-combo.webp",
+        "assets/img/games/majiro-mode.webp",
+        "assets/img/games/majiro-result.webp",
+        "assets/img/games/majiro-character.webp",
+      ],
+      points: [
+        { title: "ころがる・もぐる", text: "マウスひとつで、転がって潜って雪原をかけまわる" },
+        { title: "結晶をまとめて割る", text: "雪雲で結晶にして、まとめて割るほどコンボがつながる" },
+        { title: "やりこみ", text: "ランク・ランキング・着せかえ・コレクション" },
+      ],
+      info: { players: "1人", controls: "マウス", lang: "日本語", price: "無料", engine: "Unity", size: "約490MB（Windows版）" },
+      versions: [
+        { platform: "windows", label: "最新版", version: "1.2.2", file: "https://github.com/RafuGH/Majiro-Releases/releases/download/v1.2.2/SamugariMajiro_v1.2.2_Windows.zip", fileName: "SamugariMajiro_v1.2.2_Windows.zip", size: "110MB", date: "2026-11-07" },
+        { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/samugarimajiro", date: "2026-11-07", note: "スマホでは動かないことがあります。PCがおすすめ" },
+      ],
+      howtoTitle: "遊び方",
+      howto: [
+        "Windows版：「ダウンロード」を押してzipを保存",
+        "zipを展開（すべて展開）して、SamugariMajiro フォルダの中の SamugariMajiro.exe を起動",
+        "マウスで操作します",
+      ],
+      developer: "Rafixel",
+      links: [
+        { label: "unityroom の作品ページ", url: "https://unityroom.com/games/samugarimajiro" },
+        { label: "GitHub のリリース（Windows版）", url: "https://github.com/RafuGH/Majiro-Releases/releases" },
+      ],
+    },
     {
       id: "yokubari-kabuto",
       title: "よくばりカブト",

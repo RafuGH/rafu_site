@@ -48,13 +48,15 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 | --- | --- |
 | `assets/img/logo-outline.webp`（白枠アリ・グラデ） | トップのまんなかのトマト |
 | `assets/img/logo-outline-512.webp`（白枠アリ・グラデ） | ヘッダー・メニュー・フッターのロゴ |
-| `assets/img/logo-outline-flat-256.webp`（白枠アリ・フラット） | ローディング・ゲームソフト欄のRafuPixelsの札・フッターのRafuPixels |
-| `assets/img/logo-outline-mono-128.webp`（白枠アリ・黒） | 「Developed by RafuPixels」「開発 RafuPixels」の小さいマーク |
+| `assets/img/logo-outline-flat-256.webp`（白枠アリ・フラット） | ローディング・ゲームソフト欄のRafixelの札・フッターのRafixel |
+| `assets/img/logo-outline-mono-128.webp`（白枠アリ・黒） | 「Developed by Rafixel」「開発 Rafixel」の小さいマーク |
 | `assets/img/favicon-32.png`・`favicon-192.png`・`apple-touch-icon.png` | ブラウザのタブとスマホのホーム画面（フラットのトマト。小さくても見えるよう白枠を太くしたもの） |
 | `assets/img/og.png`（1200×630） | XやDiscordでURLを貼ったときに出る画像 |
+| `assets/img/rafixel-logo-white.webp`（白の「RAFIXEL」・背景が透明） | ゲームソフト欄のRafixelの札とフッターの名前（黒い背景用） |
+| `assets/img/rafixel-logo.webp`（黒の「RAFIXEL」・背景が透明） | いまは未使用。明るい背景に置くとき用 |
 | `assets/img/redhub-logo.webp`（横長・背景が透明） | Minecraftのサーバー欄の見出しとフッターのREDHUB |
 
-開発ブランドは **RafuPixels**（ラフピクセルズ / GAME DEVELOPMENT STUDIO）、Minecraftサーバーは **REDHUB**。YouTubeなど個人の活動は Rafu のままです。
+開発ブランドは **Rafixel**（ラフィクセル / GAME DEVELOPMENT STUDIO。ロゴは「RAFIXEL」の文字）、Minecraftサーバーは **REDHUB**。YouTubeなど個人の活動は Rafu のままです。
 
 ## よくある更新
 
@@ -71,7 +73,7 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 | 作品をアップデートした | 新しいファイルを置いて `versions` の `file`・`version`・`date` を書き換え（古い版も配るなら行を残す）、`updates` の先頭に1つ足す（`version`・`date`・`title` に短く・`notes` にくわしく）。ダウンロードページに「UPDATE」の矢印のリボンが出て、トップのカードと一覧のアイコンにも印が付きます |
 | ゲームソフトの対応機種を書く | その作品の `versions` に機種ごとに1行ずつ書く（`platform` は `"windows"` / `"mac"` / `"ios"` / `"android"` / `"web"`）。対応していない機種の行は消す。iOS・Androidの `file` に App Store / Google Play のURLを書くと「App Storeで開く」「Google Playで開く」のボタンになります |
 | ブラウザで遊べるゲームを載せる | `platform: "web"` の行の `file` に遊べるページのURL（unityroom など）を書くと、ダウンロードページに「ブラウザで遊ぶ」ボタンが出て、トップに「ブラウザで遊べるソフト」の一覧が増えます |
-| これから出すソフトを RafuPixels 名義にする | その作品に `developer: "RafuPixels"` を書く。トップのカードに「Developed by RafuPixels」、ダウンロードページに「開発 RafuPixels」が出ます。チームで作った作品には書かない（チームの表記だけになります） |
+| これから出すソフトを Rafixel 名義にする | その作品に `developer: "Rafixel"` を書く。トップのカードに「Developed by Rafixel」、ダウンロードページに「開発 Rafixel」が出ます。チームで作った作品には書かない（チームの表記だけになります） |
 | ゲームの制作チームを書く | その作品の `team` の `members` に `{ name, role }` を1人ずつ書く。ダウンロードページに チーム「作品のタイトル」 と出て、押すと担当が開きます。素材のクレジットは `credits`（担当の下に出る）、作品ページは `links` |
 | 紹介PVや使った動画を付ける | その作品の `pv`（ゲームソフトは `trailer`）にYouTubeのURLかIDを書く。左上の名前は `pvLabel`（例: `"使用した動画"`）、動画の下の一言は `pvNote` |
 | 作品のアイコンを絵にする | 正方形の画像を `assets/img/works/` に置き、その作品の `iconImage` にパスを書く（ダウンロードページとトップのカードに出る。空ならドット絵のアイコン） |
@@ -118,7 +120,7 @@ assets/fonts/keifont/   笑いの文字のフォント（けいふぉんと。�
 - トマトを押すと笑います。1回押すごとに笑いの文字（けいふぉんと・白文字に黒ふち）が1つ出て、Rafuの笑い声がランダムで1つ鳴ります
 - 画像が読めないとき（パスの書き間違い・消した動画のサムネイルなど）は、「Image not found」の絵に自動で差し替わります。トップの背景の1枚絵とまんなかのキャラだけは、いつもの赤い背景とトマトに戻ります
 - Minecraftの欄のキャラは、見えたときに丘の下から飛び出し、ときどきビクッと跳ねます
-- ゲームソフト欄のRafuPixelsの札は、見えたときにスタンプのように押されます。サーバー欄のREDHUBのロゴは、見えたときに上から落ちてきます
+- ゲームソフト欄のRafixelの札は、見えたときにスタンプのように押されます。サーバー欄のREDHUBのロゴは、見えたときに上から落ちてきます
 - スクロールバーと文字を選んだときの色は、いま見ている欄（配信は赤、Minecraftは木）に合わせて変わります
 - ダウンロードページの「リンクをコピー」は、その作品が選ばれた状態で開くURL（`downloads.html#作品のid`）をコピーします。Discordで紹介するときに使えます
 - ダウンロードページのアイコン一覧は、矢印キーで移動・Enterで選べます
