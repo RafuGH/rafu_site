@@ -52,6 +52,7 @@ window.RAFU_CONTENT = {
    * 日付が2週間以内のものには自動で「NEW」が付きます
    */
   news: [
+    { date: "2026-11-10", tag: "更新",     title: "ゲームソフト「寒がりマジロ」のPVを公開しました", url: "downloads.html#samugari-majiro" },
     { date: "2026-11-10", tag: "更新",     title: "「よくばりカブト」のWindows版を配布開始。「寒がりマジロ」とあわせてコントローラーに対応しました", url: "downloads.html#yokubari-kabuto" },
     { date: "2026-11-10", tag: "更新",     title: "ゲームソフト「よくばりカブト」のPVを公開しました", url: "downloads.html#yokubari-kabuto" },
     { date: "2026-11-07", tag: "更新",     title: "ゲームソフト「寒がりマジロ」を載せました（Windows版・unityroom）", url: "downloads.html#samugari-majiro" },
@@ -248,11 +249,11 @@ window.RAFU_CONTENT = {
       cat: "アクション",
       tags: ["冬", "雪", "アルマジロ", "アクション", "カジュアル", "スコアアタック", "3D", "ワンボタン", "コントローラー対応", "実況OK", "Unity"],
       catch: "ころがれ、もぐれ、割りまくれ！ 寒がりアルマジロのスコアアタック。",
-      text: "暖かいネツホタルを集めて寒波を乗りこえろ！ 転がって、潜って、結晶をまとめて割ってハイスコアをねらう3Dスコアアタック。",
-      about: "主人公はアルマジロ！ アルマジロのマジロはとっても寒がり！\n各所にある暖かいネツホタルを集めて、寒波を乗りこえよう！\n【ころがる・もぐる】\n左クリックひとつで「転がり」と「潜り」を切り替えるだけ。雪原をゴロゴロ転がって、地中に埋まったネツホタルは潜って掘り出そう。\n【結晶をまとめて割る】\nMAPをさまよう雪雲の下では、ネツホタルが結晶に変わる。結晶は続けて割るほどボーナスが増える！ あえて取らずに結晶にして、まとめて割るのが高得点のコツ。\n【のこり30秒、雪が強まる】\n限られた時間でコツコツ積み重ねて、雪が強まる終盤に一気に稼ぐ。最大コンボをねらおう。\nランク・ランキング・コスチュームの着せかえ・コレクションで、何度でもやりこめます。",
+      text: "暖かいネツホタルを集めて寒波を乗りこえろ！ 転がって、潜って、結晶をまとめて割ってハイスコアをねらう90秒の3Dスコアアタック。",
+      about: "主人公はアルマジロ！ アルマジロのマジロはとっても寒がり！\n各所にある暖かいネツホタルを集めて、寒波を乗りこえよう！\nMAPには雪雲が徘徊。雪によってネツホタルは結晶化！ 結晶を連続で壊せば高得点！\n【90秒のスコアアタック】\n丸まって転がるマジロを操作して、マップに散らばるポイントを集めてスコアを稼ぐ、1プレイ90秒のゲームです。\n【ころがる・もぐる】\nマウスで向きを変えて、クリックで「転がり」と「潜り」を切り替えるだけ。転がりは速いけどスタミナを使う。潜りは遅いけどスタミナが回復して、地中のポイントを掘り出せる。\n【準備して、一気に回収】\n雪雲の下ではポイントが結晶に変わる。結晶を割るたびにコンボが伸びて、スコア倍率とスピードがアップ！ 潜って結晶の種を仕込み、雪雲で結晶にして、まとめて一気に割るのが高得点のコツ。割った瞬間のスローとヒットストップも気持ちいい。\n【のこり30秒、雪が強まる】\n終盤は雪が強まって、大逆転のチャンス！\nチュートリアル付きで初めてでもすぐ遊べます。実績（コレクション）やコスチュームの着せかえで、「もう1回！」と何度でもやりこめます。",
       image: "assets/img/games/majiro-key.webp",
       iconImage: "assets/img/games/majiro-app-icon.webp",
-      trailer: "",
+      trailer: "hP-q0YkvrI8",
       shots: [
         "assets/img/games/majiro-combo.webp",
         "assets/img/games/majiro-mode.webp",
@@ -260,11 +261,11 @@ window.RAFU_CONTENT = {
         "assets/img/games/majiro-character.webp",
       ],
       points: [
-        { title: "ワンボタン", text: "左クリックひとつで、転がりと潜りを切り替える" },
-        { title: "結晶をまとめて割る", text: "あえて雪雲で結晶にして、続けて割るほどボーナス" },
-        { title: "やりこみ", text: "ランク・ランキング・着せかえ・コレクション" },
+        { title: "ワンボタン", text: "視点移動とボタンひとつで、転がりと潜りを切り替える" },
+        { title: "準備して一気に回収", text: "潜って仕込み、雪雲で結晶にして、まとめて割ってコンボ" },
+        { title: "やりこみ", text: "実績（コレクション）・コスチューム着せかえ・ランク" },
       ],
-      info: { players: "1人", controls: "マウス（左クリックと移動だけ） / コントローラー（左スティックとボタンだけ。Switch・PlayStation・Xbox） / スマホ（タップとスワイプ）", playtime: "10分くらい", lang: "日本語", price: "無料", engine: "Unity", size: "約490MB（Windows版）", release: "2026-09-24" },
+      info: { players: "1人", controls: "キーボード・マウス / コントローラー（Xbox・Switch・PlayStation） / スマホ（ブラウザ版。タップとスワイプ）", playtime: "10分くらい（1プレイ90秒）", lang: "日本語", price: "無料", engine: "Unity", size: "約490MB（Windows版）", release: "2026-09-24" },
       versions: [
         { platform: "windows", label: "最新版", version: "1.2.2", file: "https://github.com/RafuGH/Majiro-Releases/releases/download/v1.2.2/SamugariMajiro_v1.2.2_Windows.zip", fileName: "SamugariMajiro_v1.2.2_Windows.zip", size: "110MB", date: "2026-11-07" },
         { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/samugarimajiro", date: "2026-11-07", note: "スマホでも遊べます（タップとスワイプ）。PCがおすすめ" },
@@ -273,30 +274,32 @@ window.RAFU_CONTENT = {
       howto: [
         "Windows版：「ダウンロード」を押してzipを保存",
         "zipを展開（すべて展開）して、SamugariMajiro フォルダの中の SamugariMajiro.exe を起動",
-        "マウス：移動と左クリックだけ（左クリックで転がり／潜りを切り替え）",
+        "マウス：マウスで向きを変えて、クリックで転がり／潜りを切り替え",
         "コントローラー：左スティックとボタンだけ（Switch・PlayStation・Xbox）",
         "スマホ（ブラウザ版）：タップとスワイプだけ",
       ],
       developer: "Rafixel",
       team: {
         members: [
-          { name: "Rafu",           role: "ディレクター / UIデザイン" },
-          { name: "しゅーと",       role: "メインプログラマー" },
-          { name: "にわとり",       role: "アートディレクター / 背景 / モデル" },
-          { name: "おだんご",       role: "キャラクター / モーション" },
-          { name: "暇人君",         role: "エフェクト" },
-          { name: "さめ",           role: "シェーダー" },
-          { name: "とらお",         role: "プログラム（アプリケーション / プレイヤー制御）" },
-          { name: "トマトの究極神", role: "プログラム（アプリケーション / 環境制御）" },
+          { name: "Rafu",           role: "ディレクター（ゲーム全体の方針 / UIデザイン）" },
+          { name: "にわとり",       role: "アーティスト（アートディレクター / 背景モデル）" },
+          { name: "おだんご",       role: "アーティスト（キャラクターモデル / モーション）" },
+          { name: "暇人君",         role: "アーティスト（エフェクト）" },
+          { name: "しゅーと",       role: "メインプログラマー（コレクション / コスチュームシステム）" },
+          { name: "とらお",         role: "プログラマー（アプリケーション / プレイヤー制御）" },
+          { name: "トマトの究極神", role: "プログラマー（アプリケーション / ギミック制御）" },
+          { name: "さめ",           role: "プログラマー（シェーダー / 演出）" },
         ],
       },
       credits: [
         "BGM：Pixabay（Slap that Bass、Funk Groove Soul、Bassline Thunder、Feel Good Adventure、Loose and lazy blues、Funk Music Theme）",
-        "効果音：Pixabay",
+        "トゥーンシェーダー：Flexible Cel Shader",
+        "効果音：Pixabay（Rolling Thunder、20_Erdbeben、Collect Item、Retro SFX small explosion、metal beaten SFX、Funny Boing、Flexatone Wobble、Heavy Body Fall、Bitter Cold Wind、Rock destroy、Get Coin、Big Cinematic Whoosh Sound Effect、Animated Cartoon Explosion Impact、Football_referee、Soft Transition、065391_drumroll.wav、Boom 2d (snare crash)、Pop!、New Notification 041、Jolly Beat Success Fanfare Trumpets）",
       ],
       links: [
         { label: "unityroom の作品ページ", url: "https://unityroom.com/games/samugarimajiro" },
         { label: "GitHub のリリース（Windows版）", url: "https://github.com/RafuGH/Majiro-Releases/releases" },
+        { label: "ゲームクリエイター甲子園の作品ページ", url: "https://gameparade.creators-guild.com/works/work-20261110-013/" },
       ],
     },
     {
