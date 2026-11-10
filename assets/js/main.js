@@ -480,6 +480,7 @@
         <span class="work-body">
           <span class="work-cat">${esc(w.cat)}${w.series ? `<em>${esc(w.series)}</em>` : ''}</span>
           <h3>${esc(w.title)}</h3>
+          ${w.developer ? `<span class="work-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128" loading="lazy">Developed by <b>${esc(w.developer)}</b></span>` : ''}
           <p>${esc(w.text)}</p>
           ${vs.length ? `<span class="work-ver"><i class="px" data-px="cube"></i>${esc([w.edition, vs.slice(0, 2).join(' / ')].filter(Boolean).join(' '))}${vs.length > 2 ? ` +${vs.length - 2}` : ''}</span>` : ''}
           <span class="work-go">ダウンロード<i class="px" data-px="right"></i></span>

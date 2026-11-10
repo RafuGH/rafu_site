@@ -422,7 +422,7 @@ window.RAFU_CONTENT = {
 
   works: [
     {
-      id: "clear-xp", series: "第一弾", cat: "データパック", edition: "Java版",
+      id: "clear-xp", developer: "Rafixel", series: "第一弾", cat: "データパック", edition: "Java版",
       title: "Clear_XP", icon: "datapack", color: "#2fa84f",
       text: "XPにほんの少しでも触れると、インベントリのアイテムが全部消える。XPから逃げろ！",
       about: "XPから逃げろ！！！\n" +
@@ -444,7 +444,7 @@ window.RAFU_CONTENT = {
       discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
     },
     {
-      id: "bomb-animals", series: "第二弾", cat: "データパック", edition: "Java版",
+      id: "bomb-animals", developer: "Rafixel", series: "第二弾", cat: "データパック", edition: "Java版",
       title: "Bomb_Animals", icon: "datapack", color: "#d4730b",
       text: "動物がスポーンしてから30秒たつと、その場で爆散する。スポーンエッグのレシピつき。",
       about: "半年以上ぶりに戻ってきた \"Bomb_Animals\"！ ver1.0のときよりも大幅にアップデートされてるぞ！\n" +
@@ -478,7 +478,7 @@ window.RAFU_CONTENT = {
       discord: "https://discord.com/channels/911549273294925865/1168026049288863844",
     },
     {
-      id: "lost-ozon", series: "第三弾", cat: "データパック", edition: "Java版",
+      id: "lost-ozon", developer: "Rafixel", series: "第三弾", cat: "データパック", edition: "Java版",
       title: "Lost_Ozon", icon: "datapack", color: "#7a44c9",
       text: "オゾン層が消えて、外に出るだけでダメージを受ける。頭の上にブロックがあれば安全。",
       about: "地球のオゾン層が消えてしまった！\n" +

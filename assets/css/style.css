@@ -1539,6 +1539,7 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
 .cm-kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-family: var(--f-logo); font-weight: var(--fw-logo); font-size: 13px; letter-spacing: .14em; color: rgba(255,255,255,.85); }
 .cm-kicker .brand { width: 20px; height: 20px; }
 .cm-title { margin: 0 0 18px; font-family: var(--f-logo); font-weight: var(--fw-logo); font-size: clamp(34px, 5vw, 64px); line-height: 1.2; text-shadow: 4px 4px 0 rgba(0,0,0,.3); }
+.cm-title-big { white-space: nowrap; font-size: clamp(56px, 6.6vw, 104px); line-height: 1; letter-spacing: -.01em; text-shadow: 6px 6px 0 rgba(0,0,0,.3); }
 .cm-copy p:not(.cm-kicker) { margin: 0 0 18px; max-width: 30em; color: rgba(255,255,255,.95); font-weight: 700; }
 .langs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
 .langs span { padding: 4px 14px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.4); font-size: 13px; font-weight: 900; transform: skewX(-8deg); }
@@ -1805,3 +1806,8 @@ img.is-missing[data-nf] { object-fit: contain; background: #c4c4c4; }
   .tape-track, .mc-layer i, .kv-burst i, .kv-streaks, .dt-up-bar::after, .dt-up-tag .px { animation: none !important; }
   .kv-streaks { display: none; }
 }
+
+/* 自作データパックのカード：開発の名義 */
+.work-dev { display: inline-flex; align-items: center; gap: 6px; margin: -2px 0 6px; font-size: 12px; font-weight: 800; letter-spacing: .02em; opacity: .85; }
+.work-dev img { width: 18px; height: 18px; flex: none; transform: rotate(-6deg); }
+.work-dev b { font-family: var(--f-logo); font-weight: var(--fw-logo); font-size: 13px; letter-spacing: .01em; }
