@@ -230,8 +230,10 @@ window.RAFU_CONTENT = {
    * points    … 特徴を3つくらい（ダウンロードページの紹介文の下に出る）。例: [{ title: "誘導", text: "…" }]
    * team      … 制作チーム。{ members: [{ name: "Rafu", role: "ディレクター" }, …] }
    *             ダウンロードページに チーム「作品のタイトル」 と出て、押すと担当が開く（Rafu の行は色が変わる）
-   * developer … 開発の名義（例: "Rafixel" ）。書くと、トップのカードに「Developed by Rafixel」、
-   *             ダウンロードページに「開発 Rafixel」が出る。チームで作った作品は書かない（空のまま）
+   *             担当がまだ決まっていないときは team: { members: [] } で「チーム制作」とだけ出る
+   * developer … 開発の名義（例: "Rafixel" ）。Rafixel として出した作品だけ書く。
+   *             team と両方書くと、トップのカードに「Developed by Rafixel × チーム制作」、
+   *             ダウンロードページに「制作 Rafixel × チーム「作品のタイトル」」と並んで出る
    * credits   … 使った素材のクレジット（1行ずつ。チームの下に小さく出る）
    * links     … 作品ページなどへのリンク。[{ label: "unityroom の作品ページ", url: "https://…" }]
    * image     … トップのカードの絵（16:9）。空なら iconImage を集中線の上に貼る
@@ -275,6 +277,9 @@ window.RAFU_CONTENT = {
         "Switch・PlayStation・Xbox のコントローラーでも遊べます",
       ],
       developer: "Rafixel",
+      team: {
+        members: [],
+      },
       links: [
         { label: "unityroom の作品ページ", url: "https://unityroom.com/games/samugarimajiro" },
         { label: "GitHub のリリース（Windows版）", url: "https://github.com/RafuGH/Majiro-Releases/releases" },

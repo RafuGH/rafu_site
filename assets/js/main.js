@@ -274,7 +274,14 @@
   /* ---------- GAME（ゲームソフト。カードを押すとダウンロードページのそのソフトへ） ---------- */
   const gamesEl = $('#games-list');
   if (gamesEl) {
-    const lastDate = (g) => (g.versions || []).map((v) => v && v.date).filter(Boolean).sort().pop() || '';
+    /* カードの「誰が作ったか」。Rafixel の作品は「Developed by Rafixel × チーム制作」、チームだけの作品は「チーム制作（3人）」 */
+  const makerHtml = (g) => {
+    const n = ((g.team && g.team.members) || []).filter((m) => m && m.name).length;
+    const team = g.team ? `<span class="soft-team"><i class="px" data-px="team"></i>チーム制作${n ? `（${n}人）` : ''}</span>` : '';
+    if (g.developer) return `<span class="soft-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128" loading="lazy">Developed by <b>${esc(g.developer)}</b>${team ? `<span class="soft-x">×</span>${team}` : ''}</span>`;
+    return team ? `<span class="soft-dev">${team}</span>` : '';
+  };
+  const lastDate = (g) => (g.versions || []).map((v) => v && v.date).filter(Boolean).sort().pop() || '';
     gamesEl.innerHTML = games.map((g, i) => {
       const ps = osList(g.versions);
       const date = lastDate(g);
@@ -287,7 +294,7 @@
         <span class="soft-body">
           ${g.cat ? `<span class="soft-cat">${esc(g.cat)}</span>` : ''}
           <h3>${esc(g.title)}</h3>
-          ${g.developer ? `<span class="soft-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128" loading="lazy">Developed by <b>${esc(g.developer)}</b></span>` : ''}
+          ${makerHtml(g)}
           ${g.catch ? `<span class="soft-catch">${esc(g.catch)}</span>` : ''}
           ${date ? `<span class="soft-date"><time datetime="${esc(date)}">${esc(fmtDate(date))}</time> 公開</span>` : ''}
           <span class="soft-go">ダウンロードページへ${ARROW}</span>

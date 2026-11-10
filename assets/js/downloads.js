@@ -428,7 +428,7 @@
       ['価格', i.price],
       ['必要な容量', i.size || uniq(it.vers.map((v) => v.size)).join(' / ')],
       ['使用エンジン', i.engine],
-      ['制作', it.developer || (members.length ? `チーム「${it.title}」（${members.length}人）` : '')],
+      ['制作', [it.developer, it.team ? `チーム「${it.title}」${members.length ? `（${members.length}人）` : ''}` : ''].filter(Boolean).join(' × ')],
       ['公開日', release && fmtDate(release)],
     ].filter(([, v]) => v);
   };
@@ -457,16 +457,17 @@
     /* 特徴（content.js の points） */
     const points = (it.points || []).filter((p) => p && p.title);
     const feats = points.length ? `<ul class="dt-points">${points.map((p) => `<li><b>${esc(p.title)}</b><span>${esc(p.text || '')}</span></li>`).join('')}</ul>` : '';
-    /* 開発の名義（content.js の developer。Rafixel で出したソフトだけ） */
-    const devRow = it.developer ? `
-          <p class="dt-meta dt-dev-row"><span class="dt-meta-lbl">開発</span><span class="dt-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128">${esc(it.developer)}</span></p>` : '';
-    /* 制作チーム（チーム「作品のタイトル」と出して、押すと担当が開く） */
+    /* 制作（content.js の developer と team）。両方あれば「Rafixel × チーム「タイトル」」と1行に並べる。
+       チームは押すと担当が開く（members が空ならボタンにせず名前だけ） */
     const members = ((it.team && it.team.members) || []).filter((m) => m && m.name);
     const teamName = `チーム「${it.title}」`;
-    const teamBtn = members.length ? `
-          <p class="dt-meta dt-team-row"><span class="dt-meta-lbl">制作</span>
-            <button class="dt-team-btn" type="button" aria-expanded="false" aria-controls="dt-team" data-sfx><i class="px" data-px="team"></i><span class="dt-team-name">${esc(teamName)}</span><span class="dt-team-more"><span>担当を見る</span><i class="px" data-px="down"></i></span></button>
-          </p>` : '';
+    const devChip = it.developer ? `<span class="dt-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128">${esc(it.developer)}</span>` : '';
+    const teamChip = members.length
+      ? `<button class="dt-team-btn" type="button" aria-expanded="false" aria-controls="dt-team" data-sfx><i class="px" data-px="team"></i><span class="dt-team-name">${esc(teamName)}</span><span class="dt-team-more"><span>担当を見る</span><i class="px" data-px="down"></i></span></button>`
+      : it.team ? `<span class="dt-team-btn is-static"><i class="px" data-px="team"></i><span class="dt-team-name">${esc(teamName)}</span></span>` : '';
+    const makers = [devChip, teamChip].filter(Boolean);
+    const teamBtn = makers.length ? `
+          <p class="dt-meta dt-team-row"><span class="dt-meta-lbl">制作</span><span class="dt-makers">${makers.join('<span class="dt-x" aria-label="と">×</span>')}</span></p>` : '';
     const team = members.length ? `
       <div class="dt-team" id="dt-team" hidden>
         <p class="dt-team-h"><i class="px" data-px="team"></i>${esc(teamName)}の担当</p>
@@ -498,7 +499,7 @@
         <div>
           <p class="dt-kicker"><span class="dt-type">${TYPE[it.kind]}</span><span class="dt-cat">${esc(it.cat)}</span>${it.series ? `<span class="dt-series">${esc(it.series)}</span>` : ''}<button class="dt-share" type="button" data-share data-sfx><i class="px" data-px="copy"></i><span>リンクをコピー</span></button></p>
           <h2 class="dt-title">${esc(it.title)}</h2>
-          ${metaHtml(it)}${devRow}${teamBtn}
+          ${metaHtml(it)}${teamBtn}
         </div>
       </header>
       ${team}
@@ -554,7 +555,7 @@
       toast(`「${t}」で絞り込みました`);
     }));
     /* チーム「…」を押すと、担当を開く・閉じる */
-    const teamBtnEl = $('.dt-team-btn', detail);
+    const teamBtnEl = $('button.dt-team-btn', detail);
     if (teamBtnEl) {
       teamBtnEl.addEventListener('click', () => {
         const open = teamBtnEl.getAttribute('aria-expanded') !== 'true';
