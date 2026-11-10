@@ -52,6 +52,7 @@ window.RAFU_CONTENT = {
    * 日付が2週間以内のものには自動で「NEW」が付きます
    */
   news: [
+    { date: "2026-11-10", tag: "更新",     title: "ゲームソフト「よくばりカブト」のPVを公開しました", url: "downloads.html#yokubari-kabuto" },
     { date: "2026-11-07", tag: "更新",     title: "ゲームソフト「寒がりマジロ」を載せました（Windows版・unityroom）", url: "downloads.html#samugari-majiro" },
     { date: "2026-10-31", tag: "更新",     title: "ゲームソフト「よくばりカブト」「ゾンバク」「ゆきコロ」を載せました", url: "downloads.html?tab=game" },
     { date: "2026-10-30", tag: "お知らせ", title: "公式サイトをリニューアルしました", url: "" },
@@ -247,7 +248,7 @@ window.RAFU_CONTENT = {
       text: "雪原を転がって、潜って、雪雲で結晶にしたポイントをまとめて割る。コンボをつないでハイスコアをねらうアクション。",
       about: "主人公は寒がりなアルマジロ「マジロ」！\n雪原をゴロゴロ転がって、クリックで地中に潜り、埋まったポイントを集めよう。\n雪雲の下ではポイントがキラキラの結晶に。まとめて割ればコンボがつながり、スコアが一気に伸びる！\n【のこり20秒、嵐が来る】\n終盤は雪雲が強くなる大チャンス。嵐の中を突っ切って、最大コンボをねらおう。\nランク・ランキング・コスチュームの着せかえ・コレクションで、何度でもやりこめます。",
       image: "assets/img/games/majiro-key.webp",
-      iconImage: "assets/img/games/majiro-icon.webp",
+      iconImage: "assets/img/games/majiro-app-icon.webp",
       trailer: "",
       shots: [
         "assets/img/games/majiro-combo.webp",
@@ -287,7 +288,7 @@ window.RAFU_CONTENT = {
       about: "主人公はカブトムシ！\n木からあふれ出る樹液を吸いつくしたい欲張りなカブトは、夏休みの小学生たちから狙われる！\n虫取り網をかいくぐり、樹液を吸い尽くせ！！\n【テーマは「夏 × カジュアル」】\nすぐに遊べる手軽さはそのままに、「もう少し吸うか、逃げるか」のリスクとリターンの駆け引きが楽しめるように作りました。結果はランクで評価されます。",
       image: "",
       iconImage: "assets/img/games/yokubari-kabuto.webp",
-      trailer: "",
+      trailer: "ww6UTWFd3CI",
       points: [
         { title: "夏 × カジュアル", text: "夏休みが舞台。ブラウザですぐ遊べる" },
         { title: "駆け引き", text: "もう少し吸うか、逃げるか。欲張りすぎに注意" },
@@ -310,7 +311,10 @@ window.RAFU_CONTENT = {
         "背景モデル：Low-Poly Simple Nature Pack（Unity Asset Store）",
         "BGM・効果音：DOVA-SYNDROME、MusMus、効果音ラボ、On-Jin ～音人～、Pixabay ほか",
       ],
-      links: [{ label: "unityroom の作品ページ", url: "https://unityroom.com/games/yokubarikabuto" }],
+      links: [
+        { label: "unityroom の作品ページ", url: "https://unityroom.com/games/yokubarikabuto" },
+        { label: "ゲームクリエイター甲子園の作品ページ", url: "https://gameparade.creators-guild.com/works/work-20261107-103/" },
+      ],
     },
     {
       id: "zombaku",
