@@ -277,9 +277,9 @@
     /* カードの「誰が作ったか」。Rafixel の作品は「Developed by Rafixel × チーム制作」、チームだけの作品は「チーム制作（3人）」 */
   const makerHtml = (g) => {
     const n = ((g.team && g.team.members) || []).filter((m) => m && m.name).length;
-    const team = g.team ? `<span class="soft-team"><i class="px" data-px="team"></i>チーム制作${n ? `（${n}人）` : ''}</span>` : '';
-    if (g.developer) return `<span class="soft-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128" loading="lazy">Developed by <b>${esc(g.developer)}</b>${team ? `<span class="soft-x">×</span>${team}` : ''}</span>`;
-    return team ? `<span class="soft-dev">${team}</span>` : '';
+    const team = (x) => (g.team ? `<span class="soft-team">${x ? '<span class="soft-x">×</span>' : ''}<i class="px" data-px="team"></i>チーム制作${n ? `（${n}人）` : ''}</span>` : '');
+    if (g.developer) return `<span class="soft-dev"><img src="assets/img/logo-outline-mono-128.webp" alt="" width="128" height="128" loading="lazy">Developed by <b>${esc(g.developer)}</b>${team(true)}</span>`;
+    return g.team ? `<span class="soft-dev">${team(false)}</span>` : '';
   };
   const lastDate = (g) => (g.versions || []).map((v) => v && v.date).filter(Boolean).sort().pop() || '';
     gamesEl.innerHTML = games.map((g, i) => {
