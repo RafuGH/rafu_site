@@ -52,6 +52,7 @@ window.RAFU_CONTENT = {
    * 日付が2週間以内のものには自動で「NEW」が付きます
    */
   news: [
+    { date: "2026-11-10", tag: "更新",     title: "「よくばりカブト」のWindows版を配布開始。「寒がりマジロ」とあわせてコントローラーに対応しました", url: "downloads.html#yokubari-kabuto" },
     { date: "2026-11-10", tag: "更新",     title: "ゲームソフト「よくばりカブト」のPVを公開しました", url: "downloads.html#yokubari-kabuto" },
     { date: "2026-11-07", tag: "更新",     title: "ゲームソフト「寒がりマジロ」を載せました（Windows版・unityroom）", url: "downloads.html#samugari-majiro" },
     { date: "2026-10-31", tag: "更新",     title: "ゲームソフト「よくばりカブト」「ゾンバク」「ゆきコロ」を載せました", url: "downloads.html?tab=game" },
@@ -243,7 +244,7 @@ window.RAFU_CONTENT = {
       id: "samugari-majiro",
       title: "寒がりマジロ",
       cat: "アクション",
-      tags: ["冬", "雪", "アクション", "スコアアタック", "3D", "マウスだけ", "Unity"],
+      tags: ["冬", "雪", "アクション", "スコアアタック", "3D", "マウスだけ", "コントローラー対応", "Unity"],
       catch: "ころがれ、もぐれ、割りまくれ！ 寒がりなアルマジロのスコアアタック。",
       text: "雪原を転がって、潜って、雪雲で結晶にしたポイントをまとめて割る。コンボをつないでハイスコアをねらうアクション。",
       about: "主人公は寒がりなアルマジロ「マジロ」！\n雪原をゴロゴロ転がって、クリックで地中に潜り、埋まったポイントを集めよう。\n雪雲の下ではポイントがキラキラの結晶に。まとめて割ればコンボがつながり、スコアが一気に伸びる！\n【のこり20秒、嵐が来る】\n終盤は雪雲が強くなる大チャンス。嵐の中を突っ切って、最大コンボをねらおう。\nランク・ランキング・コスチュームの着せかえ・コレクションで、何度でもやりこめます。",
@@ -261,7 +262,7 @@ window.RAFU_CONTENT = {
         { title: "結晶をまとめて割る", text: "雪雲で結晶にして、まとめて割るほどコンボがつながる" },
         { title: "やりこみ", text: "ランク・ランキング・着せかえ・コレクション" },
       ],
-      info: { players: "1人", controls: "マウス", lang: "日本語", price: "無料", engine: "Unity", size: "約490MB（Windows版）" },
+      info: { players: "1人", controls: "マウス / コントローラー（Switch・PlayStation・Xbox のコントローラー）", lang: "日本語", price: "無料", engine: "Unity", size: "約490MB（Windows版）" },
       versions: [
         { platform: "windows", label: "最新版", version: "1.2.2", file: "https://github.com/RafuGH/Majiro-Releases/releases/download/v1.2.2/SamugariMajiro_v1.2.2_Windows.zip", fileName: "SamugariMajiro_v1.2.2_Windows.zip", size: "110MB", date: "2026-11-07" },
         { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/samugarimajiro", date: "2026-11-07", note: "スマホでは動かないことがあります。PCがおすすめ" },
@@ -271,6 +272,7 @@ window.RAFU_CONTENT = {
         "Windows版：「ダウンロード」を押してzipを保存",
         "zipを展開（すべて展開）して、SamugariMajiro フォルダの中の SamugariMajiro.exe を起動",
         "マウスで操作します",
+        "Switch・PlayStation・Xbox のコントローラーでも遊べます",
       ],
       developer: "Rafixel",
       links: [
@@ -282,7 +284,7 @@ window.RAFU_CONTENT = {
       id: "yokubari-kabuto",
       title: "よくばりカブト",
       cat: "カジュアル",
-      tags: ["夏", "カジュアル", "カブトムシ", "3D", "Unity"],
+      tags: ["夏", "カジュアル", "カブトムシ", "3D", "Unity", "コントローラー対応"],
       catch: "樹液を吸いつくせ！ 欲張りなカブトムシの夏休み。",
       text: "虫取り網をかいくぐって、木からあふれる樹液を吸い尽くすカジュアルゲーム。",
       about: "主人公はカブトムシ！\n木からあふれ出る樹液を吸いつくしたい欲張りなカブトは、夏休みの小学生たちから狙われる！\n虫取り網をかいくぐり、樹液を吸い尽くせ！！\n【テーマは「夏 × カジュアル」】\nすぐに遊べる手軽さはそのままに、「もう少し吸うか、逃げるか」のリスクとリターンの駆け引きが楽しめるように作りました。結果はランクで評価されます。",
@@ -294,12 +296,17 @@ window.RAFU_CONTENT = {
         { title: "駆け引き", text: "もう少し吸うか、逃げるか。欲張りすぎに注意" },
         { title: "ランク", text: "結果はランクで評価。上のランクはかなり手ごわい" },
       ],
-      info: { players: "1人", controls: "キーボード＋マウス", lang: "日本語", price: "無料", engine: "Unity", platforms: "ブラウザ（PCがおすすめ）" },
+      info: { players: "1人", controls: "キーボード＋マウス / コントローラー（Switch・PlayStation・Xbox のコントローラー）", lang: "日本語", price: "無料", engine: "Unity", size: "約190MB（Windows版）" },
       versions: [
+        { platform: "windows", label: "最新版", file: "downloads/yokubari-kabuto/YokubariKabuto_Windows.zip", size: "55MB", date: "2026-11-10" },
         { platform: "web", label: "ブラウザ版", file: "https://unityroom.com/games/yokubarikabuto", date: "2026-09-10", note: "スマホでは動かないことがあります。PCがおすすめ" },
       ],
       howtoTitle: "遊び方",
-      howto: ["WASDキーとマウス（カーソル）で操作します"],
+      howto: [
+        "Windows版：zipを展開（すべて展開）して、YokubariKabuto フォルダの中の よくばりカブト.exe を起動",
+        "WASDキーとマウス（カーソル）で操作します",
+        "Switch・PlayStation・Xbox のコントローラーでも遊べます",
+      ],
       team: {
         members: [
           { name: "Rafu",       role: "ディレクター / アートディレクター / UIデザイン" },
