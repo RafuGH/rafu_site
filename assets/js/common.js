@@ -347,7 +347,7 @@
   window.addEventListener('scroll', () => { if (tipFor && !tipFor.closest('.gbar')) hideTip(); }, { passive: true });
 
   /* ---------- YouTube（サムネ・URL・プレイヤーで共通） ---------- */
-  const KIND = { live: '配信', clip: '切り抜き', shorts: 'Shorts' };
+  const KIND = { live: '配信', video: '動画', clip: '切り抜き', shorts: 'Shorts' };   // この順に、動画の欄のタブが並ぶ
   const thumbUrl = (v, q = 'hqdefault') => v.thumb || `https://i.ytimg.com/vi/${encodeURIComponent(v.id)}/${q}.jpg`;
   const watchUrl = (v) => (v.kind === 'shorts' ? `https://www.youtube.com/shorts/${encodeURIComponent(v.id)}`
     : `https://www.youtube.com/watch?v=${encodeURIComponent(v.id)}${v.start > 0 ? `&t=${Math.floor(v.start)}s` : ''}`);
@@ -380,8 +380,29 @@
   };
   document.addEventListener('error', (e) => {
     const img = e.target;
-    if (img instanceof HTMLImageElement && !img.dataset.nf) noImage(img);
+    if (!(img instanceof HTMLImageElement)) return;
+    /* 小さい版（-s.webp）が無い画像は、元の画像をそのまま出す */
+    if (img.dataset.full) { const full = img.dataset.full; delete img.dataset.full; img.removeAttribute('srcset'); img.src = full; return; }
+    if (!img.dataset.nf) noImage(img);
   }, true);
+
+  /* 一覧に小さく並べる画面写真は、軽い版（同じ場所の「名前-s.webp」。横400px）を先に読む。押して大きく見るときは元の画像。
+     軽い版が無ければ、自動で元の画像を出す */
+  const smallOf = (src) => String(src || '').replace(/\.(webp|png|jpe?g)$/i, '-s.webp');
+  const thumbImg = (src, extra = '') => {
+    const small = /^assets\//.test(src) ? smallOf(src) : src;
+    return `<img src="${esc(small)}"${small !== src ? ` data-full="${esc(src)}"` : ''} alt="" loading="lazy" decoding="async"${extra}>`;
+  };
+  /* ワールドの写真（content.js の server.world）。画面の大きさに合わせて 横800・1600・2560 から選ぶ。
+     小さい版（-s / -m）が無ければ、元の画像を出す */
+  const worldImg = (w, extra = '') => {
+    const src = String((w && w.image) || '');
+    const base = src.replace(/\.(webp|png|jpe?g)$/i, '');
+    const local = /^assets\//.test(src) && base !== src;
+    const set = local ? ` srcset="${esc(base)}-s.webp 800w, ${esc(base)}-m.webp 1600w, ${esc(src)} 2560w" data-full="${esc(src)}"` : '';
+    const focus = w && w.focus ? ` style="object-position:${esc(w.focus)}"` : '';
+    return `<img src="${esc(local ? `${base}-m.webp` : src)}"${set}${focus} alt="" decoding="async"${extra}>`;
+  };
 
   /* YouTubeは、高画質のサムネイルが無いときや動画が無いときに 120×90 の灰色の絵を返す */
   const loadThumb = (img, v, hi) => {
@@ -577,6 +598,15 @@
     sections.forEach((s) => spy.observe(s));
   }
 
+  /* ---------- 画面の外にある欄の動き（雲・星・テープなど、ずっと動き続けるもの）を止める ----------
+   * 見えていない所まで動かし続けると、スマホの電池とスクロールの軽さに響く。見える少し手前から動かす（style.css の .is-away） */
+  if ('IntersectionObserver' in window) {
+    const awayIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => e.target.classList.toggle('is-away', !e.isIntersecting));
+    }, { rootMargin: '300px 0px' });
+    $$('.kv, .tapes, .sec, .mc-hero, .mc-server, .mc-under, .dl-main, .ft').forEach((el) => awayIO.observe(el));
+  }
+
   /* ---------- toolbar: しまう / 上下移動 ---------- */
   const gbarTab = $('#gbar-tab');
   const paintGbar = () => {
@@ -612,7 +642,7 @@
     ICON, SFX, ARROW, PLAY, PAD, setPx, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
     KIND, ch, fmtDate, ytId, ytStart, thumbUrl, watchUrl, loadThumb, openPlayer, openShot,
-    WORK_PX, lighten, reveal,
+    WORK_PX, lighten, reveal, thumbImg, worldImg,
     OS, osOf, osInfo, osList,
   };
 })();

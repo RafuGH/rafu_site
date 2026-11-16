@@ -7,7 +7,7 @@
     SFX, ARROW, PAD, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
     KIND, ch, fmtDate, ytId, ytStart, watchUrl, loadThumb, openPlayer, openShot,
-    WORK_PX, lighten, reveal,
+    WORK_PX, lighten, reveal, thumbImg, worldImg,
     osInfo, osList,
   } = window.RAFU;
 
@@ -87,19 +87,41 @@
   buildMarquee();
 
   /* ---------- videos ---------- */
-  const videos = (C.videos || []).filter((v) => v && v.id).map((v, i) => ({ ...v, n: i + 1, kind: KIND[v.kind] ? v.kind : 'live' }));
+  /* 動画の一覧は、YouTubeの新着から自動で作ったファイル（content.js の videoFeed.url）を読む。
+     読めないときは、前に読めた一覧 → content.js の videos の順で出す */
+  const FEED = C.videoFeed || {};
+  const FEED_URL = /^https:\/\//.test(FEED.url || '') ? FEED.url : '';
+  const FEED_HIDE = Array.isArray(FEED.hide) ? FEED.hide.map(String) : [];
+  const VIDEO_MAX = Number(FEED.max) > 0 ? Math.floor(Number(FEED.max)) : 12;
+  const FEED_KEY = 'rafu-videos';
+  const numbered = (list) => list.map((v, i) => ({ ...v, n: i + 1 }));
+  /* 自動の一覧は外から来るデータなので、形が合うものだけ使う */
+  const fromFeed = (data) => numbered(((data && Array.isArray(data.videos)) ? data.videos : [])
+    .filter((v) => v && typeof v.id === 'string' && /^[\w-]{6,20}$/.test(v.id) && typeof v.title === 'string' && v.title.trim()
+      && /^\d{4}-\d{2}-\d{2}$/.test(v.date) && !FEED_HIDE.includes(v.id))
+    .map((v) => ({ id: v.id, title: v.title.trim(), date: v.date, kind: KIND[v.kind] ? v.kind : 'video' })));
+  const cachedFeed = () => {
+    try {
+      const c = JSON.parse(store.get(FEED_KEY) || 'null');
+      return c && c.url === FEED_URL ? fromFeed(c) : [];
+    } catch (e) { return []; }
+  };
+  const sameVideos = (a, b) => a.length === b.length && a.every((v, i) => v.id === b[i].id && v.title === b[i].title && v.kind === b[i].kind && v.date === b[i].date);
+
+  let videos = FEED_URL ? cachedFeed() : [];
+  if (!videos.length) videos = numbered((C.videos || []).filter((v) => v && v.id).map((v) => ({ ...v, kind: KIND[v.kind] ? v.kind : 'live' })));
 
   /* HOME の「最新の動画を見る」 */
   const kvPlay = $('#kv-play');
   if (kvPlay) {
-    if (videos.length) kvPlay.addEventListener('click', () => openPlayer(videos[0]));
-    else kvPlay.hidden = true;
+    kvPlay.addEventListener('click', () => videos[0] && openPlayer(videos[0]));
+    kvPlay.hidden = !videos.length;
   }
 
   /* ---------- PICKUP（最新動画・ゲームソフト・Minecraft・Discord） ---------- */
   const games = (C.games || []).filter((g) => g && g.title);
   const pickupEl = $('#pickup');
-  if (pickupEl) {
+  const renderPickup = () => {
     /* 見た目は .pick-in（カーソルを乗せると浮く）。外側の .pick は当たり判定で動かさない */
     const card = (tag, attrs, art, title, c) => `<${tag} class="pick" ${attrs} style="--c:${c}" data-sfx><span class="pick-in">
         <span class="pick-art">${art.tag ? `<span class="pick-tag">${art.tag}</span>` : ''}${art.html}</span>
@@ -123,9 +145,18 @@
     const vb = $('[data-pick="video"]', pickupEl);
     if (vb) {
       loadThumb($('img', vb), videos[0], false);
-      vb.addEventListener('click', () => openPlayer(videos[0]));
+      vb.addEventListener('click', () => videos[0] && openPlayer(videos[0]));
     }
-  }
+  };
+  if (pickupEl) renderPickup();
+  /* 動画の一覧が新しくなったとき: 動画のカードだけ中身を入れかえる（カードが無かったときは並べ直す） */
+  const refreshPickVideo = () => {
+    if (!pickupEl) return;
+    const vb = $('[data-pick="video"]', pickupEl);
+    if (!vb || !videos[0]) { renderPickup(); return; }
+    $('.pick-title', vb).textContent = videos[0].title;
+    loadThumb($('img', vb), videos[0], false);
+  };
 
   /* ---------- NEWS ---------- */
   const NEWS_TAG = { 'お知らせ': '#e5121b', '配信': '#8a3fd1', Discord: '#5865f2', '更新': '#33801f', 'イベント': '#d4730b' };
@@ -144,6 +175,30 @@
       const ext = /^https?:/i.test(url) ? ' target="_blank" rel="noopener"' : '';   // サイトの中のページ（downloads.html など）は同じタブで開く
       return `<li>${url ? `<a class="news-item" href="${esc(url)}"${ext} data-sfx>${inner}</a>` : `<div class="news-item">${inner}</div>`}</li>`;
     }).join('') : '<li class="news-empty">新しいお知らせはまだありません。</li>';
+
+    /* 多くなったら、古いお知らせはたたんでおく（最初に見せる数は content.js の newsShow。書かなければ 6） */
+    const SHOW = Number(C.newsShow) > 0 ? Number(C.newsShow) : 6;
+    const rest = $$('li', newsEl).slice(SHOW);
+    if (rest.length > 1) {
+      rest.forEach((li) => { li.hidden = true; });
+      const more = document.createElement('button');
+      more.type = 'button';
+      more.className = 'news-more';
+      more.dataset.sfx = '';
+      more.setAttribute('aria-expanded', 'false');
+      more.innerHTML = `<span>これまでのお知らせを見る</span><small>あと${rest.length}件</small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
+      more.addEventListener('click', () => {
+        const open = more.getAttribute('aria-expanded') !== 'true';
+        more.setAttribute('aria-expanded', String(open));
+        rest.forEach((li, i) => { li.hidden = !open; li.style.setProperty('--i', i); li.classList.toggle('is-more', open); });
+        $('span', more).textContent = open ? 'とじる' : 'これまでのお知らせを見る';
+        $('small', more).hidden = open;
+      });
+      const row = document.createElement('li');
+      row.className = 'news-more-row';
+      row.append(more);
+      newsEl.append(row);
+    }
   }
 
   /* schedule */
@@ -157,6 +212,7 @@
   const listEl = $('#ch-list');
   const tabsEl = $('#ch-tabs');
   let current = null;
+  let chosen = false;   // 見る人が自分で動画を選んだか
   let filter = 'all';
 
   let noiseRaf = 0;
@@ -197,7 +253,7 @@
   const select = (v, fx = true) => {
     if (!v || !tv) return;
     current = v;
-    if (fx) { staticBurst(); SFX.zap(); }
+    if (fx) { chosen = true; staticBurst(); SFX.zap(); }
     const apply = () => {
       loadThumb(tvImg, v, true);
       $('#tv-title').textContent = v.title;
@@ -218,7 +274,9 @@
     if (fx) revealItem(v.id);
   };
 
-  const shown = () => videos.filter((v) => filter === 'all' || v.kind === filter);
+  /* いまのタブに並べる動画（新しい順に VIDEO_MAX 本まで） */
+  const ofKind = (k) => videos.filter((v) => k === 'all' || v.kind === k).slice(0, VIDEO_MAX);
+  const shown = () => ofKind(filter);
   const renderList = () => {
     listEl.innerHTML = shown().map((v) => `
       <li><button class="ch-item" type="button" data-id="${esc(v.id)}" aria-current="${Boolean(current && current.id === v.id)}" data-sfx>
@@ -247,12 +305,20 @@
     select(items[i < 0 ? 0 : (i + d + items.length) % items.length]);
   };
 
-  if (tv && videos.length) {
+  /* モニター・タブ・一覧を、いまの videos で描く（一覧が新しくなったときにも呼ぶ） */
+  const renderTV = () => {
+    if (!tv) return;
+    [$('.tv-wrap'), tabsEl, listEl].forEach((el) => { if (el) el.hidden = !videos.length; });
+    if (!videos.length) return;
     const kinds = ['all', ...Object.keys(KIND).filter((k) => videos.some((v) => v.kind === k))];
-    tabsEl.innerHTML = kinds.map((k) => {
-      const count = k === 'all' ? videos.length : videos.filter((v) => v.kind === k).length;
-      return `<button class="ch-tab" type="button" role="tab" data-kind="${k}" aria-selected="${k === 'all'}" data-sfx>${k === 'all' ? 'すべて' : KIND[k]}<small>${count}</small></button>`;
-    }).join('');
+    if (!kinds.includes(filter)) filter = 'all';
+    tabsEl.innerHTML = kinds.map((k) => `<button class="ch-tab" type="button" role="tab" data-kind="${k}" aria-selected="${k === filter}" data-sfx>${k === 'all' ? 'すべて' : KIND[k]}<small>${ofKind(k).length}</small></button>`).join('');
+    /* 自分で選んだ動画が新しい一覧にもあれば、そのまま映しておく（選んでいなければ、いちばん新しい動画） */
+    select((chosen && current && videos.find((v) => v.id === current.id)) || videos[0], false);
+    renderList();
+    $$('.tv-arrow').forEach((b) => { b.hidden = videos.length < 2; });
+  };
+  if (tv) {
     tabsEl.addEventListener('click', (e) => {
       const b = e.target.closest('.ch-tab');
       if (!b) return;
@@ -261,14 +327,30 @@
       renderList();
       listEl.scrollLeft = 0;
     });
-    select(videos[0], false);
-    renderList();
     $('#tv-screen').addEventListener('click', () => current && openPlayer(current));
     $('#tv-prev').addEventListener('click', () => stepVideo(-1));
     $('#tv-next').addEventListener('click', () => stepVideo(1));
-    if (videos.length < 2) $$('.tv-arrow').forEach((b) => { b.hidden = true; });
-  } else if (tv) {
-    [$('.tv-wrap'), tabsEl, listEl].forEach((el) => { if (el) el.hidden = true; });
+    renderTV();
+  }
+
+  /* 自動の一覧を読みに行く。前と違っていたら、動画の欄・ピックアップ・「最新の動画を見る」を新しくする */
+  if (FEED_URL && window.fetch) {
+    const ctl = window.AbortController ? new AbortController() : null;
+    const timer = setTimeout(() => ctl && ctl.abort(), 8000);
+    fetch(FEED_URL, ctl ? { signal: ctl.signal } : undefined)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data) => {
+        const list = fromFeed(data);
+        if (!list.length) return;
+        store.set(FEED_KEY, JSON.stringify({ url: FEED_URL, videos: data.videos.slice(0, 60) }));
+        if (sameVideos(list, videos)) return;
+        videos = list;
+        if (kvPlay) kvPlay.hidden = false;
+        refreshPickVideo();
+        renderTV();
+      })
+      .catch(() => { /* 読めないときは、いま出している一覧のまま */ })
+      .finally(() => clearTimeout(timer));
   }
 
   /* ---------- GAME（ゲームソフト。カードを押すとダウンロードページのそのソフトへ） ---------- */
@@ -282,6 +364,10 @@
     return g.team ? `<span class="soft-dev">${team(false)}</span>` : '';
   };
   const lastDate = (g) => (g.versions || []).map((v) => v && v.date).filter(Boolean).sort().pop() || '';
+    /* 並べたときに最後の段が1つだけ余る数（PCの3列で4・7本、タブレットの2列で3・5本）のときは、
+       いちばん新しいソフトを横長の大きいカードにして、段をそろえる（style.css の .softs.lead-3 / .lead-2） */
+    gamesEl.classList.toggle('lead-3', games.length > 3 && games.length % 3 === 1);
+    gamesEl.classList.toggle('lead-2', games.length > 2 && games.length % 2 === 1);
     gamesEl.innerHTML = games.map((g, i) => {
       const ps = osList(g.versions);
       const date = lastDate(g);
@@ -330,6 +416,48 @@
   setText('#srv-editions', S.editions);
   setText('#srv-version', S.version);
   if (S.versionNote) setText('#srv-version-note', `（${S.versionNote}）`);
+
+  /* ワールドの写真（ゆっくり寄りながら、7秒ごとに次の写真へ。画面の外・別のタブを見ているあいだは止める） */
+  const world = (S.world || []).filter((w) => w && w.image);
+  const swEl = $('#sw-slides');
+  if (swEl && world.length) {
+    const server = $('#redhub');
+    swEl.innerHTML = world.map((w, i) => `<figure class="sw-slide${i ? '' : ' is-on'}">${worldImg(w, ' sizes="(max-aspect-ratio: 3/2) 180vh, 115vw" loading="lazy"')}</figure>`).join('');
+    const slides = $$('.sw-slide', swEl);
+    const dots = $('#sw-dots');
+    dots.innerHTML = world.length > 1 ? world.map((w, i) => `<button type="button" aria-label="${i + 1}枚目${w.caption ? `：${esc(w.caption)}` : ''}" aria-pressed="${!i}" data-i="${i}" data-sfx></button>`).join('') : '';
+    let at = 0;
+    let timer = 0;
+    const show = (n) => {
+      const prev = slides[at];
+      at = (n + slides.length) % slides.length;
+      const next = slides[at];
+      if (prev !== next) {
+        /* 消えていく写真も、寄る動きを止めずに薄くする（is-out） */
+        prev.classList.replace('is-on', 'is-out');
+        setTimeout(() => { if (!prev.classList.contains('is-on')) prev.classList.remove('is-out'); }, 1600);
+        next.classList.remove('is-out');
+        next.classList.add('is-on');
+      }
+      $('#sw-no').textContent = String(at + 1).padStart(2, '0');
+      $('#sw-txt').textContent = world[at].caption || '';
+      $$('button', dots).forEach((b, i) => b.setAttribute('aria-pressed', String(i === at)));
+    };
+    const tick = () => { if (!document.hidden && !server.classList.contains('is-away')) show(at + 1); };
+    const start = () => { clearInterval(timer); if (!reduce && slides.length > 1) timer = setInterval(tick, 7000); };
+    dots.addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-i]');
+      if (!b) return;
+      show(Number(b.dataset.i));
+      start();
+    });
+    $('#sw-zoom').addEventListener('click', () => openShot(world.map((w) => w.image), at, 'REDHUBのワールド', 'ore'));
+    $('#sw-ui').hidden = false;
+    show(0);
+    start();
+  } else if (swEl) {
+    $('#srv-world').classList.add('is-empty');
+  }
 
   // アドレスの文字数（大きさを欄の幅に合わせる計算に使う。style.css の .srv-code）
   const addrEl = $('#srv-address');
@@ -380,20 +508,29 @@
     $('.st-detail', statusEl).textContent = detail;
   };
   if (statusEl && S.address && S.showStatus !== false && 'fetch' in window) {
-    const ctl = 'AbortController' in window ? new AbortController() : null;
-    const to = setTimeout(() => ctl && ctl.abort(), 8000);
-    fetch(`https://api.mcsrvstat.us/3/${encodeURIComponent(S.address)}`, ctl ? { signal: ctl.signal } : {})
-      .then((r) => r.json())
-      .then((j) => {
-        if (j && j.online) {
-          const p = j.players ? `${j.players.online} / ${j.players.max} 人がプレイ中` : '';
-          paintStatus('online', 'ONLINE', p);
-        } else {
-          paintStatus('offline', 'OFFLINE', 'いまは閉まっています');
-        }
-      })
-      .catch(() => paintStatus('unknown', 'STATUS', '状態を確認できませんでした'))
-      .finally(() => clearTimeout(to));
+    const checkStatus = () => {
+      const ctl = 'AbortController' in window ? new AbortController() : null;
+      const to = setTimeout(() => ctl && ctl.abort(), 8000);
+      fetch(`https://api.mcsrvstat.us/3/${encodeURIComponent(S.address)}`, ctl ? { signal: ctl.signal } : {})
+        .then((r) => r.json())
+        .then((j) => {
+          if (j && j.online) {
+            const p = j.players ? `${j.players.online} / ${j.players.max} 人がプレイ中` : '';
+            paintStatus('online', 'ONLINE', p);
+          } else {
+            paintStatus('offline', 'OFFLINE', 'いまは閉まっています');
+          }
+        })
+        .catch(() => paintStatus('unknown', 'STATUS', '状態を確認できませんでした'))
+        .finally(() => clearTimeout(to));
+    };
+    /* サーバーの欄が近づいてから確認する（ページを開いた瞬間の通信を減らす） */
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => {
+        if (es.some((e) => e.isIntersecting)) { io.disconnect(); checkStatus(); }
+      }, { rootMargin: '800px 0px' });
+      io.observe(statusEl);
+    } else checkStatus();
   } else if (statusEl) {
     statusEl.hidden = true;
   }
@@ -421,10 +558,10 @@
       return `
       <li class="pev" data-reveal style="--d:${(i * 0.06).toFixed(2)}s">
         <div class="pev-pics">
-          ${vs.length ? `<button class="pev-media" type="button" data-ev="${i}" data-v="0" aria-label="${esc(e.title)}の動画を見る" data-sfx>${img}<span class="pev-watch">${PLAY}再生</span><span class="pev-play">${PLAY}</span></button>`
+          ${vs.length ? `<button class="pev-media" type="button" data-ev="${i}" data-v="0" aria-label="${esc(e.title)}の動画を再生" data-sfx>${img}<span class="pev-watch">${PLAY}再生</span><span class="pev-play">${PLAY}</span></button>`
             : `<span class="pev-media">${img}</span>`}
           ${shots.length ? `<ul class="pev-shots" style="--cols:${Math.min(shots.length, SHOTS_PC)};--cols-sp:${Math.min(shots.length, SHOTS_SP)}">${shots.map((s, k) => `
-            <li${more(SHOTS_PC, k) ? ` data-more-pc="${more(SHOTS_PC, k)}"` : ''}${more(SHOTS_SP, k) ? ` data-more-sp="${more(SHOTS_SP, k)}"` : ''}><button class="pev-shot" type="button" data-ev="${i}" data-shot="${k}" aria-label="${esc(e.title)}の画面 ${k + 1} を大きく見る" data-sfx><img src="${esc(s)}" alt="" loading="lazy" decoding="async"></button></li>`).join('')}
+            <li${more(SHOTS_PC, k) ? ` data-more-pc="${more(SHOTS_PC, k)}"` : ''}${more(SHOTS_SP, k) ? ` data-more-sp="${more(SHOTS_SP, k)}"` : ''}><button class="pev-shot" type="button" data-ev="${i}" data-shot="${k}" aria-label="${esc(e.title)}の画面 ${k + 1} を大きく見る" data-sfx>${thumbImg(s)}</button></li>`).join('')}
           </ul>` : ''}
         </div>
         <div class="pev-body">

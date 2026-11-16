@@ -7,7 +7,7 @@
     ICON, SFX, PLAY, paintPx,
     toast, copyText, placeTip, showTip, hideTip,
     fmtDate, ytId, watchUrl, loadThumb, openPlayer, openShot,
-    WORK_PX, lighten, reveal,
+    WORK_PX, lighten, reveal, thumbImg,
     OS, osOf, osInfo, osList,
   } = window.RAFU;
 
@@ -453,7 +453,7 @@
     const howto = it.howto || [];
     /* 画面写真（押すと大きく見られる） */
     const shots = (it.shots || []).filter(Boolean);
-    const gallery = shots.length ? `<div class="dt-shots">${shots.map((src, i) => `<button class="dt-shot" type="button" data-shot="${esc(src)}" aria-label="${esc(`${it.title}の画面 ${i + 1}を大きく見る`)}" data-sfx><img src="${esc(src)}" alt="" loading="lazy"></button>`).join('')}</div>` : '';
+    const gallery = shots.length ? `<div class="dt-shots">${shots.map((src, i) => `<button class="dt-shot" type="button" data-shot="${esc(src)}" aria-label="${esc(`${it.title}の画面 ${i + 1}を大きく見る`)}" data-sfx>${thumbImg(src)}</button>`).join('')}</div>` : '';
     /* 特徴（content.js の points） */
     const points = (it.points || []).filter((p) => p && p.title);
     const feats = points.length ? `<ul class="dt-points">${points.map((p) => `<li><b>${esc(p.title)}</b><span>${esc(p.text || '')}</span></li>`).join('')}</ul>` : '';

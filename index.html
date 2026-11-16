@@ -13,18 +13,27 @@
 <meta property="og:description" content="面白いと思ったものを、全力でやる漢。ゲーム配信・実況・ゲームソフト・Minecraftサーバー。">
 <meta property="og:url" content="https://rafugh.github.io/rafu_site/">
 <meta property="og:image" content="https://rafugh.github.io/rafu_site/assets/img/og.png?v=20261107">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="RAFU 公式サイト。笑うトマトのロゴ">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@Rafu121">
+<meta name="twitter:title" content="RAFU | Rafu 公式サイト">
+<meta name="twitter:description" content="面白いと思ったものを、全力でやる漢。ゲーム配信・実況・ゲームソフト・Minecraftサーバー。">
+<meta name="twitter:image" content="https://rafugh.github.io/rafu_site/assets/img/og.png?v=20261107">
 <link rel="icon" href="assets/img/favicon-32.png?v=20261101" sizes="32x32" type="image/png">
 <link rel="icon" href="assets/img/favicon-192.png?v=20261101" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v=20261101">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;500;700;800;900&display=swap">
-<link rel="preload" as="image" href="assets/img/logo-outline.webp">
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400..900&display=swap">
+<link rel="preload" as="image" href="assets/img/logo-outline.webp" fetchpriority="high">
 <!-- CSS・JSを更新したら ?v= の数字も変える（古いファイルがブラウザに残って表示が崩れるのを防ぐ）。ファビコンとog.pngを作り直したときは、上の ?v= も変える -->
-<link rel="stylesheet" href="assets/css/style.css?v=20261111-2">
+<link rel="stylesheet" href="assets/css/style.css?v=20261116-4">
 <script>
   (function (d) {
     var c = d.documentElement.classList;
@@ -38,6 +47,37 @@
       if (!window.RAFU_READY) { c.remove('js'); c.add('no-loader'); }
     });
   })(document);
+</script>
+<!-- 検索エンジン向けの情報（サイトの名前と、各SNSが同じ人のものだと伝える。SNSのURLが変わったらここも直す） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://rafugh.github.io/rafu_site/#website",
+      "url": "https://rafugh.github.io/rafu_site/",
+      "name": "RAFU 公式サイト",
+      "alternateName": ["RAFU", "Rafu"],
+      "inLanguage": "ja",
+      "publisher": { "@id": "https://rafugh.github.io/rafu_site/#rafu" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://rafugh.github.io/rafu_site/#rafu",
+      "name": "Rafu",
+      "url": "https://rafugh.github.io/rafu_site/",
+      "image": "https://rafugh.github.io/rafu_site/assets/img/og.png",
+      "description": "ゲーム配信・ゲーム実況・ゲームソフト制作。ゲーム開発ブランド「Rafixel」、参加型Minecraftサーバー「REDHUB」。",
+      "sameAs": [
+        "https://www.youtube.com/@Rafu_",
+        "https://www.twitch.tv/rafu_2",
+        "https://www.tiktok.com/@rafu_gs",
+        "https://x.com/Rafu121"
+      ]
+    }
+  ]
+}
 </script>
 </head>
 <body>
@@ -59,7 +99,7 @@
 
 <header class="hdr" id="hdr">
   <a class="hdr-logo" href="#home" aria-label="RAFU 公式サイト トップへ" data-sfx>
-    <img src="assets/img/logo-outline-512.webp" alt="" width="512" height="512">
+    <img src="assets/img/logo-outline-256.webp" alt="" width="256" height="256">
   </a>
   <nav class="hdr-nav" aria-label="メイン">
     <a href="#home" data-sfx>ホーム</a>
@@ -79,7 +119,7 @@
     </div>
   </nav>
   <div class="hdr-tools">
-    <a class="pill-cta" href="#discord" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
+    <a class="pill-cta" href="#discord" aria-label="Discordに参加" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
     <button class="round-btn" type="button" aria-pressed="false" data-sfx-toggle data-sfx><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
     <button class="round-btn menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="メニューを開く" data-sfx>
       <span class="mb-lines" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -105,7 +145,7 @@
       <a class="pill-cta" href="#discord" data-sfx><span class="brand" data-icon="discord"></span><span>Discordに参加</span></a>
       <div class="menu-sns" data-sns-icons></div>
     </div>
-    <img class="menu-mascot" src="assets/img/logo-outline-512.webp" alt="" width="220" height="220" loading="lazy">
+    <img class="menu-mascot" src="assets/img/logo-outline-256.webp" alt="" width="220" height="220" loading="lazy">
   </div>
 </nav>
 
@@ -312,7 +352,7 @@
       </header>
     </div>
 
-    <div class="mc-server" id="redhub" data-progress>
+    <div class="mc-server has-world" id="redhub" data-progress>
       <div class="srv-sky" aria-hidden="true"><i></i><i></i></div>
       <div class="voxels" aria-hidden="true">
         <div class="cube" style="--s:72px;--c:#e5121b;--x:5%;--y:10%;--t:22s"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -320,16 +360,31 @@
         <div class="cube" style="--s:56px;--c:#ffc93c;--x:92%;--y:72%;--t:26s"><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <div class="cube" style="--s:36px;--c:#8a5a33;--x:3%;--y:78%;--t:18s;--r:-1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
+      <!-- ワールドの写真（中身は content.js の server.world。ゆっくり寄りながら切りかわる）とサーバーの名前・ロゴ -->
+      <div class="srv-world" id="srv-world">
+        <div class="sw-slides" id="sw-slides" aria-hidden="true"></div>
+        <div class="sw-shade" aria-hidden="true"></div>
+        <div class="wrap sw-inner">
+          <!-- ロゴは assets/img/redhub-logo.webp。元データは assets/img/logo/redhub-logo.png -->
+          <header class="px-head srv-head" data-reveal>
+            <h3 class="srv-logo"><span class="sr-only">Minecraftサーバー </span><img src="assets/img/redhub-logo.webp" alt="REDHUB" width="1306" height="273" loading="lazy" decoding="async"></h3>
+            <p class="srv-tag"><span>MINECRAFT SERVER</span></p>
+            <p class="px-lead">Java版・統合版のどちらからでも参加できます。Discordへの参加は必須ではありません。</p>
+          </header>
+        </div>
+        <div class="wrap sw-ui" id="sw-ui" hidden>
+          <p class="sw-cap" aria-live="polite"><span class="sw-no" id="sw-no">01</span><span id="sw-txt"></span></p>
+          <div class="sw-ctrl">
+            <div class="sw-dots" id="sw-dots" role="group" aria-label="写真を切りかえる"></div>
+            <button class="sw-zoom" id="sw-zoom" type="button" data-sfx><i class="px" data-px="search"></i><span>写真を見る</span></button>
+          </div>
+        </div>
+      </div>
+
       <div class="wrap">
-        <!-- サーバーの名前とロゴ（ロゴは assets/img/redhub-logo.webp。元データは assets/img/logo/redhub-logo.png） -->
-        <header class="px-head srv-head" data-reveal>
-          <h3 class="srv-logo"><span class="sr-only">Minecraftサーバー </span><img src="assets/img/redhub-logo.webp" alt="REDHUB" width="1306" height="273" loading="lazy" decoding="async"></h3>
-          <p class="srv-tag"><span>MINECRAFT SERVER</span></p>
-          <p class="px-lead">参加するにはDiscordに入り、入室時の質問で「Minecraftをプレイする」を選んでください。</p>
-        </header>
 
         <ul class="feats">
-          <li class="feat" data-reveal><span class="feat-icon"><i class="px" data-px="cube"></i></span><b>Java版も統合版も</b><span>どちらのエディションからでも入れます</span></li>
+          <li class="feat" data-reveal><span class="feat-icon"><i class="px" data-px="cube"></i></span><b>Java版も統合版も</b><span>PC・スマホ・ゲーム機から入れます</span></li>
           <li class="feat" data-reveal style="--d:.08s"><span class="feat-icon"><i class="px" data-px="sword"></i></span><b>参加型の企画</b><span>みんなで遊ぶ企画やイベントを開催</span></li>
           <li class="feat" data-reveal style="--d:.16s"><span class="feat-icon"><i class="px" data-px="globe"></i></span><b>3つの言語</b><span>日本語・English・Русский で話せます</span></li>
         </ul>
@@ -362,7 +417,7 @@
             <dl class="srv-spec">
               <div><dt>サーバー名</dt><dd id="srv-name">REDHUB</dd></div>
               <div><dt>エディション</dt><dd id="srv-editions">Java版・統合版 どちらもOK</dd></div>
-              <div><dt>バージョン</dt><dd><span id="srv-version">1.18.1 以上</span><small id="srv-version-note">（今後変わることがあります）</small></dd></div>
+              <div><dt>バージョン</dt><dd><span id="srv-version">26.2</span><small id="srv-version-note">（Java版。統合版は最新版で参加してください）</small></dd></div>
             </dl>
             <span class="srv-stamp" aria-hidden="true">COPIED!</span>
           </div>
@@ -372,18 +427,19 @@
             <ol class="srv-steps">
               <li>
                 <span class="step-n">1</span>
-                <div><b>Discordに参加</b><span>入室時に言語とMinecraftの質問に答える</span></div>
-                <a class="step-go" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>参加する</a>
+                <div><b>機種を選ぶ</b><span>下のボタンから、遊んでいる機種の手順を開く</span></div>
               </li>
               <li>
                 <span class="step-n">2</span>
-                <div><b>#support を確認</b><span>参加のルールと対応バージョンを読む</span></div>
+                <div><b>サーバーに参加</b><span>PC・スマホはアドレスを追加、ゲーム機はフレンドから参加</span></div>
               </li>
               <li>
                 <span class="step-n">3</span>
-                <div><b>企画に参加</b><span>#進行中の参加型 でメンバー募集をチェック</span></div>
+                <div><b>企画をチェック（任意）</b><span>開催中の企画は Discord の #進行中の参加型 でお知らせ</span></div>
+                <a class="step-go" href="https://discord.com/invite/wyUbqVpvfe" data-link="discord" target="_blank" rel="noopener" data-sfx>Discord</a>
               </li>
             </ol>
+            <a class="pxbtn srv-join" href="join.html" data-sfx><i class="px" data-px="cube"></i><span>機種ごとの参加のしかた</span></a>
           </div>
         </div>
 
@@ -458,9 +514,9 @@
 <footer class="ft" data-zone="stream">
   <div class="wrap">
     <div class="ft-row">
-      <a class="ft-logo" href="#home" aria-label="RAFU 公式サイト トップへ" data-sfx>
-        <img src="assets/img/logo-outline-512.webp" alt="" width="72" height="72" loading="lazy">
-        <span class="ft-word"><b>RAFU</b><small>OFFICIAL SITE</small></span>
+      <a class="ft-logo" href="#home" data-sfx>
+        <img src="assets/img/logo-outline-256.webp" alt="" width="72" height="72" loading="lazy">
+        <span class="ft-word"><b>RAFU</b><small>OFFICIAL SITE</small></span><span class="sr-only"> トップへ</span>
       </a>
       <nav class="ft-nav" aria-label="フッター">
         <a href="#news" data-sfx>ニュース</a>
@@ -509,8 +565,8 @@
   <style>.loader{display:none!important}</style>
 </noscript>
 
-<script src="assets/js/content.js?v=20261111-2"></script>
-<script src="assets/js/common.js?v=20261111-2"></script>
-<script src="assets/js/main.js?v=20261111-2"></script>
+<script src="assets/js/content.js?v=20261116-4"></script>
+<script src="assets/js/common.js?v=20261116-4"></script>
+<script src="assets/js/main.js?v=20261116-4"></script>
 </body>
 </html>

@@ -1,0 +1,59 @@
+# YouTubeのチャンネルのページから新しい動画の一覧（videos.json）を作って、data ブランチに置く。
+# サイトはそのファイルを読んで、動画の欄を自動で新しくする（assets/js/content.js の videoFeed）。
+# 公開用のリポジトリでだけ、決まった時間ごとに動く。手で動かすときは Actions の画面の「Run workflow」。
+# 道具やこの設定を変えたときにも1回動く（開発用のリポジトリでは、一覧が作れるかを試すだけで、どこにも置かない）。
+name: 動画の一覧を更新
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"   # 毎時 7分・37分（混む時間を避けるため、ちょうどの分は使わない）
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/fetch_videos.py
+      - .github/workflows/videos.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: videos
+  cancel-in-progress: false
+
+jobs:
+  update:
+    # 決まった時間に動くのは公開用のリポジトリだけ（開発用では、手で動かしたとき・道具を変えたときだけ）
+    if: github.repository == 'RafuGH/rafu_site' || github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 一覧を作る
+        run: |
+          mkdir -p out
+          # 前回の一覧（data ブランチ）があれば渡す。前に読んだ動画の公開日はそこから使う
+          if git fetch -q --depth=1 origin data 2>/dev/null && git show FETCH_HEAD:videos.json > out/old.json 2>/dev/null; then
+            python3 tools/fetch_videos.py out/videos.json out/old.json
+          else
+            rm -f out/old.json
+            python3 tools/fetch_videos.py out/videos.json
+          fi
+
+      - name: 変わっていたら data ブランチに置く
+        if: github.repository == 'RafuGH/rafu_site'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -f out/videos.json ]; then echo "一覧が作れなかったので、前のままにします"; exit 0; fi
+          if [ -f out/old.json ] && cmp -s out/old.json out/videos.json; then echo "変わっていません"; exit 0; fi
+          # data ブランチには、いつも最新の videos.json だけを1コミットで置く（履歴をためない）
+          cd out
+          rm -f old.json
+          git init -q -b data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add videos.json
+          git commit -q -m "動画の一覧を更新"
+          git push -q --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data
+          echo "data ブランチを更新しました"

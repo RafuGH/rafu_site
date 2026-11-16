@@ -70,9 +70,22 @@ window.RAFU_CONTENT = {
   ],
 
   /*
-   * 配信・切り抜き・Shorts（上から順に並びます。先頭がモニターに最初に映る動画）
+   * 動画の欄は、YouTubeに出した動画が自動で並びます（手で書き足さなくてOK）。
+   * url  … 自動で作られる動画の一覧の場所。"" にすると自動をやめて、下の videos だけを出す
+   * max  … 「すべて」や種類ごとのタブに並べる数
+   * hide … サイトに出したくない動画のID（例: ["01DwgkXvCWc"]）
+   * 種類（配信・動画・切り抜き・Shorts）はYouTubeでの種類から決まる。タイトルに「切り抜き」と入った動画は切り抜きになる
+   */
+  videoFeed: {
+    url: "https://raw.githubusercontent.com/RafuGH/rafu_site/data/videos.json",
+    max: 12,
+    hide: [],
+  },
+
+  /*
+   * 予備の動画（自動の一覧が読めなかったときだけ出ます。上から順に並ぶ）
    * id   … YouTubeの動画ID（URLの v= のあと、Shortsなら /shorts/ のあと）
-   * kind … "live"（配信） / "clip"（切り抜き） / "shorts"
+   * kind … "live"（配信） / "video"（動画） / "clip"（切り抜き） / "shorts"
    * thumb… サムネを自分の画像にしたいときだけパスを書く（空ならYouTubeのサムネ）
    */
   videos: [
@@ -88,9 +101,98 @@ window.RAFU_CONTENT = {
     address: "rafuserver.duckdns.org",
     bedrockPort: "19132",                   // 統合版のポート
     editions: "Java版・統合版 どちらもOK",
-    version: "1.18.1 以上",
-    versionNote: "今後変わることがあります",
+    version: "26.2",
+    versionNote: "Java版。統合版は最新版で参加してください",
     showStatus: true,                       // サーバーのオンライン状態を表示する
+    /*
+     * ワールドの写真（REDHUB の欄の上と、参加のしかたのページの見出しの背景。上から順に切りかわる）
+     * image   … 写真（assets/img/world/ に置く）。tools/make_world.py で、横2560・1600・800 の3つを作る
+     *           （元のPNGを渡すと「名前.webp」「名前-m.webp」「名前-s.webp」ができる）
+     * caption … 写真の左下に出る一言
+     * focus   … 画面が縦長のとき、どこを中心に見せるか（"左右% 上下%"。なくてもOK＝まんなか）
+     */
+    world: [
+      { image: "assets/img/world/world-04.webp", caption: "夕焼けの街", focus: "48% 50%" },
+      { image: "assets/img/world/world-01.webp", caption: "山に囲まれた街", focus: "50% 55%" },
+      { image: "assets/img/world/world-07.webp", caption: "時計塔のある街並み", focus: "66% 50%" },
+      { image: "assets/img/world/world-08.webp", caption: "丘の上のお城", focus: "36% 50%" },
+      { image: "assets/img/world/world-09.webp", caption: "ビル街と桜", focus: "45% 55%" },
+      { image: "assets/img/world/world-02.webp", caption: "岩の柱が立つ入り江", focus: "62% 50%" },
+      { image: "assets/img/world/world-10.webp", caption: "湖と滝の崖", focus: "45% 55%" },
+      { image: "assets/img/world/world-03.webp", caption: "山すその寺町", focus: "58% 55%" },
+      { image: "assets/img/world/world-06.webp", caption: "夜の街", focus: "58% 55%" },
+    ],
+  },
+
+  /*
+   * 参加のしかた（join.html。トップのサーバー欄の「機種ごとの参加のしかた」から開く）
+   * 機種のタブを選ぶと、その機種の手順が出ます。
+   * account … ゲーム機でフレンドになるアカウント（ゲーマータグ）
+   * devices … 機種のタブ（上から順に左から並ぶ）
+   *   id     … ページのURLの # に使う名前（例: join.html#switch）。半角英数字
+   *   label  … タブの文字 / sub … タブの下の小さい文字
+   *   method … 手順の種類（下の methods の名前）
+   *   note   … その機種だけの注意（なくてもOK）
+   *   icon   … タブの絵（cube / win / phone / game など）
+   * methods … 手順の中身。title が見出し、steps が手順
+   *   title … 手順の見出し / text … 説明 / press … 絵の中で押すボタンの文字
+   *   copy  … コピーできる欄を出す（"address" アドレス / "port" ポート / "account" ゲーマータグ。["address", "port"] のように並べられる）
+   *   image … 画面の写真（assets/img/join/ に置く。書くと絵のかわりに出る）
+   *   tip   … 黄色い「ポイント」の一言（なくてもOK）
+   *   文の中の {account} {address} {port} は、それぞれの名前に置きかわる
+   * faq … うまくいかないとき（q が質問、a が答え）
+   */
+  join: {
+    account: "Rafu002",
+    heroImage: "assets/img/world/world-05.webp",   // 見出しの背景の写真（なくてもOK＝夕焼けのドット絵）
+    devices: [
+      { id: "java",    label: "Java版",           sub: "Windows・Mac・Linux",  method: "java", icon: "cube" },
+      { id: "windows", label: "Windows",          sub: "統合版",               method: "server", icon: "win",
+        note: "ゲーム機と同じように、フレンド（{account}）からも参加できます。" },
+      { id: "mobile",  label: "スマホ・タブレット", sub: "iPhone・iPad・Android", method: "server", icon: "phone",
+        note: "ゲーム機と同じように、フレンド（{account}）からも参加できます。" },
+      { id: "switch",  label: "Switch",           sub: "Switch・Switch 2",    method: "friend", icon: "game",
+        note: "オンラインで遊ぶには Nintendo Switch Online への加入が必要です。" },
+      { id: "ps",      label: "PlayStation",      sub: "PS4・PS5",            method: "friend", icon: "game",
+        note: "オンラインで遊ぶには PlayStation Plus への加入が必要です。本体の設定で、ほかの機種の人と遊ぶこと（クロスプレイ）が制限されていないかも確認してください。" },
+      { id: "xbox",    label: "Xbox",             sub: "Xbox One・Series X|S", method: "friend", icon: "game",
+        note: "オンラインで遊ぶには、Xbox のオンライン用の有料サービスへの加入が必要な場合があります。" },
+    ],
+    methods: {
+      java: {
+        title: "サーバーアドレスで参加",
+        steps: [
+          { title: "マルチプレイを開く", text: "Minecraft Java版を起動し、タイトル画面の「マルチプレイ」を選びます。", press: "マルチプレイ", image: "" },
+          { title: "サーバーを追加する", text: "「サーバーを追加」を選び、「サーバーアドレス」に下のアドレスを入力します。サーバー名は自由です（例: REDHUB）。", press: "サーバーを追加", copy: "address", image: "" },
+          { title: "サーバーに接続", text: "「完了」を押すと、一覧に REDHUB が追加されます。選んで「サーバーに接続」を押せば参加できます。", press: "サーバーに接続", image: "" },
+        ],
+      },
+      server: {
+        title: "サーバーを追加して参加",
+        steps: [
+          { title: "「サーバー」タブを開く", text: "Minecraft を起動して「遊ぶ」を選び、上のタブから「サーバー」を開きます。", press: "サーバー", image: "" },
+          { title: "サーバーを追加する", text: "一覧のいちばん下にある「サーバーを追加」を選び、下のサーバーアドレスとポートを入力します。サーバー名は自由です（例: REDHUB）。", press: "サーバーを追加", copy: ["address", "port"], image: "" },
+          { title: "サーバーに参加", text: "保存すると、一覧に REDHUB が追加されます。選んで「サーバーに参加」を押せば参加できます。", press: "サーバーに参加", image: "" },
+        ],
+      },
+      friend: {
+        title: "フレンドから参加",
+        steps: [
+          { title: "Microsoft アカウントでサインイン", text: "ゲーム機ではサーバーのアドレスを入力できないため、Minecraft のフレンド機能を使って参加します。まず Minecraft に Microsoft アカウント（無料）でサインインしてください。", press: "サインイン", image: "" },
+          { title: "{account} をフレンドに追加", text: "「遊ぶ」→「フレンド」タブ→「フレンドを追加」を選び、ゲーマータグ {account} を検索して追加します。", press: "フレンドを追加", copy: "account", image: "",
+            tip: "数字の 0（ゼロ）と英字の O（オー）をまちがえやすいので注意してください。" },
+          { title: "フレンドになるのを待つ", text: "{account} は自動でフレンドを承認します。数分たってもフレンドタブに出てこないときは、Minecraft を起動し直してください。", press: "{account}", image: "" },
+          { title: "REDHUB に参加", text: "フレンドタブの「参加できるフレンド」に REDHUB が表示されます。選んで「参加」を押せば参加できます。", press: "参加", image: "",
+            tip: "次からは、フレンドタブから「参加」を押すだけで入れます。" },
+        ],
+      },
+    },
+    faq: [
+      { q: "フレンドタブに REDHUB が出てこない", a: "Microsoft アカウントでサインインしているか確認してください。Minecraft を起動し直すと表示されることがあります。" },
+      { q: "「マルチプレイができません」と表示される", a: "本体や Microsoft アカウントの保護者による制限（見守り設定）で、マルチプレイやほかの機種の人と遊ぶことが止められている可能性があります。保護者の方に設定を確認してもらってください。" },
+      { q: "バージョンが違うと表示される", a: "Minecraft を最新版にアップデートしてから、もう一度試してください。" },
+      { q: "それでも参加できない", a: "Discord の #support で質問してください。機種と、どの画面で止まったかを書いてもらえると早く答えられます。" },
+    ],
   },
 
   /*
